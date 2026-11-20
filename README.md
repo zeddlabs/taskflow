@@ -13,6 +13,12 @@ pnpm dev
 
 Open the web app at http://localhost:3000. Request http://localhost:4000/api/v1/health/live to check that the API process is serving HTTP. Its response is `{"status":"ok"}`.
 
+### API contract
+
+In development, open http://localhost:4000/api/v1/docs for Swagger UI or fetch http://localhost:4000/api/v1/openapi.json for the generated specification. The API assigns a fresh `X-Request-Id` to each request. Use this value to find the corresponding JSON request log.
+
+DTO validation rejects invalid and unknown fields with HTTP 400 and code `VALIDATION_ERROR`. Error responses use `application/problem+json` and include `type`, `title`, `status`, `code`, `detail`, and `requestId`. The request log contains the method, matched route pattern, status, duration in milliseconds and request ID. Swagger routes are disabled when `NODE_ENV=production`.
+
 ### Local PostgreSQL
 
 From the repository root, copy `.env.example` to `.env` and set `POSTGRES_PASSWORD` to a unique local password. Use single quotes around passwords containing literal dollar signs. The example creates database `taskflow_dev` and role `taskflow`. If port 5432 is in use, change `POSTGRES_PORT` in `.env`.
