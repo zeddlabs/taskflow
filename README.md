@@ -27,6 +27,19 @@ Connect a local PostgreSQL client to `127.0.0.1` using the port, database, user 
 
 Run `docker compose down` to stop the database and retain its named volume. The next `docker compose up -d --wait postgres` reuses the data. PostgreSQL reads the initialization credentials when the volume is first created. To change an existing role's password, use the interactive psql command `\password`, then update `.env` to match.
 
+### Migrate and seed a development database
+
+Copy `apps/api/.env.example` to `apps/api/.env` and fill in `DATABASE_URL` for your local PostgreSQL database. Run the following from the repository root.
+
+```sh
+pnpm --filter @taskflow/api exec prisma validate
+pnpm --filter @taskflow/api exec prisma generate
+pnpm --filter @taskflow/api exec prisma migrate deploy
+pnpm --filter @taskflow/api exec prisma db seed
+```
+
+The development seed creates one synthetic owner for Acme Studio and Northwind Labs. It hashes a random password with Argon2id, discards the password, and preserves existing fixture records on subsequent runs. To run the database integration tests, point `DATABASE_URL` at a disposable PostgreSQL database, run the four commands above, then run `pnpm --filter @taskflow/api test:db`.
+
 ## Verify a change
 
 ```sh

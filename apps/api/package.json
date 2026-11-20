@@ -3,23 +3,30 @@
   "private": true,
   "scripts": {
     "dev": "nest start --watch",
-    "build": "nest build",
+    "build": "prisma generate && nest build",
     "start": "node dist/main.js",
     "lint": "eslint . --max-warnings=0",
-    "typecheck": "tsc --noEmit",
-    "test": "node --test test/liveness.test.mjs"
+    "typecheck": "prisma generate && tsc --noEmit && tsc -p tsconfig.prisma.json",
+    "test": "node --test test/liveness.test.mjs",
+    "test:db": "tsx --test test/database.test.ts"
   },
   "dependencies": {
     "@nestjs/common": "11.2.11",
     "@nestjs/core": "11.2.11",
     "@nestjs/platform-express": "11.2.11",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2"
   },
   "devDependencies": {
     "@nestjs/cli": "11.0.24",
+    "@node-rs/argon2": "2.2.2",
     "@types/node": "24.10.1",
     "eslint": "9.39.1",
+    "dotenv": "18.0.10",
+    "prisma": "7.10.1",
+    "tsx": "4.23.15",
     "typescript-eslint": "8.73.0",
     "typescript": "5.9.3"
   }
