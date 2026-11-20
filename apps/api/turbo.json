@@ -1,0 +1,17 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "passThroughEnv": [
+        "PORT",
+        "DATABASE_URL",
+        "WEB_ORIGIN",
+        "JWT_ACCESS_SECRET",
+        "JWT_ISSUER",
+        "JWT_AUDIENCE",
+        "COOKIE_SECURE",
+        "NODE_ENV"
+      ]
+    }
+  }
+}

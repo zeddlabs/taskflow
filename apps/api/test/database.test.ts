@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { after, test } from "node:test";
-import { connectDatabase } from "../prisma/database";
+import { DatabaseService } from "../src/database.service";
 import type { Prisma } from "../src/generated/prisma/client";
 
-const db = connectDatabase();
+const db = new DatabaseService();
 after(() => db.$disconnect());
 
 // Keep even unexpectedly successful constraint probes out of the database.

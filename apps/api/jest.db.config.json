@@ -1,0 +1,7 @@
+{
+  "testEnvironment": "node",
+  "testMatch": ["<rootDir>/test/*.integration.test.ts"],
+  "transform": {
+    "^.+\\.ts$": ["ts-jest", { "tsconfig": "<rootDir>/test/tsconfig.json" }]
+  }
+}
