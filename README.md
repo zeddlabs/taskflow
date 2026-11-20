@@ -13,6 +13,20 @@ pnpm dev
 
 Open the web app at http://localhost:3000. Request http://localhost:4000/api/v1/health/live to check that the API process is serving HTTP. Its response is `{"status":"ok"}`.
 
+### Local PostgreSQL
+
+From the repository root, copy `.env.example` to `.env` and set `POSTGRES_PASSWORD` to a unique local password. Use single quotes around passwords containing literal dollar signs. The example creates database `taskflow_dev` and role `taskflow`. If port 5432 is in use, change `POSTGRES_PORT` in `.env`.
+
+```sh
+docker compose config --quiet
+docker compose up -d --wait postgres
+docker compose ps postgres
+```
+
+Connect a local PostgreSQL client to `127.0.0.1` using the port, database, user and password from `.env`. For a client that expects `DATABASE_URL`, use the form `postgresql://USER:PASSWORD@127.0.0.1:PORT/DATABASE` and percent-encode special characters in the credentials.
+
+Run `docker compose down` to stop the database and retain its named volume. The next `docker compose up -d --wait postgres` reuses the data. PostgreSQL reads the initialization credentials when the volume is first created. To change an existing role's password, use the interactive psql command `\password`, then update `.env` to match.
+
 ## Verify a change
 
 ```sh
