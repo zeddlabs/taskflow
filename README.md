@@ -6,10 +6,7 @@ TaskFlow is a multi-tenant project management application under development. The
 
 Use Node.js 24.15 or newer within the 24.x series and pnpm 10.34.9. With Corepack installed, run `corepack enable pnpm` and verify that `pnpm --version` from the repository root prints `10.34.9`. Turborepo also resolves pnpm from your PATH.
 
-```sh
-pnpm install --frozen-lockfile
-pnpm dev
-```
+Run `pnpm install --frozen-lockfile`. Set up [local PostgreSQL](#local-postgresql) and [migrate the development database](#migrate-and-seed-a-development-database), then start the web and API with `pnpm dev`.
 
 Open the web app at http://localhost:3000. Request http://localhost:4000/api/v1/health/live to check that the API process is serving HTTP. Its response is `{"status":"ok"}`.
 
@@ -18,6 +15,18 @@ Open the web app at http://localhost:3000. Request http://localhost:4000/api/v1/
 In development, open http://localhost:4000/api/v1/docs for Swagger UI or fetch http://localhost:4000/api/v1/openapi.json for the generated specification. The API assigns a fresh `X-Request-Id` to each request. Use this value to find the corresponding JSON request log.
 
 DTO validation rejects invalid and unknown fields with HTTP 400 and code `VALIDATION_ERROR`. Error responses use `application/problem+json` and include `type`, `title`, `status`, `code`, `detail`, and `requestId`. The request log contains the method, matched route pattern, status, duration in milliseconds and request ID. Swagger routes are disabled when `NODE_ENV=production`.
+
+### Accounts and sessions
+
+| Method and path              | Request                                                        | Success                                                         |
+| ---------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
+| `POST /api/v1/auth/register` | JSON with `name`, `email`, and a password of 15–128 characters | 201 with the profile. A duplicate normalized email returns 409. |
+| `POST /api/v1/auth/login`    | JSON with `email` and `password`                               | 200 with the profile and two HttpOnly cookies                   |
+| `GET /api/v1/auth/me`        | Access cookie from login                                       | 200 with the active session user's profile                      |
+
+Send the configured `Origin` with registration and login. When the header is absent the API checks the origin of `Referer`. Both endpoints share per-process limits of 60 attempts per IP and 10 per normalized email per minute. A 429 response includes `Retry-After` in seconds.
+
+Access cookies expire after 10 minutes. Refresh cookies are scoped to `/api/v1/auth/refresh` and expire after seven days. Both are host-only, use SameSite=Lax, and require HTTPS in production. Session renewal and logout are tracked in [issue #6](https://github.com/zeddlabs/taskflow/issues/6).
 
 ### Local PostgreSQL
 
@@ -35,7 +44,7 @@ Run `docker compose down` to stop the database and retain its named volume. The 
 
 ### Migrate and seed a development database
 
-Copy `apps/api/.env.example` to `apps/api/.env` and fill in `DATABASE_URL` for your local PostgreSQL database. Run the following from the repository root.
+Copy `apps/api/.env.example` to `apps/api/.env` and fill in `DATABASE_URL` for your local PostgreSQL database. Generate a signing secret with `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` and set `JWT_ACCESS_SECRET` in that file. Set `WEB_ORIGIN` to the exact web origin including the port, without a trailing slash. Run the following from the repository root.
 
 ```sh
 pnpm --filter @taskflow/api exec prisma validate

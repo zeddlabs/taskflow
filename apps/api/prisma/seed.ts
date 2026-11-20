@@ -1,18 +1,14 @@
 import { randomBytes } from "node:crypto";
-import { hash } from "@node-rs/argon2";
-import { connectDatabase } from "./database";
+import { hashPassword } from "../src/auth/password";
+import { DatabaseService } from "../src/database.service";
 
 async function seed() {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Development seed requires a nonproduction environment.");
   }
-  const db = connectDatabase();
+  const db = new DatabaseService();
   try {
-    const passwordHash = await hash(randomBytes(32), {
-      memoryCost: 19456,
-      timeCost: 2,
-      parallelism: 1,
-    });
+    const passwordHash = await hashPassword(randomBytes(32));
     await db.$transaction(async (tx) => {
       const owner = await tx.user.upsert({
         where: { id: "cm00000000000000000000001" },

@@ -9,7 +9,7 @@ import {
 import { NestFactory } from "@nestjs/core";
 import { IsString } from "class-validator";
 import request from "supertest";
-import { configureHttp } from "../src/app";
+import { configureHttp } from "../src/http/configure";
 import { HealthController } from "../src/health.controller";
 
 class ProbeDto {

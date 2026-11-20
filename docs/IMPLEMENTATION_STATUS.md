@@ -7,8 +7,8 @@
 | [#1 Initialize the monorepo](https://github.com/zeddlabs/taskflow/issues/1)                     | None         | [DONE](https://github.com/zeddlabs/taskflow/pull/9)             |
 | [#2 Local PostgreSQL](https://github.com/zeddlabs/taskflow/issues/2)                            | #1           | [DONE](https://github.com/zeddlabs/taskflow/pull/10)            |
 | [#3 Prisma models, migrations and seed](https://github.com/zeddlabs/taskflow/issues/3)          | #2           | [DONE](https://github.com/zeddlabs/taskflow/pull/11)            |
-| [#4 NestJS request and error handling](https://github.com/zeddlabs/taskflow/issues/4)           | #1           | [AWAITING_REVIEW](https://github.com/zeddlabs/taskflow/pull/12) |
-| [#5 Registration, login and profile](https://github.com/zeddlabs/taskflow/issues/5)             | #3, #4       | TODO                                                            |
+| [#4 NestJS request and error handling](https://github.com/zeddlabs/taskflow/issues/4)           | #1           | [DONE](https://github.com/zeddlabs/taskflow/pull/12)            |
+| [#5 Registration, login and profile](https://github.com/zeddlabs/taskflow/issues/5)             | #3, #4       | [AWAITING_REVIEW](https://github.com/zeddlabs/taskflow/pull/13) |
 | [#6 Refresh, logout and CSRF](https://github.com/zeddlabs/taskflow/issues/6)                    | #5           | TODO                                                            |
 | [#7 Browser authentication and responsive shell](https://github.com/zeddlabs/taskflow/issues/7) | #6           | TODO                                                            |
 | [#8 M0 CI quality gates](https://github.com/zeddlabs/taskflow/issues/8)                         | #7           | TODO                                                            |
