@@ -7,6 +7,7 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   process.env.NODE_ENV = "test";
   process.env.DATABASE_URL = "postgresql://127.0.0.1/taskflow_smoke";
   process.env.JWT_ACCESS_SECRET = randomBytes(32).toString("hex");
+  process.env.CSRF_SECRET = randomBytes(32).toString("hex");
   process.env.WEB_ORIGIN = "https://web.example.invalid";
   const app = await createApp();
   t.after(() => app.close());
@@ -23,4 +24,20 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   assert.ok(paths["/api/v1/auth/login"].post.responses["200"]);
   assert.deepEqual(paths["/api/v1/auth/me"].get.security, [{ cookie: [] }]);
   assert.equal(components.securitySchemes.cookie.name, "access_token");
+  assert.equal(components.securitySchemes.refresh.name, "refresh_token");
+  assert.equal(components.securitySchemes.logout.name, "logout_session");
+  const bootstrap = paths["/api/v1/auth/refresh/csrf"].get;
+  assert.ok(bootstrap.responses["204"].headers["X-CSRF-Token"]);
+  for (const [path, code] of [
+    ["refresh", "200"],
+    ["logout", "204"],
+  ]) {
+    const operation = paths["/api/v1/auth/" + path].post;
+    assert.ok(operation.responses[code]);
+    assert.ok(
+      operation.parameters.some(
+        (header) => header.name === "X-CSRF-Token" && header.required,
+      ),
+    );
+  }
 });

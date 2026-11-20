@@ -28,6 +28,7 @@ beforeAll(async () => {
       NODE_ENV: "production",
       WEB_ORIGIN: origin,
       JWT_ACCESS_SECRET: secret,
+      CSRF_SECRET: randomBytes(32).toString("hex"),
       JWT_ISSUER: "taskflow-test",
       JWT_AUDIENCE: "taskflow-browser-test",
       COOKIE_SECURE: "false",
@@ -80,6 +81,17 @@ function me(access: string) {
     .get("/api/v1/auth/me")
     .set("Cookie", "access_token=" + access);
 }
+function cookieValue(cookies: string[], name: string) {
+  return cookies
+    .find((cookie) => cookie.startsWith(name + "="))!
+    .split(";")[0]
+    .slice(name.length + 1);
+}
+function renew(token: string, proof: string) {
+  return post("refresh")
+    .set("Cookie", "refresh_token=" + token)
+    .set("X-CSRF-Token", proof);
+}
 async function signedIn() {
   const user = account();
   const registered = await post("register").send(user).expect(201);
@@ -87,17 +99,14 @@ async function signedIn() {
     .send({ email: user.email, password })
     .expect(200);
   const cookies = login.headers["set-cookie"] as unknown as string[];
-  const value = (name: string) =>
-    cookies
-      .find((cookie) => cookie.startsWith(name + "="))!
-      .split(";")[0]
-      .slice(name.length + 1);
   return {
     profile: registered.body,
     login,
     cookies,
-    access: value("access_token"),
-    refresh: value("refresh_token"),
+    access: cookieValue(cookies, "access_token"),
+    refresh: cookieValue(cookies, "refresh_token"),
+    logout: cookieValue(cookies, "logout_session"),
+    csrf: login.headers["x-csrf-token"] as string,
   };
 }
 
@@ -249,6 +258,153 @@ test("me requires a valid signed access credential and a matching active session
     [claims.sid],
   );
   await me(access).expect(401);
+});
+
+test("rotation consumes each generation once and commits family revocation on reuse", async () => {
+  const session = await signedIn();
+  const sibling = await post("login")
+    .send({ email: session.profile.email, password })
+    .expect(200);
+  const rotated = await renew(session.refresh, session.csrf).expect(200);
+  const cookies = rotated.get("Set-Cookie")!;
+  const successor = cookieValue(cookies, "refresh_token");
+  expect(successor).not.toBe(session.refresh);
+  const second = await renew(successor, session.csrf).expect(200);
+  const current = cookieValue(second.get("Set-Cookie")!, "refresh_token");
+  const denied = await renew(session.refresh, session.csrf).expect(401);
+  expect(denied.type).toBe("application/problem+json");
+  expect(denied.body.status).toBe(401);
+  expect(denied.get("Set-Cookie")).toBeUndefined();
+  await renew(current, session.csrf).expect(401);
+  await me(cookieValue(cookies, "access_token")).expect(401);
+  await me(cookieValue(sibling.get("Set-Cookie")!, "access_token")).expect(200);
+});
+
+test("simultaneous refreshes produce one successor and revoke it on reuse", async () => {
+  const { refresh, csrf, access } = await signedIn();
+  const results = await Promise.all([
+    renew(refresh, csrf),
+    renew(refresh, csrf),
+  ]);
+  expect(results.map((r) => r.status).sort()).toEqual([200, 401]);
+  const cookies = results.find((r) => r.status === 200)!.get("Set-Cookie")!;
+  await renew(cookieValue(cookies, "refresh_token"), csrf).expect(401);
+  await me(access).expect(401);
+  const tokens = await pool.query(
+    'SELECT "usedAt" FROM refresh_tokens WHERE "sessionId"=$1',
+    [(jwt.decode(access) as jwt.JwtPayload).sid],
+  );
+  expect(tokens.rowCount).toBe(2);
+  expect(tokens.rows.filter((row) => row.usedAt === null)).toHaveLength(1);
+});
+
+test("refresh enforces idle and absolute deadlines and caps a successor at the family deadline", async () => {
+  const session = await signedIn();
+  await pool.query(
+    'UPDATE refresh_tokens SET "expiresAt"=now() WHERE "sessionId"=$1',
+    [session.logout],
+  );
+  await renew(session.refresh, session.csrf).expect(401);
+  await request(base)
+    .get("/api/v1/auth/refresh/csrf")
+    .set("Cookie", "refresh_token=" + session.refresh)
+    .expect(401);
+  const nearExpiry = await signedIn();
+  await pool.query(
+    "UPDATE auth_sessions SET \"expiresAt\"=now() + interval '60 seconds' WHERE id=$1",
+    [nearExpiry.logout],
+  );
+  const rotated = await renew(nearExpiry.refresh, nearExpiry.csrf).expect(200);
+  const token = cookieValue(rotated.get("Set-Cookie")!, "refresh_token");
+  const deadlines = await pool.query(
+    'SELECT t."expiresAt" = s."expiresAt" AS capped FROM refresh_tokens t JOIN auth_sessions s ON t."sessionId"=s.id WHERE t."tokenHash"=$1',
+    [createHash("sha256").update(token).digest("hex")],
+  );
+  expect(deadlines.rows[0].capped).toBe(true);
+  await pool.query('UPDATE auth_sessions SET "expiresAt"=now() WHERE id=$1', [
+    nearExpiry.logout,
+  ]);
+  await renew(token, nearExpiry.csrf).expect(401);
+  await me(nearExpiry.access).expect(401);
+});
+
+test("browser can recover its proof, log out after access expiry and repeat logout", async () => {
+  const { refresh, access, csrf, logout } = await signedIn();
+  const bootstrap = await request(base)
+    .get("/api/v1/auth/refresh/csrf")
+    .set("Cookie", "refresh_token=" + refresh)
+    .expect(204);
+  expect(bootstrap.get("X-CSRF-Token")).toBe(csrf);
+  expect(bootstrap.get("Cache-Control")).toBe("no-store");
+  expect(cookieValue(bootstrap.get("Set-Cookie")!, "logout_session")).toBe(
+    logout,
+  );
+  const sendLogout = () =>
+    post("logout")
+      .set("Cookie", "logout_session=" + logout)
+      .set("X-CSRF-Token", csrf);
+  const response = await sendLogout().expect(204);
+  const cleared = response.get("Set-Cookie")!;
+  for (const [name, path] of [
+    ["access_token", "/"],
+    ["refresh_token", "/api/v1/auth/refresh"],
+    ["logout_session", "/api/v1/auth/logout"],
+  ]) {
+    const cookie = cleared.find((c) => c.startsWith(name + "=;"))!;
+    expect(cookie).toContain("Path=" + path + ";");
+    expect(cookie).toContain("Expires=Thu, 01 Jan 1970");
+  }
+  await sendLogout().expect(204);
+  await post("logout").expect(204);
+  await me(access).expect(401);
+  await renew(refresh, csrf).expect(401);
+  await request(base)
+    .get("/api/v1/auth/refresh/csrf")
+    .set("Cookie", "refresh_token=" + refresh)
+    .expect(401);
+});
+
+test("cookie mutations require the exact origin and the current session's proof before changing state", async () => {
+  const current = await signedIn();
+  const other = await signedIn();
+  for (const [path, cookie] of [
+    ["refresh", "refresh_token=" + current.refresh],
+    ["logout", "logout_session=" + current.logout],
+  ]) {
+    for (const headers of [
+      {},
+      { Referer: "invalid" },
+      { Referer: "blob:" + origin + "/document" },
+      { Referer: origin + ".foreign.example/" },
+      { Origin: "null", Referer: origin + "/" },
+      { Origin: "https://foreign.example.invalid", Referer: origin + "/" },
+    ]) {
+      await request(base)
+        .post("/api/v1/auth/" + path)
+        .set("Cookie", cookie)
+        .set("X-CSRF-Token", current.csrf)
+        .set(headers)
+        .expect(403);
+    }
+    for (const proof of [undefined, "invalid", other.csrf]) {
+      const req = post(path).set("Cookie", cookie);
+      if (proof) req.set("X-CSRF-Token", proof);
+      const denied = await req.expect(403);
+      expect(denied.type).toBe("application/problem+json");
+      expect(denied.get("Set-Cookie")).toBeUndefined();
+    }
+  }
+  const rotated = await request(base)
+    .post("/api/v1/auth/refresh")
+    .set("Referer", origin + "/account")
+    .set("Cookie", "refresh_token=" + current.refresh)
+    .set("X-CSRF-Token", current.csrf)
+    .expect(200);
+  await renew(current.refresh, other.csrf).expect(403);
+  await renew(
+    cookieValue(rotated.get("Set-Cookie")!, "refresh_token"),
+    current.csrf,
+  ).expect(200);
 });
 
 test("limits repeated normalized identifiers and independent requests from one IP", async () => {

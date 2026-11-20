@@ -7,6 +7,7 @@
         "DATABASE_URL",
         "WEB_ORIGIN",
         "JWT_ACCESS_SECRET",
+        "CSRF_SECRET",
         "JWT_ISSUER",
         "JWT_AUDIENCE",
         "COOKIE_SECURE",

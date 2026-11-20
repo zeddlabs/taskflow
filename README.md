@@ -18,15 +18,22 @@ DTO validation rejects invalid and unknown fields with HTTP 400 and code `VALIDA
 
 ### Accounts and sessions
 
-| Method and path              | Request                                                        | Success                                                         |
-| ---------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
-| `POST /api/v1/auth/register` | JSON with `name`, `email`, and a password of 15–128 characters | 201 with the profile. A duplicate normalized email returns 409. |
-| `POST /api/v1/auth/login`    | JSON with `email` and `password`                               | 200 with the profile and two HttpOnly cookies                   |
-| `GET /api/v1/auth/me`        | Access cookie from login                                       | 200 with the active session user's profile                      |
+| Method and path                 | Request                                                        | Success                                                                |
+| ------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `POST /api/v1/auth/register`    | JSON with `name`, `email`, and a password of 15–128 characters | 201 with the profile. A duplicate normalized email returns 409.        |
+| `POST /api/v1/auth/login`       | JSON with `email` and `password`                               | 200 with the profile, HttpOnly cookies and an `X-CSRF-Token` header    |
+| `GET /api/v1/auth/me`           | Access cookie from login                                       | 200 with the active session user's profile                             |
+| `GET /api/v1/auth/refresh/csrf` | Current refresh cookie                                         | 204 with `X-CSRF-Token` for this session                               |
+| `POST /api/v1/auth/refresh`     | Refresh cookie and `X-CSRF-Token`                              | 200 with rotated credentials in cookies                                |
+| `POST /api/v1/auth/logout`      | Logout cookie and `X-CSRF-Token`                               | 204 after revocation and cookie clearing. Repeated logout returns 204. |
 
 Send the configured `Origin` with registration and login. When the header is absent the API checks the origin of `Referer`. Both endpoints share per-process limits of 60 attempts per IP and 10 per normalized email per minute. A 429 response includes `Retry-After` in seconds.
 
-Access cookies expire after 10 minutes. Refresh cookies are scoped to `/api/v1/auth/refresh` and expire after seven days. Both are host-only, use SameSite=Lax, and require HTTPS in production. Session renewal and logout are tracked in [issue #6](https://github.com/zeddlabs/taskflow/issues/6).
+Use same-origin requests through the web proxy. Keep the `X-CSRF-Token` response header in memory and send it on every authenticated unsafe request. After a page reload, recover it with `GET /api/v1/auth/refresh/csrf`. This read leaves the refresh credential available for rotation. Let the browser send cookies and the configured origin or referer. A rejected origin or session proof returns 403.
+
+Access cookies expire after ten minutes. Each successful refresh starts a new seven-day idle window, capped at 30 days from login. Serialize refresh calls across tabs. Reusing a consumed cookie revokes that login's entire session, including its latest credentials. After a refresh returns 401, prompt the user to sign in again.
+
+The refresh cookie is scoped to `/api/v1/auth/refresh`. A separate HttpOnly session identifier scoped to `/api/v1/auth/logout` lets the browser log out even after access expiry. Logout requires the matching CSRF proof. All session cookies are host-only, use SameSite=Lax and require HTTPS in production.
 
 ### Local PostgreSQL
 
@@ -44,7 +51,7 @@ Run `docker compose down` to stop the database and retain its named volume. The 
 
 ### Migrate and seed a development database
 
-Copy `apps/api/.env.example` to `apps/api/.env` and fill in `DATABASE_URL` for your local PostgreSQL database. Generate a signing secret with `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` and set `JWT_ACCESS_SECRET` in that file. Set `WEB_ORIGIN` to the exact web origin including the port, without a trailing slash. Run the following from the repository root.
+Copy `apps/api/.env.example` to `apps/api/.env` and fill in `DATABASE_URL` for your local PostgreSQL database. Run `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` twice and set `JWT_ACCESS_SECRET` and `CSRF_SECRET` to the two independent values. Set `WEB_ORIGIN` to the exact web origin including the port, without a trailing slash. Run the following from the repository root.
 
 ```sh
 pnpm --filter @taskflow/api exec prisma validate

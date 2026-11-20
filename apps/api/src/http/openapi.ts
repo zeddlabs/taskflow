@@ -15,6 +15,8 @@ export function configureOpenApi(app: INestApplication) {
     .setTitle("TaskFlow API")
     .setVersion("1")
     .addCookieAuth("access_token")
+    .addCookieAuth("refresh_token", { type: "apiKey" }, "refresh")
+    .addCookieAuth("logout_session", { type: "apiKey" }, "logout")
     .addGlobalResponse({
       status: "default",
       description:

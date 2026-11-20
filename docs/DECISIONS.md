@@ -17,3 +17,9 @@ Workspace ownership is represented by the membership role. PostgreSQL enforces a
 Issue [#5](https://github.com/zeddlabs/taskflow/issues/5) uses the same Argon2id settings for registration and development seed accounts. Login creates the session and the first refresh-token digest in one transaction. The session has a 30-day absolute expiry and the first refresh credential has a seven-day expiry. Each profile read verifies the JWT signature, algorithm, issuer, audience and timestamps, then checks the session's subject, expiry and revocation in PostgreSQL.
 
 The M0 API runs as a single process. Auth throttling uses expiring in-memory counters keyed independently by peer IP and normalized email digest. A restart clears these counters. A deployment with multiple API replicas requires shared counters and explicit trusted-proxy configuration.
+
+## M0 session rotation and browser transport
+
+Issue #6 serializes refreshes on the PostgreSQL session row. A second use of any consumed generation commits revocation before the API returns 401. Browser clients must coordinate refresh across tabs.
+
+The API derives a session-bound CSRF proof using HMAC-SHA-256 and an independent secret. Login and refresh return the proof in a response header. A same-origin client can recover the proof after reload using its current refresh cookie. A logout-path cookie identifies the session for revocation after the access cookie expires. That identifier grants no access or renewal, and revocation requires the matching proof.
