@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brand } from "../../components/brand";
 import { Button } from "../../components/ui/button";
+import { readSessionHint, writeSessionHint } from "../auth/session-hint";
 import {
   ApiError,
   errorMessage,
@@ -108,6 +109,7 @@ function Shell({ view, initialProfile }: ShellProps) {
   const expired = query.error instanceof ApiError && query.error.status === 401;
   useEffect(() => {
     function change(signedIn: boolean) {
+      writeSessionHint(null);
       client.clear();
       window.location.replace(signedIn ? "/app" : "/login");
     }
@@ -123,15 +125,20 @@ function Shell({ view, initialProfile }: ShellProps) {
   }, [client]);
   useEffect(() => {
     if (expired) {
+      const knownSession = query.data || readSessionHint() === "authenticated";
+      writeSessionHint(knownSession ? "ended" : null);
       client.clear();
       window.location.replace("/login");
+    } else if (query.data) {
+      writeSessionHint("authenticated");
     }
-  }, [expired, client]);
+  }, [expired, client, query.data]);
   async function signOut() {
     setBusy(true);
     setFailure("");
     try {
       await logout();
+      writeSessionHint(null);
       client.clear();
       window.location.replace("/login");
     } catch (error) {
