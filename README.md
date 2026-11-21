@@ -66,6 +66,42 @@ The development seed creates one synthetic owner for Acme Studio and Northwind L
 
 ## Verify a change
 
+### Reproduce the M0 pull request checks
+
+GitHub Actions runs **M0 quality gates / Foundation checks** on pull requests. It checks the proposed merge with Node.js 24.15.0, pnpm 10.34.9 from `package.json`, and an empty PostgreSQL 17 service scoped to the runner. Gitleaks checks the PR commit range with redacted output. Each failed step fails the job. The API and browser tests generate their own signing secrets.
+
+From the repository root, run the following in Bash with Docker Compose and the pinned Node.js and pnpm versions. The subshell creates a separate Compose project with a random database port and removes its test volume on exit. Ports 4107 and 3107 serve the API and browser tests.
+
+```bash
+(
+  set -eu
+  export POSTGRES_USER=taskflow_ci POSTGRES_DB=taskflow_ci POSTGRES_PORT=0
+  export POSTGRES_PASSWORD="$(openssl rand -hex 32)"
+  project="taskflow-ci-$(openssl rand -hex 6)"
+  trap 'docker compose -p "$project" down --volumes' EXIT
+  docker compose -p "$project" up -d --wait postgres
+  db_address="$(docker compose -p "$project" port postgres 5432)"
+  export DATABASE_URL="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$db_address/$POSTGRES_DB"
+  export TASKFLOW_API_ORIGIN=http://127.0.0.1:4107
+
+  pnpm install --frozen-lockfile
+  pnpm format:check
+  pnpm --filter @taskflow/api exec prisma validate
+  pnpm --filter @taskflow/api exec prisma generate
+  pnpm lint
+  pnpm typecheck
+  pnpm --filter @taskflow/api exec prisma migrate deploy
+  pnpm --filter @taskflow/api exec prisma db seed
+  pnpm build
+  pnpm test
+  pnpm --filter @taskflow/api test:db
+  pnpm --filter @taskflow/web exec playwright install --with-deps chromium
+  pnpm --filter @taskflow/web test:e2e
+)
+```
+
+To reproduce the secret scan after committing, fetch the target branch and run `gitleaks git --redact --log-opts="origin/main..HEAD" .` with Gitleaks 8.30.1 from the repository root.
+
 ### Browser authentication tests
 
 Set `DATABASE_URL` in the shell to a disposable, migrated PostgreSQL database. Run the following from the repository root. Playwright starts the built API and web server on loopback, generates temporary signing secrets and registers synthetic accounts. By default it uses API port 4000 and web port 3107. Use the same `TASKFLOW_API_ORIGIN` for build and test if changing the API port. Screenshots of the sign-in screen and desktop and mobile dashboards are written under `apps/web/test-results`.
