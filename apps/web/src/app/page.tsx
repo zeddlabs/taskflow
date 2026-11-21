@@ -1,7 +1,4 @@
+import { redirect } from "next/navigation";
 export default function Home() {
-  return (
-    <main>
-      <h1>TaskFlow</h1>
-    </main>
-  );
+  redirect("/app");
 }

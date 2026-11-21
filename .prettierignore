@@ -4,6 +4,8 @@ node_modules
 dist
 apps/api/src/generated/prisma
 coverage
+test-results
+playwright-report
 pnpm-lock.yaml
 next-env.d.ts
 AGENTS.md
