@@ -79,7 +79,7 @@ components:
     padding: "{spacing.input-inset}"
   nav-current:
     backgroundColor: "{colors.nav-selected}"
-    textColor: "{colors.nav-text}"
+    textColor: "{colors.panel}"
     rounded: "{rounded.nav}"
     padding: "11px 14px"
   profile-card:
