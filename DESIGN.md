@@ -25,7 +25,7 @@ colors:
   focus-on-dark: "#ffe3a8"
 typography:
   display:
-    fontFamily: "Instrument Serif, Georgia, serif"
+    fontFamily: "Instrument Serif, Instrument Serif Fallback, Georgia, serif"
     fontSize: "clamp(38px, 4.4vw, 64px)"
     fontWeight: 400
     lineHeight: 0.99
@@ -119,7 +119,7 @@ Invalid inputs use a `#c45145` border and an associated text error. Error text u
 
 DM Sans Variable carries page headings, navigation, forms and data. Body copy is 15px with a 1.5 line height. Page headings scale from 32px to 42px. Card titles are 20px at weight 600, field labels 14px at 600, and field hints and errors 13px. Navigation group labels are 11px uppercase at 650 with 1.7px tracking.
 
-Instrument Serif appears in the welcome greeting at 38–64px with a 0.99 line height. Only the user's name takes the italic face. Both font families ship with the frontend and have system fallbacks.
+Instrument Serif appears in the welcome greeting at 38–64px with a 0.99 line height. Only the user's name takes the italic face. While those fonts load, locally available Times New Roman or Liberation Serif uses separate size adjustments for the greeting and the name to keep their line breaks stable. The panel grows naturally when a name needs more lines.
 
 ## Layout
 
