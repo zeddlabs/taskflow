@@ -10,6 +10,8 @@ Run `pnpm install --frozen-lockfile`. Set up [local PostgreSQL](#local-postgresq
 
 Open the web app at http://localhost:3000. Request http://localhost:4000/api/v1/health/live to check that the API process is serving HTTP. Its response is `{"status":"ok"}`.
 
+Open `/register` to create an account or `/login` to sign in. Both flows open the protected overview at `/app`. The web app forwards `/api/v1` to `http://127.0.0.1:4000`. To change the upstream, set `TASKFLOW_API_ORIGIN` for both the web build and the running server. The API's `WEB_ORIGIN` must match the origin in the browser.
+
 ### API contract
 
 In development, open http://localhost:4000/api/v1/docs for Swagger UI or fetch http://localhost:4000/api/v1/openapi.json for the generated specification. The API assigns a fresh `X-Request-Id` to each request. Use this value to find the corresponding JSON request log.
@@ -63,6 +65,18 @@ pnpm --filter @taskflow/api exec prisma db seed
 The development seed creates one synthetic owner for Acme Studio and Northwind Labs. It hashes a random password with Argon2id, discards the password, and preserves existing fixture records on subsequent runs. To run the database integration tests, point `DATABASE_URL` at a disposable PostgreSQL database, run the four commands above, then run `pnpm --filter @taskflow/api test:db`.
 
 ## Verify a change
+
+### Browser authentication tests
+
+Set `DATABASE_URL` in the shell to a disposable, migrated PostgreSQL database. Run the following from the repository root. Playwright starts the built API and web server on loopback, generates temporary signing secrets and registers synthetic accounts. By default it uses API port 4000 and web port 3107. Use the same `TASKFLOW_API_ORIGIN` for build and test if changing the API port. Screenshots of the sign-in screen and desktop and mobile dashboards are written under `apps/web/test-results`.
+
+```sh
+pnpm build
+pnpm --filter @taskflow/web exec playwright install chromium
+pnpm --filter @taskflow/web test:e2e
+```
+
+### Workspace checks
 
 ```sh
 pnpm format:check

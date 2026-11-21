@@ -1,0 +1,7 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": { "env": ["TASKFLOW_API_ORIGIN"] },
+    "dev": { "passThroughEnv": ["PORT", "TASKFLOW_API_ORIGIN"] }
+  }
+}

@@ -23,3 +23,7 @@ The M0 API runs as a single process. Auth throttling uses expiring in-memory cou
 Issue #6 serializes refreshes on the PostgreSQL session row. A second use of any consumed generation commits revocation before the API returns 401. Browser clients must coordinate refresh across tabs.
 
 The API derives a session-bound CSRF proof using HMAC-SHA-256 and an independent secret. Login and refresh return the proof in a response header. A same-origin client can recover the proof after reload using its current refresh cookie. A logout-path cookie identifies the session for revocation after the access cookie expires. That identifier grants no access or renewal, and revocation requires the matching proof.
+
+## M0 browser sessions
+
+Issue #7 uses the Web Locks API on HTTPS or loopback to serialize session writes across same-origin tabs. Each waiting tab checks its access again after acquiring the lock, so one successful refresh also serves the other tabs. BroadcastChannel messages carry only login or logout events. On session changes, the shell clears its query cache and navigates with a fresh document. The protected overview and account page check the active profile with uncached API requests. When the access cookie expires, the browser can reach the path-scoped refresh cookie through the same-origin rewrite.
