@@ -563,6 +563,13 @@ nav a:hover {
   }
 }
 @media (max-width: 420px) {
+  .topbar {
+    padding-inline: 16px;
+  }
+  .crumb,
+  .signout {
+    gap: 4px;
+  }
   .details > div {
     grid-template-columns: 1fr;
     gap: 3px;
