@@ -23,6 +23,29 @@ colors:
   control-border: "#7a8a80"
   focus: "#a56512"
   focus-on-dark: "#ffe3a8"
+  on-accent: "#ffffff"
+  brand-mark: "#c8ecaf"
+  brand-ink: "#193b31"
+  dark-rail: "#0e211b"
+  rail-text: "#e5f1e7"
+  nav-label: "#b4c7b9"
+  rail-caption: "#b5c8bb"
+  rail-divider: "#385347"
+  nav-hover: "#28483c"
+  nav-indicator: "#c6e8a9"
+  avatar-surface: "#e0eac9"
+  avatar-ink: "#294835"
+  welcome-text: "#f4f9eb"
+  welcome-name: "#dcefbc"
+  icon-surface: "#e9f1df"
+  icon-ink: "#2c6247"
+  invalid-border: "#c45145"
+  error-text: "#9a2e21"
+  notice-surface: "#fff1eb"
+  dark-error-text: "#ffb9aa"
+  dark-notice-text: "#ffe1d7"
+  dark-notice-surface: "#59392e"
+  drawer-scrim: "#071b15aa"
 typography:
   display:
     fontFamily: "Instrument Serif, Instrument Serif Fallback, Georgia, serif"
@@ -50,6 +73,28 @@ typography:
     fontFamily: "DM Sans Variable, sans-serif"
     fontSize: "14px"
     fontWeight: 600
+  wordmark:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "24px"
+    fontWeight: 690
+    lineHeight: 1.5
+    letterSpacing: "-1.3px"
+  supporting:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.5
+  caption:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "12px"
+    fontWeight: 400
+    lineHeight: 1.5
+  nav-group:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "11px"
+    fontWeight: 650
+    lineHeight: 1.5
+    letterSpacing: "1.7px"
 rounded:
   nav: "8px"
   control: "9px"
@@ -66,7 +111,7 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.accent}"
-    textColor: "{colors.panel}"
+    textColor: "{colors.on-accent}"
     rounded: "{rounded.control}"
     padding: "12px 19px"
   welcome-link:
@@ -81,7 +126,7 @@ components:
     padding: "{spacing.input-inset}"
   nav-current:
     backgroundColor: "{colors.nav-selected}"
-    textColor: "{colors.panel}"
+    textColor: "{colors.on-accent}"
     rounded: "{rounded.nav}"
     padding: "11px 14px"
   profile-card:
@@ -114,6 +159,8 @@ This baseline covers the M0 web app. The CSS owns the theme and dimensions. The 
 The OS color preference selects the theme. The rail changes from `#142f29` to `#0e211b`. The welcome panel keeps its `#183f36` background and `#f4f9eb` text, with the user's name in `#dcefbc`. Keyboard focus uses a 3px outline with a 4px offset. Use the pale amber focus token on the dark rail, drawer and welcome panel in either theme. Field boundaries and focus indicators need at least 3:1 contrast against their adjacent surface.
 
 Invalid inputs use a `#c45145` border and an associated text error. Error text uses `#9a2e21` in light mode and `#ffb9aa` in dark mode. Form-level notices use `#fff1eb` behind the light error text and `#59392e` behind `#ffe1d7` in dark mode.
+
+The landscape in the auth and welcome panels uses `#446a57`, `#a3c49c80`, `#507361` and `#9bb69a` for its gradient and contours. Its three masks blend transparent stops with opaque black (`#000`) to reveal the drawing. These values belong to the illustration. The translucent drawer scrim has a separate interaction role and uses the `drawer-scrim` primitive.
 
 ## Typography
 

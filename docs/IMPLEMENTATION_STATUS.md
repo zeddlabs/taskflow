@@ -10,6 +10,8 @@ The post-M0 [dashboard font loading improvement (#21)](https://github.com/zeddla
 
 The post-M0 [sign-in guidance after session loss (#22)](https://github.com/zeddlabs/taskflow/issues/22) is [DONE](https://github.com/zeddlabs/taskflow/pull/28).
 
+The post-M0 [mobile header touch target improvement (#23)](https://github.com/zeddlabs/taskflow/issues/23) is [DONE](https://github.com/zeddlabs/taskflow/pull/29).
+
 [M0 — Foundation](https://github.com/zeddlabs/taskflow/milestone/1) covers a runnable local stack, the authentication flow, a responsive web shell and pull-request quality checks. GitHub tracks issue closure and owner merges.
 
 | Issue                                                                                           | Dependencies | Status                                               |
