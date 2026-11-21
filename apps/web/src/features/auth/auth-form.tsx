@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,7 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { Brand } from "../../components/brand";
 import { Button } from "../../components/ui/button";
 import { errorMessage, login, register } from "./session";
+import { readSessionHint, writeSessionHint } from "./session-hint";
 
 const credentials = z.object({
   name: z.string().optional(),
@@ -28,16 +29,40 @@ const registration = credentials.extend({
     .min(15, "Use at least 15 characters.")
     .max(128, "Use 128 characters or fewer."),
 });
+function sessionEndedInTab() {
+  return readSessionHint() === "ended";
+}
+function observeSignInPage(onRestore: () => void) {
+  function dismiss() {
+    if (sessionEndedInTab()) writeSessionHint(null);
+  }
+  window.addEventListener("pagehide", dismiss);
+  window.addEventListener("pageshow", onRestore);
+  return () => {
+    window.removeEventListener("pagehide", dismiss);
+    window.removeEventListener("pageshow", onRestore);
+  };
+}
 export function AuthForm({ create = false }: { create?: boolean }) {
   const [visible, setVisible] = useState(false);
+  const sessionEnded = useSyncExternalStore(
+    observeSignInPage,
+    sessionEndedInTab,
+    () => false,
+  );
   const {
     register: field,
     handleSubmit,
     setError,
+    setFocus,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof credentials>>({
     resolver: zodResolver(create ? registration : credentials),
   });
+  useEffect(() => {
+    if (create) writeSessionHint(null);
+    else if (sessionEnded) setFocus("email");
+  }, [create, sessionEnded, setFocus]);
   const send = handleSubmit(async ({ name, email, password }) => {
     let created = false;
     try {
@@ -67,10 +92,12 @@ export function AuthForm({ create = false }: { create?: boolean }) {
             <Brand />
           </div>
           <h1>{create ? "Create your account" : "Welcome back"}</h1>
-          <p className="muted">
+          <p className="muted" id="auth-introduction">
             {create
               ? "Enter your details to get started with TaskFlow."
-              : "Sign in to your TaskFlow account."}
+              : sessionEnded
+                ? "Your session has ended. Sign in again to continue."
+                : "Sign in to your TaskFlow account."}
           </p>
           <form noValidate onSubmit={send}>
             {(create
@@ -111,7 +138,9 @@ export function AuthForm({ create = false }: { create?: boolean }) {
                         ? key + "-error"
                         : create && key === "password"
                           ? "password-hint"
-                          : undefined
+                          : !create && key === "email" && sessionEnded
+                            ? "auth-introduction"
+                            : undefined
                     }
                     required
                   />

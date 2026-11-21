@@ -6,6 +6,8 @@ The post-M0 [control contrast improvement (#19)](https://github.com/zeddlabs/tas
 
 The post-M0 [dashboard text reflow improvement (#20)](https://github.com/zeddlabs/taskflow/issues/20) is [DONE](https://github.com/zeddlabs/taskflow/pull/26).
 
+The post-M0 [dashboard font loading improvement (#21)](https://github.com/zeddlabs/taskflow/issues/21) is [DONE](https://github.com/zeddlabs/taskflow/pull/27).
+
 [M0 — Foundation](https://github.com/zeddlabs/taskflow/milestone/1) covers a runnable local stack, the authentication flow, a responsive web shell and pull-request quality checks. GitHub tracks issue closure and owner merges.
 
 | Issue                                                                                           | Dependencies | Status                                               |

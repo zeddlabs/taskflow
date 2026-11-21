@@ -29,6 +29,9 @@ test("anonymous routes redirect and form errors are accessible", async ({
 }, info) => {
   await page.goto("/app/account");
   await expect(page).toHaveURL(/\/login$/);
+  await expect(
+    page.getByText("Sign in to your TaskFlow account."),
+  ).toBeVisible();
   await screenshot(page, info, "sign-in");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByLabel("Email address")).toBeFocused();
@@ -86,6 +89,14 @@ test("registration, two-tab renewal, account navigation and logout use real sess
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/login$/);
   await expect(second).toHaveURL(/\/login$/);
+  for (const tab of [page, second]) {
+    await expect(
+      tab.getByText("Sign in to your TaskFlow account."),
+    ).toBeVisible();
+    await expect(tab.getByLabel("Email address")).toHaveAccessibleDescription(
+      "",
+    );
+  }
   expect(
     (await context.cookies()).some((c) =>
       ["access_token", "refresh_token", "logout_session"].includes(c.name),
@@ -97,6 +108,36 @@ test("registration, two-tab renewal, account navigation and logout use real sess
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByText(email)).toBeVisible();
+});
+test("a lost session explains why sign-in is needed and returns to the dashboard", async ({
+  page,
+  context,
+}, info) => {
+  const { email, password } = await createAccount(page);
+  await expect(page.getByText(email, { exact: true })).toBeVisible();
+  await context.clearCookies();
+  await page.reload();
+  await expect(page).toHaveURL(/\/login$/);
+
+  const explanation = "Your session has ended. Sign in again to continue.";
+  const emailField = page.getByLabel("Email address");
+  await expect(page.getByText(explanation)).toBeVisible();
+  await expect(emailField).toBeFocused();
+  await expect(emailField).toHaveAccessibleDescription(explanation);
+  await screenshot(page, info, "session-ended");
+  await page.setViewportSize({ width: 320, height: 568 });
+  await expect(page.getByText(explanation)).toBeInViewport({ ratio: 1 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+    320,
+  );
+  await screenshot(page, info, "session-ended-mobile");
+  await page.keyboard.type(email);
+  await page.keyboard.press("Tab");
+  await expect(page.getByLabel("Password", { exact: true })).toBeFocused();
+  await page.keyboard.type(password);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/app$/);
+  await expect(page.getByText(email, { exact: true })).toBeVisible();
 });
 test("mobile navigation traps focus, closes with Escape and opens the account", async ({
   page,
