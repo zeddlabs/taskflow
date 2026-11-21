@@ -1,5 +1,7 @@
 # Implementation status
 
+The post-M0 [design system baseline (#17)](https://github.com/zeddlabs/taskflow/issues/17) is [DONE](https://github.com/zeddlabs/taskflow/pull/18).
+
 [M0 — Foundation](https://github.com/zeddlabs/taskflow/milestone/1) covers a runnable local stack, the authentication flow, a responsive web shell and pull-request quality checks. GitHub tracks issue closure and owner merges.
 
 | Issue                                                                                           | Dependencies | Status                                               |
