@@ -483,12 +483,18 @@ nav a:hover {
   position: fixed;
   inset: 0 auto 0 0;
   width: min(82vw, 300px);
+  min-width: min(100%, 11em);
+  overflow-y: auto;
   z-index: 8;
 }
+.drawer-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
 .close {
-  position: absolute;
-  right: 10px;
-  top: 26px;
+  margin-left: auto;
   padding: 10px;
 }
 @media (max-width: 740px) {
@@ -516,8 +522,12 @@ nav a:hover {
     margin-left: -8px;
   }
   .topbar {
-    height: 60px;
-    gap: 8px;
+    height: auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 4px 8px;
+    padding-block: 8px;
   }
   .dashboard {
     padding-top: 26px;
