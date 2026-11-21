@@ -1,14 +1,12 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   HttpException,
   Injectable,
 } from "@nestjs/common";
 import { createHash } from "node:crypto";
 import type { Request, Response } from "express";
 import { RateLimiterMemory, RateLimiterRes } from "rate-limiter-flexible";
-import { AuthConfig } from "./auth.config";
 import { normalizeEmail } from "./auth.dto";
 
 @Injectable()
@@ -19,14 +17,9 @@ export class AuthWriteGuard implements CanActivate {
     duration: 60,
   });
 
-  constructor(private readonly config: AuthConfig) {}
-
   async canActivate(context: ExecutionContext) {
     const http = context.switchToHttp();
     const req = http.getRequest<Request>();
-    const origin =
-      req.headers.origin ?? URL.parse(req.headers.referer ?? "")?.origin;
-    if (origin !== this.config.origin) throw new ForbiddenException();
     try {
       await this.byIp.consume(req.ip ?? req.socket.remoteAddress ?? "unknown");
       const email = req.body?.email;
