@@ -533,11 +533,14 @@ nav a:hover {
     display: block;
     margin-bottom: 38px;
   }
+  .menu-button,
+  .signout {
+    min-width: 44px;
+    min-height: 44px;
+  }
   .menu-button {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
     margin-left: -8px;
   }
   .topbar {
@@ -546,7 +549,7 @@ nav a:hover {
     flex-wrap: wrap;
     align-content: center;
     gap: 4px 8px;
-    padding-block: 8px;
+    padding-block: 7px;
   }
   .dashboard {
     padding-top: 26px;
@@ -560,6 +563,13 @@ nav a:hover {
   }
 }
 @media (max-width: 420px) {
+  .topbar {
+    padding-inline: 16px;
+  }
+  .crumb,
+  .signout {
+    gap: 4px;
+  }
   .details > div {
     grid-template-columns: 1fr;
     gap: 3px;

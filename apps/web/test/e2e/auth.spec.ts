@@ -139,35 +139,89 @@ test("a lost session explains why sign-in is needed and returns to the dashboard
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByText(email, { exact: true })).toBeVisible();
 });
-test("mobile navigation traps focus, closes with Escape and opens the account", async ({
-  page,
-}, info) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await createAccount(page);
-  const menu = page.getByRole("button", { name: "Open navigation" });
-  await screenshot(page, info, "mobile-overview");
-  await menu.focus();
-  await page.keyboard.press("Enter");
-  const dialog = page.getByRole("dialog", { name: "Navigation" });
-  await expect(dialog).toBeVisible();
-  await page.keyboard.press("Shift+Tab");
-  await expect
-    .poll(() =>
-      dialog.evaluate((node) => node.contains(document.activeElement)),
-    )
-    .toBe(true);
-  await page.keyboard.press("Escape");
-  await expect(menu).toBeFocused();
-  await menu.click();
-  await dialog.getByRole("link", { name: "Account", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "Profile details" }),
-  ).toBeVisible();
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth,
-    ),
-  ).toBe(true);
+test.describe("mobile header", () => {
+  test.use({ hasTouch: true });
+
+  for (const width of [320, 390]) {
+    test(`navigation and sign-out at ${width}px`, async ({ page }, info) => {
+      await page.setViewportSize({ width, height: 844 });
+      await createAccount(page);
+      const header = page.getByRole("banner");
+      const menu = header.getByRole("button", { name: "Open navigation" });
+      const signOut = header.getByRole("button", { name: "Sign out" });
+      const drawer = page.getByRole("dialog", { name: "Navigation" });
+
+      for (const view of ["Overview", "Account"]) {
+        await expect(
+          page.getByRole("heading", { name: view, exact: true }),
+        ).toBeVisible();
+        await page.evaluate(() => document.fonts.ready.then(() => true));
+        const crumb = header.locator(".crumb");
+        await expect(header).toHaveCSS("height", "60px");
+        await expect(menu.locator("svg")).toHaveCSS("width", "21px");
+        await expect(signOut.locator("svg")).toHaveCSS("width", "16px");
+        const [left, middle, right] = await Promise.all([
+          menu.boundingBox(),
+          crumb.boundingBox(),
+          signOut.boundingBox(),
+        ]);
+        if (!left || !middle || !right)
+          throw new Error("Header controls must be visible");
+        await info.attach(view + "-geometry", {
+          body: JSON.stringify({
+            viewport: width,
+            menu: left,
+            breadcrumb: middle,
+            signOut: right,
+          }),
+          contentType: "application/json",
+        });
+        for (const box of [left, right]) {
+          expect
+            .soft(box.width, view + " target width")
+            .toBeGreaterThanOrEqual(44);
+          expect
+            .soft(box.height, view + " target height")
+            .toBeGreaterThanOrEqual(44);
+          expect(box.y).toBeLessThanOrEqual(middle.y);
+          expect(box.y + box.height).toBeGreaterThanOrEqual(
+            middle.y + middle.height,
+          );
+        }
+        expect(left.x).toBeGreaterThanOrEqual(0);
+        expect(left.x + left.width).toBeLessThan(middle.x);
+        expect(middle.x + middle.width).toBeLessThan(right.x);
+        expect(right.x + right.width).toBeLessThanOrEqual(width);
+
+        await menu.tap({ position: { x: 1, y: 1 } });
+        await expect(drawer).toBeVisible();
+        await page.keyboard.press("Shift+Tab");
+        await expect
+          .poll(() =>
+            drawer.evaluate((el) => el.contains(document.activeElement)),
+          )
+          .toBe(true);
+        await page.keyboard.press("Escape");
+        await expect(menu).toBeFocused();
+        await page.keyboard.press("Tab");
+        await expect(signOut).toBeFocused();
+        await header.screenshot({
+          path: info.outputPath(view + "-header.png"),
+        });
+        await page.keyboard.press("Shift+Tab");
+        await expect(menu).toBeFocused();
+        if (view === "Overview") {
+          await screenshot(page, info, "mobile-overview");
+          await page.keyboard.press("Enter");
+          await drawer
+            .getByRole("link", { name: "Account", exact: true })
+            .tap();
+        }
+      }
+      await signOut.tap({ position: { x: 1, y: 1 } });
+      await expect(page).toHaveURL(/\/login$/);
+    });
+  }
 });
 
 test("the profile card stays in place when the welcome fonts arrive", async ({
