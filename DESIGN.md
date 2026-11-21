@@ -20,7 +20,9 @@ colors:
   welcome: "#183f36"
   hero-link: "#e4f1cf"
   hero-ink: "#203d2c"
-  focus: "#cf902e"
+  control-border: "#7a8a80"
+  focus: "#a56512"
+  focus-on-dark: "#ffe3a8"
 typography:
   display:
     fontFamily: "Instrument Serif, Georgia, serif"
@@ -98,16 +100,18 @@ This baseline covers the M0 web app. The CSS owns the theme and dimensions. The 
 
 ## Colors
 
-| CSS role | Light     | Dark      | Where it appears                                    |
-| -------- | --------- | --------- | --------------------------------------------------- |
-| Canvas   | `#f7f8f4` | `#12221d` | Page behind dashboard sections                      |
-| Panel    | `#ffffff` | `#1a2b24` | Auth form surface, inputs, top bar and account card |
-| Ink      | `#182b27` | `#edf3ea` | Headings and values                                 |
-| Muted    | `#566761` | `#bcc9bf` | Instructions, field hints, labels and breadcrumbs   |
-| Line     | `#dbe2db` | `#3e5145` | Input borders and row dividers                      |
-| Accent   | `#125942` | `#246747` | Primary button behind white text                    |
+| CSS role       | Light     | Dark      | Where it appears                                    |
+| -------------- | --------- | --------- | --------------------------------------------------- |
+| Canvas         | `#f7f8f4` | `#12221d` | Page behind dashboard sections                      |
+| Panel          | `#ffffff` | `#1a2b24` | Auth form surface, inputs, top bar and account card |
+| Ink            | `#182b27` | `#edf3ea` | Headings and values                                 |
+| Muted          | `#566761` | `#bcc9bf` | Instructions, field hints, labels and breadcrumbs   |
+| Line           | `#dbe2db` | `#3e5145` | Surface borders and row dividers                    |
+| Control border | `#7a8a80` | `#7a8a80` | Editable field boundaries                           |
+| Focus          | `#a56512` | `#ffe3a8` | Keyboard focus on the surrounding surface           |
+| Accent         | `#125942` | `#246747` | Primary button behind white text                    |
 
-The OS color preference selects the theme. The rail changes from `#142f29` to `#0e211b`. The welcome panel keeps its `#183f36` background and `#f4f9eb` text, with the user's name in `#dcefbc`. Keyboard focus uses a 3px `#cf902e` outline with a 4px offset.
+The OS color preference selects the theme. The rail changes from `#142f29` to `#0e211b`. The welcome panel keeps its `#183f36` background and `#f4f9eb` text, with the user's name in `#dcefbc`. Keyboard focus uses a 3px outline with a 4px offset. Use the pale amber focus token on the dark rail, drawer and welcome panel in either theme. Field boundaries and focus indicators need at least 3:1 contrast against their adjacent surface.
 
 Invalid inputs use a `#c45145` border and an associated text error. Error text uses `#9a2e21` in light mode and `#ffb9aa` in dark mode. Form-level notices use `#fff1eb` behind the light error text and `#59392e` behind `#ffe1d7` in dark mode.
 

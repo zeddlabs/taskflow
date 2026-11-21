@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-21T06:13:57.742Z",
+  "generatedAt": "2026-11-21T13:14:46.763Z",
   "title": "Design System: TaskFlow",
   "extensions": {
     "colorMeta": {
@@ -257,17 +257,45 @@
         ]
       },
       "focus": {
-        "role": "neutral",
+        "role": "accent",
         "displayName": "Focus",
         "tonalRamp": [
-          "oklch(15% 0.060 74)",
-          "oklch(26% 0.096 74)",
-          "oklch(38% 0.123 74)",
-          "oklch(49% 0.132 74)",
-          "oklch(61% 0.124 74)",
-          "oklch(72% 0.102 74)",
-          "oklch(84% 0.064 74)",
-          "oklch(95% 0.021 74)"
+          "oklch(15% 0.054 64)",
+          "oklch(26% 0.087 64)",
+          "oklch(38% 0.112 64)",
+          "oklch(49% 0.120 64)",
+          "oklch(61% 0.113 64)",
+          "oklch(72% 0.092 64)",
+          "oklch(84% 0.058 64)",
+          "oklch(95% 0.019 64)"
+        ]
+      },
+      "focus-on-dark": {
+        "role": "accent",
+        "displayName": "Focus on dark surfaces",
+        "tonalRamp": [
+          "oklch(15% 0.036 83)",
+          "oklch(26% 0.058 83)",
+          "oklch(38% 0.074 83)",
+          "oklch(49% 0.080 83)",
+          "oklch(61% 0.075 83)",
+          "oklch(72% 0.062 83)",
+          "oklch(84% 0.039 83)",
+          "oklch(95% 0.013 83)"
+        ]
+      },
+      "control-border": {
+        "role": "neutral",
+        "displayName": "Control border",
+        "tonalRamp": [
+          "oklch(15% 0.010 155)",
+          "oklch(26% 0.017 155)",
+          "oklch(38% 0.021 155)",
+          "oklch(49% 0.023 155)",
+          "oklch(61% 0.022 155)",
+          "oklch(72% 0.018 155)",
+          "oklch(84% 0.011 155)",
+          "oklch(95% 0.004 155)"
         ]
       }
     },
@@ -319,15 +347,15 @@
       "refersTo": "button-primary",
       "description": "Submit an authentication form.",
       "html": "<button type=\"button\" class=\"ds-primary\">Sign in</button>",
-      "css": ".ds-primary { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); font-size: 15px; line-height: 1.5; font-weight: 650; color: white; background: var(--color-accent, #125942); border: 0; border-radius: 9px; min-height: 44px; padding: 12px 19px; cursor: pointer; } .ds-primary:hover { filter: brightness(1.1); } .ds-primary:disabled { opacity: .7; cursor: wait; } .ds-primary:focus-visible { outline: 3px solid #cf902e; outline-offset: 4px; }"
+      "css": ".ds-primary { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); font-size: 15px; line-height: 1.5; font-weight: 650; color: white; background: var(--color-accent, #125942); border: 0; border-radius: 9px; min-height: 44px; padding: 12px 19px; cursor: pointer; } .ds-primary:hover { filter: brightness(1.1); } .ds-primary:disabled { opacity: .7; cursor: wait; } .ds-primary:focus-visible { outline: 3px solid var(--color-focus, #a56512); outline-offset: 4px; }"
     },
     {
       "name": "Welcome link",
       "kind": "button",
       "refersTo": "welcome-link",
       "description": "Open account details from the overview.",
-      "html": "<a class=\"ds-welcome-link\" href=\"/app/account\">View account <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14m-7-7 7 7-7 7\"/></svg></a>",
-      "css": ".ds-welcome-link { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); display: inline-flex; align-items: center; gap: 9px; box-sizing: border-box; min-height: 44px; padding: 9px 13px; background: #e4f1cf; color: #203d2c; border-radius: 9px; font-size: 13px; font-weight: 650; text-decoration: none; } .ds-welcome-link:hover { filter: brightness(1.1); } .ds-welcome-link:focus-visible { outline: 3px solid #cf902e; outline-offset: 4px; }"
+      "html": "<div class=\"ds-welcome\"><a class=\"ds-welcome-link\" href=\"/app/account\">View account <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14m-7-7 7 7-7 7\"/></svg></a></div>",
+      "css": ".ds-welcome { background: #183f36; padding: 12px; } .ds-welcome-link { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); display: inline-flex; align-items: center; gap: 9px; box-sizing: border-box; min-height: 44px; padding: 9px 13px; background: #e4f1cf; color: #203d2c; border-radius: 9px; font-size: 13px; font-weight: 650; text-decoration: none; } .ds-welcome-link:hover { filter: brightness(1.1); } .ds-welcome-link:focus-visible { outline: 3px solid var(--color-focus-on-dark, #ffe3a8); outline-offset: 4px; }"
     },
     {
       "name": "Email field",
@@ -335,7 +363,7 @@
       "refersTo": "text-input",
       "description": "A labeled email input on the public forms.",
       "html": "<div class=\"ds-field\"><label for=\"ds-email\">Email address</label><input type=\"email\" id=\"ds-email\" autocomplete=\"email\"></div>",
-      "css": ".ds-field { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); color: var(--color-ink, #182b27); } .ds-field label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; } .ds-field input { box-sizing: border-box; width: 100%; height: 48px; padding: 12px; font: inherit; color: inherit; background: var(--color-panel, #fff); border: 1px solid var(--color-line, #dbe2db); border-radius: 9px; } .ds-field input[aria-invalid=\"true\"] { border-color: #c45145; } .ds-field input:focus-visible { outline: 3px solid #cf902e; outline-offset: 4px; }"
+      "css": ".ds-field { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); color: var(--color-ink, #182b27); } .ds-field label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; } .ds-field input { box-sizing: border-box; width: 100%; height: 48px; padding: 12px; font: inherit; color: inherit; background: var(--color-panel, #fff); border: 1px solid var(--color-control-border, #7a8a80); border-radius: 9px; } .ds-field input[aria-invalid=\"true\"] { border-color: #c45145; } .ds-field input:focus-visible { outline: 3px solid var(--color-focus, #a56512); outline-offset: 4px; }"
     },
     {
       "name": "Current navigation item",
@@ -343,7 +371,7 @@
       "refersTo": "nav-current",
       "description": "Current page in the desktop rail and mobile drawer.",
       "html": "<nav class=\"ds-rail\" aria-label=\"Main navigation\"><a href=\"/app\" aria-current=\"page\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/></svg> Overview</a></nav>",
-      "css": ".ds-rail { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); background: #142f29; padding: 18px; } .ds-rail a { display: flex; align-items: center; gap: 12px; padding: 11px 14px; font-size: 14px; border-radius: 8px; color: #d1e0d4; text-decoration: none; } .ds-rail a[aria-current] { color: white; background: #2d4d40; font-weight: 650; box-shadow: inset 3px 0 #c6e8a9; } .ds-rail a:hover { background: #28483c; } .ds-rail a:focus-visible { outline: 3px solid #cf902e; outline-offset: 4px; }"
+      "css": ".ds-rail { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); background: #142f29; padding: 18px; } .ds-rail a { display: flex; align-items: center; gap: 12px; padding: 11px 14px; font-size: 14px; border-radius: 8px; color: #d1e0d4; text-decoration: none; } .ds-rail a[aria-current] { color: white; background: #2d4d40; font-weight: 650; box-shadow: inset 3px 0 #c6e8a9; } .ds-rail a:hover { background: #28483c; } .ds-rail a:focus-visible { outline: 3px solid var(--color-focus-on-dark, #ffe3a8); outline-offset: 4px; }"
     },
     {
       "name": "Account detail card",

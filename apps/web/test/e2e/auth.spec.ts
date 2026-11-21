@@ -1,4 +1,10 @@
-import { expect, test, type Page, type TestInfo } from "@playwright/test";
+import {
+  expect,
+  test,
+  type Locator,
+  type Page,
+  type TestInfo,
+} from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
 async function screenshot(page: Page, info: TestInfo, name: string) {
@@ -122,3 +128,95 @@ test("mobile navigation traps focus, closes with Escape and opens the account", 
     ),
   ).toBe(true);
 });
+
+function luminance(rgb: string) {
+  const channels = /^rgb\((\d+), (\d+), (\d+)\)$/.exec(rgb);
+  if (!channels) throw new Error(`Expected an opaque RGB color, got ${rgb}`);
+  const [red, green, blue] = channels.slice(1).map((channel) => {
+    const value = Number(channel) / 255;
+    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+async function expectControlContrast(
+  control: Locator,
+  surface: Locator,
+  property: "borderTopColor" | "outlineColor",
+) {
+  if (property === "outlineColor") {
+    await control.focus();
+    await expect(control).toBeFocused();
+    await expect(control).toHaveCSS("outline-style", "solid");
+    await expect(control).toHaveCSS("outline-width", "3px");
+  }
+  const foreground = await control.evaluate(
+    (el, prop) => getComputedStyle(el)[prop],
+    property,
+  );
+  const background = await surface.evaluate(
+    (el) => getComputedStyle(el).backgroundColor,
+  );
+  const a = luminance(foreground);
+  const b = luminance(background);
+  expect(
+    (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+    `${property}: ${foreground} on ${background}`,
+  ).toBeGreaterThanOrEqual(3);
+}
+
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`fields and keyboard focus have sufficient contrast in the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    for (const route of ["/login", "/register"]) {
+      await page.goto(route);
+      const panel = page.locator(".auth-content");
+      const field = page.getByLabel("Email address");
+      await page.keyboard.press("Tab");
+      await expectControlContrast(field, panel, "borderTopColor");
+      for (const control of [
+        field,
+        page.getByRole("button", { name: "Show password" }),
+        page.locator("button[type=submit]"),
+        page.locator(".auth-switch a"),
+      ]) {
+        await expectControlContrast(control, panel, "outlineColor");
+      }
+      await page.locator("button[type=submit]").click();
+      await expect(field).toHaveAttribute("aria-invalid", "true");
+      await expectControlContrast(field, panel, "borderTopColor");
+    }
+
+    await createAccount(page);
+    await page.keyboard.press("Tab");
+    await expectControlContrast(
+      page.locator(".sidebar a").first(),
+      page.locator(".sidebar"),
+      "outlineColor",
+    );
+    await expectControlContrast(
+      page.getByRole("link", { name: "View account" }),
+      page.locator(".welcome"),
+      "outlineColor",
+    );
+    await expectControlContrast(
+      page.getByRole("button", { name: "Sign out" }),
+      page.locator(".topbar"),
+      "outlineColor",
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    const menu = page.getByRole("button", { name: "Open navigation" });
+    await expectControlContrast(menu, page.locator(".topbar"), "outlineColor");
+    await menu.press("Enter");
+    const drawer = page.getByRole("dialog");
+    await expectControlContrast(
+      drawer.getByRole("link", { name: "Account" }),
+      drawer,
+      "outlineColor",
+    );
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeFocused();
+  });
+}
