@@ -1,0 +1,83 @@
+name: M0 quality gates
+
+on: pull_request
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m0-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  foundation:
+    name: Foundation checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.12-alpine3.23@sha256:da0f70de7bfa995f90cd02280c790091aff9a1c8e32ad74fd8376260f7628a63
+        env:
+          POSTGRES_USER: taskflow_ci
+          POSTGRES_DB: taskflow_ci
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - "127.0.0.1:5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U taskflow_ci -d taskflow_ci"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    env:
+      DATABASE_URL: postgresql://taskflow_ci@127.0.0.1:5432/taskflow_ci
+      TASKFLOW_API_ORIGIN: http://127.0.0.1:4107
+      NEXT_TELEMETRY_DISABLED: "1"
+      TURBO_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Scan PR commits for secrets
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          docker run --rm --network none --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/repo:ro" -w /repo \
+            ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git --redact --log-opts="$BASE_SHA..$HEAD_SHA" .
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24.15.0"
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          cache: true
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting
+        run: pnpm format:check
+      - name: Validate schema and generate Prisma client
+        run: |
+          pnpm --filter @taskflow/api exec prisma validate
+          pnpm --filter @taskflow/api exec prisma generate
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Apply migrations and seed empty PostgreSQL
+        run: |
+          pnpm --filter @taskflow/api exec prisma migrate deploy
+          pnpm --filter @taskflow/api exec prisma db seed
+      - name: Build web and API
+        run: pnpm build
+      - name: Run workspace tests
+        run: pnpm test
+      - name: Run database and authentication integration tests
+        run: pnpm --filter @taskflow/api test:db
+      - name: Install Chromium and system dependencies
+        run: pnpm --filter @taskflow/web exec playwright install --with-deps chromium
+      - name: Run browser authentication tests
+        run: pnpm --filter @taskflow/web test:e2e
