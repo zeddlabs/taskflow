@@ -53,7 +53,6 @@ function Sidebar({
 }) {
   return (
     <>
-      <Brand />
       <nav aria-label="Main navigation">
         <span className="nav-label">Personal</span>
         {(
@@ -184,6 +183,7 @@ function Shell({ view, initialProfile }: ShellProps) {
         Skip to content
       </a>
       <aside className="sidebar">
+        <Brand />
         <Sidebar view={view} profile={profile} />
       </aside>
       <div className="shell-main">
@@ -205,9 +205,12 @@ function Shell({ view, initialProfile }: ShellProps) {
                 className="mobile-drawer"
               >
                 <Dialog.Title className="sr-only">Navigation</Dialog.Title>
-                <Dialog.Close className="close" aria-label="Close navigation">
-                  <X size={20} />
-                </Dialog.Close>
+                <div className="drawer-header">
+                  <Brand />
+                  <Dialog.Close className="close" aria-label="Close navigation">
+                    <X size={20} />
+                  </Dialog.Close>
+                </div>
                 <Sidebar
                   profile={profile}
                   view={view}

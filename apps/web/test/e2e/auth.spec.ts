@@ -13,11 +13,11 @@ async function screenshot(page: Page, info: TestInfo, name: string) {
   await page.screenshot({ path, fullPage: true });
   await info.attach(name, { path, contentType: "image/png" });
 }
-async function createAccount(page: Page) {
-  const email = "avery." + randomUUID().slice(0, 8) + "@example.invalid";
+async function createAccount(page: Page, name = "Avery Lane") {
+  const email = "avery." + randomUUID() + "@example.invalid";
   const password = randomUUID();
   await page.goto("/register");
-  await page.getByLabel("Full name").fill("Avery Lane");
+  await page.getByLabel("Full name").fill(name);
   await page.getByLabel("Email address").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Create account" }).click();
@@ -127,6 +127,73 @@ test("mobile navigation traps focus, closes with Escape and opens the account", 
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
+});
+
+async function doubleText(container: Locator) {
+  await container.evaluate((root) => {
+    // Read the original sizes first so inherited text is enlarged exactly once.
+    const elements = [root, ...root.querySelectorAll("*")].filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+    const sizes = elements.map((el) =>
+      parseFloat(getComputedStyle(el).fontSize),
+    );
+    elements.forEach((el, i) => {
+      el.style.fontSize = sizes[i] * 2 + "px";
+    });
+  });
+}
+
+test("dashboard controls and account details reflow with enlarged text", async ({
+  page,
+}) => {
+  const name = "Amelia Noor van der Linden";
+  const { email } = await createAccount(page, name);
+  for (const route of ["/app", "/app/account"]) {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 568 });
+      await page.goto(route);
+      await expect(page.getByText(email, { exact: true })).toBeVisible();
+      await page.evaluate(() => document.fonts.ready.then(() => true));
+      for (const scale of [1, 2]) {
+        if (scale === 2) await doubleText(page.locator("body"));
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth),
+        ).toBeLessThanOrEqual(width);
+        await expect(
+          page.getByRole("button", { name: "Sign out" }),
+        ).toBeInViewport({ ratio: 1 });
+        for (const value of [name, email]) {
+          const detail = page.locator("dd").filter({ hasText: value });
+          await expect(detail).toHaveText(value);
+          expect(
+            await detail.evaluate(
+              (el) =>
+                el.scrollWidth <= el.clientWidth &&
+                el.scrollHeight <= el.clientHeight,
+            ),
+          ).toBe(true);
+        }
+      }
+    }
+  }
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto("/app/account");
+  const trigger = page.getByRole("button", { name: "Open navigation" });
+  await trigger.press("Enter");
+  const drawer = page.getByRole("dialog", { name: "Navigation" });
+  await expect(drawer).toBeVisible();
+  await doubleText(page.locator("body"));
+  const brandBox = await drawer.locator(".brand").boundingBox();
+  const close = drawer.getByRole("button", { name: "Close navigation" });
+  const closeBox = await close.boundingBox();
+  if (!brandBox || !closeBox) throw new Error("Drawer header is not visible");
+  expect(
+    brandBox.x + brandBox.width <= closeBox.x ||
+      brandBox.y + brandBox.height <= closeBox.y,
+  ).toBe(true);
+  await close.press("Escape");
+  await expect(trigger).toBeFocused();
 });
 
 function luminance(rgb: string) {
