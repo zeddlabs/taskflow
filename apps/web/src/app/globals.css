@@ -3,9 +3,28 @@
 @import "@fontsource/instrument-serif/latin-400.css";
 @import "@fontsource/instrument-serif/latin-400-italic.css";
 
+/* Match the width of the upright greeting and italic names during font swap. */
+@font-face {
+  font-family: "Instrument Serif Fallback";
+  src:
+    local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  font-style: normal;
+  size-adjust: 81.3%;
+}
+@font-face {
+  font-family: "Instrument Serif Fallback";
+  src:
+    local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"),
+    local("Liberation Serif Italic");
+  font-style: italic;
+  size-adjust: 88%;
+}
+
 @theme {
   --font-sans: "DM Sans Variable", sans-serif;
-  --font-display: "Instrument Serif", Georgia, serif;
+  --font-display:
+    "Instrument Serif", "Instrument Serif Fallback", Georgia, serif;
   --color-canvas: #f7f8f4;
   --color-panel: #ffffff;
   --color-ink: #182b27;

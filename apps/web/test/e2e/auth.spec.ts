@@ -129,6 +129,52 @@ test("mobile navigation traps focus, closes with Escape and opens the account", 
   ).toBe(true);
 });
 
+test("the profile card stays in place when the welcome fonts arrive", async ({
+  page,
+  browser,
+}) => {
+  const name = "Amelia Noor van der Linden";
+  await createAccount(page, name);
+  const cold = await browser.newContext({
+    storageState: await page.context().storageState(),
+    viewport: { width: 1360, height: 880 },
+  });
+  const { promise: holdFonts, resolve: releaseFonts } =
+    Promise.withResolvers<void>();
+  try {
+    const overview = await cold.newPage();
+    await overview.route("**/instrument-serif-*.woff2", async (route) => {
+      await holdFonts;
+      await route.continue();
+    });
+    await overview.goto(page.url(), { waitUntil: "domcontentloaded" });
+    await expect(overview.locator(".welcome em")).toHaveText(name + ".");
+    await overview.evaluate(() =>
+      document.fonts.load('15px "DM Sans Variable"').then(() => true),
+    );
+    const face = 'italic 60px "Instrument Serif"';
+    expect(
+      await overview.evaluate((font) => document.fonts.check(font), face),
+    ).toBe(false);
+    const card = overview.locator(".profile-card");
+    const top = await card.evaluate((el) => el.getBoundingClientRect().top);
+
+    releaseFonts();
+    await overview.evaluate(() => document.fonts.ready.then(() => true));
+    expect(
+      await overview.evaluate((font) => document.fonts.check(font), face),
+    ).toBe(true);
+    const finalTop = await card.evaluate(
+      (el) => el.getBoundingClientRect().top,
+    );
+    // Allow small font metric differences while catching the original 59px jump.
+    expect(Math.abs(finalTop - top)).toBeLessThanOrEqual(4);
+  } finally {
+    releaseFonts();
+    await cold.close();
+  }
+});
+
 async function doubleText(container: Locator) {
   await container.evaluate((root) => {
     // Read the original sizes first so inherited text is enlarged exactly once.
