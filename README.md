@@ -129,6 +129,18 @@ pnpm --filter @taskflow/web start
 pnpm --filter @taskflow/api start
 ```
 
+## Web design system
+
+[Product context](PRODUCT.md) describes the users, journeys and access constraints. The [design system](DESIGN.md) records the M0 interface, including light and dark colors, keyboard behavior and responsive layouts. The Impeccable panel reads its component previews from [.impeccable/design.json](.impeccable/design.json).
+
+For a fresh checkout, run the project-scoped installer from the repository root:
+
+```sh
+npx impeccable@4.10.0 install --providers=codex --scope=project --no-hooks
+```
+
+Reload Codex and look for `impeccable` in the skill list. Its project manifest is `.agents/skills/impeccable/SKILL.md`. Use `$impeccable init` in agent chat when product context changes and `$impeccable document` when the implemented UI changes. Select `apps/web` if prompted for a target. Automatic edit and stop checks are optional. See the [installation guide](https://impeccable.style/tutorials/getting-started/) and [hook documentation](https://impeccable.style/docs/hooks/).
+
 ## Repository
 
 - `apps/web` contains the Next.js App Router entry point.
