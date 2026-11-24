@@ -254,10 +254,14 @@ test("me requires a valid signed access credential and a matching active session
   ]);
   await me(access).expect(401);
   await pool.query(
-    'UPDATE auth_sessions SET "revokedAt"=NULL, "expiresAt"=now() WHERE id=$1',
-    [claims.sid],
+    `UPDATE auth_sessions SET "revokedAt"=NULL, "expiresAt"=($2::timestamptz AT TIME ZONE 'UTC') WHERE id=$1`,
+    [claims.sid, new Date(Date.now() - 1000).toISOString()],
   );
   await me(access).expect(401);
+  await request(base)
+    .get("/api/v1/workspaces")
+    .set("Cookie", "access_token=" + access)
+    .expect(401);
 });
 
 test("rotation consumes each generation once and commits family revocation on reuse", async () => {
@@ -405,6 +409,84 @@ test("cookie mutations require the exact origin and the current session's proof 
     cookieValue(rotated.get("Set-Cookie")!, "refresh_token"),
     current.csrf,
   ).expect(200);
+});
+
+test("workspace reads follow current membership and conceal inaccessible tenants", async () => {
+  const alice = await signedIn();
+  const bob = await signedIn();
+  const root = "/api/v1/workspaces";
+  const read = (path: string, access = alice.access) =>
+    request(base)
+      .get(root + path)
+      .set("Cookie", "access_token=" + access);
+  await request(base).get(root).expect(401);
+  await request(base)
+    .get(root + "/absent")
+    .expect(401);
+  await read("").expect(200, {
+    data: [],
+    pageInfo: { nextCursor: null, hasNextPage: false },
+  });
+  const ids = Array.from({ length: 4 }, () => randomUUID()).sort();
+  const [first, second, archived, foreign] = ids;
+  try {
+    for (const id of ids) {
+      await pool.query(
+        'INSERT INTO workspaces (id,name,slug,"updatedAt","archivedAt") VALUES ($1::text,$1::text,$1::text,now(),$2)',
+        [id, id === archived ? new Date() : null],
+      );
+      await pool.query(
+        'INSERT INTO workspace_members (id,"workspaceId","userId",role) VALUES ($1,$2,$3,$4)',
+        [
+          randomUUID(),
+          id,
+          id === foreign ? bob.profile.id : alice.profile.id,
+          id === second ? "GUEST" : "OWNER",
+        ],
+      );
+    }
+    const page = await read("?limit=1&sort=id_asc")
+      .expect(200)
+      .expect("Cache-Control", "no-store");
+    expect(page.body.data).toEqual([
+      { id: first, name: first, slug: first, myRole: "OWNER" },
+    ]);
+    expect(page.body.pageInfo.hasNextPage).toBe(true);
+    const next = "?cursor=" + page.body.pageInfo.nextCursor;
+    const summary = { id: second, name: second, slug: second, myRole: "GUEST" };
+    await read(next).expect(200, {
+      data: [summary],
+      pageInfo: { hasNextPage: false, nextCursor: null },
+    });
+    await read("/" + second)
+      .expect(200, summary)
+      .expect("Cache-Control", "no-store");
+    await read(next, bob.access).expect(400);
+    for (const query of [
+      "?limit=0",
+      "?limit=101",
+      "?sort=name",
+      "?cursor=invalid",
+      "?userId=someone",
+    ]) {
+      await read(query).expect(400);
+    }
+    for (const id of [foreign, archived, "absent"]) {
+      const denied = await read("/" + id).expect(404);
+      expect(denied.body.code).toBe("NOT_FOUND");
+    }
+    await pool.query(
+      'DELETE FROM workspace_members WHERE "workspaceId"=$1 AND "userId"=$2',
+      [second, alice.profile.id],
+    );
+    await read("/" + second).expect(404);
+    await read(next).expect(200, {
+      data: [],
+      pageInfo: { hasNextPage: false, nextCursor: null },
+    });
+  } finally {
+    await pool.query("DELETE FROM workspaces WHERE id=ANY($1::text[])", [ids]);
+  }
 });
 
 test("limits repeated normalized identifiers and independent requests from one IP", async () => {
