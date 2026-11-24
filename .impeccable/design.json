@@ -1,133 +1,35 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-24T09:00:27.627Z",
+  "generatedAt": "2026-11-24T09:20:06.256Z",
   "title": "Design System: TaskFlow",
   "extensions": {
     "colorMeta": {
-      "auth-canvas": {
+      "control-border": {
         "role": "neutral",
-        "displayName": "Auth Canvas",
+        "displayName": "Field border",
         "tonalRamp": [
-          "oklch(15% 0.002 118)",
-          "oklch(26% 0.003 118)",
-          "oklch(38% 0.005 118)",
-          "oklch(49% 0.005 118)",
-          "oklch(61% 0.005 118)",
-          "oklch(72% 0.004 118)",
-          "oklch(84% 0.002 118)",
-          "oklch(95% 0.001 118)"
+          "oklch(15% 0.010 298)",
+          "oklch(26% 0.021 298)",
+          "oklch(38% 0.029 298)",
+          "oklch(49% 0.033 298)",
+          "oklch(61% 0.030 298)",
+          "oklch(72% 0.022 298)",
+          "oklch(84% 0.013 298)",
+          "oklch(95% 0.004 298)"
         ]
       },
-      "auth-panel": {
+      "dark-control-border": {
         "role": "neutral",
-        "displayName": "Auth Panel",
+        "displayName": "Dark field border",
         "tonalRamp": [
-          "oklch(15% 0.000 0)",
-          "oklch(26% 0.000 0)",
-          "oklch(38% 0.000 0)",
-          "oklch(49% 0.000 0)",
-          "oklch(61% 0.000 0)",
-          "oklch(72% 0.000 0)",
-          "oklch(84% 0.000 0)",
-          "oklch(95% 0.000 0)"
-        ]
-      },
-      "auth-ink": {
-        "role": "neutral",
-        "displayName": "Auth Ink",
-        "tonalRamp": [
-          "oklch(15% 0.010 179)",
-          "oklch(26% 0.017 179)",
-          "oklch(38% 0.025 179)",
-          "oklch(49% 0.026 179)",
-          "oklch(61% 0.025 179)",
-          "oklch(72% 0.018 179)",
-          "oklch(84% 0.010 179)",
-          "oklch(95% 0.003 179)"
-        ]
-      },
-      "auth-muted": {
-        "role": "neutral",
-        "displayName": "Auth Muted",
-        "tonalRamp": [
-          "oklch(15% 0.009 172)",
-          "oklch(26% 0.015 172)",
-          "oklch(38% 0.022 172)",
-          "oklch(49% 0.023 172)",
-          "oklch(61% 0.022 172)",
-          "oklch(72% 0.016 172)",
-          "oklch(84% 0.009 172)",
-          "oklch(95% 0.003 172)"
-        ]
-      },
-      "auth-line": {
-        "role": "neutral",
-        "displayName": "Auth Line",
-        "tonalRamp": [
-          "oklch(15% 0.005 145)",
-          "oklch(26% 0.008 145)",
-          "oklch(38% 0.011 145)",
-          "oklch(49% 0.012 145)",
-          "oklch(61% 0.012 145)",
-          "oklch(72% 0.008 145)",
-          "oklch(84% 0.005 145)",
-          "oklch(95% 0.002 145)"
-        ]
-      },
-      "auth-control-border": {
-        "role": "neutral",
-        "displayName": "Auth Control Border",
-        "tonalRamp": [
-          "oklch(15% 0.009 158)",
-          "oklch(26% 0.015 158)",
-          "oklch(38% 0.023 158)",
-          "oklch(49% 0.024 158)",
-          "oklch(61% 0.023 158)",
-          "oklch(72% 0.017 158)",
-          "oklch(84% 0.010 158)",
-          "oklch(95% 0.003 158)"
-        ]
-      },
-      "auth-focus": {
-        "role": "secondary",
-        "displayName": "Auth Focus",
-        "tonalRamp": [
-          "oklch(15% 0.045 66)",
-          "oklch(26% 0.078 66)",
-          "oklch(38% 0.114 66)",
-          "oklch(49% 0.120 66)",
-          "oklch(61% 0.117 66)",
-          "oklch(72% 0.084 66)",
-          "oklch(84% 0.048 66)",
-          "oklch(95% 0.015 66)"
-        ]
-      },
-      "auth-focus-on-dark": {
-        "role": "secondary",
-        "displayName": "Auth Focus On Dark",
-        "tonalRamp": [
-          "oklch(15% 0.030 85)",
-          "oklch(26% 0.053 85)",
-          "oklch(38% 0.077 85)",
-          "oklch(49% 0.081 85)",
-          "oklch(61% 0.079 85)",
-          "oklch(72% 0.057 85)",
-          "oklch(84% 0.032 85)",
-          "oklch(95% 0.010 85)"
-        ]
-      },
-      "auth-accent": {
-        "role": "primary",
-        "displayName": "Auth Accent",
-        "tonalRamp": [
-          "oklch(15% 0.029 166)",
-          "oklch(26% 0.051 166)",
-          "oklch(38% 0.074 166)",
-          "oklch(49% 0.078 166)",
-          "oklch(61% 0.076 166)",
-          "oklch(72% 0.055 166)",
-          "oklch(84% 0.031 166)",
-          "oklch(95% 0.010 166)"
+          "oklch(15% 0.011 300)",
+          "oklch(26% 0.023 300)",
+          "oklch(38% 0.032 300)",
+          "oklch(49% 0.037 300)",
+          "oklch(61% 0.033 300)",
+          "oklch(72% 0.025 300)",
+          "oklch(84% 0.014 300)",
+          "oklch(95% 0.004 300)"
         ]
       },
       "cove-ink": {
@@ -312,90 +214,6 @@
           "oklch(95% 0.009 169)"
         ]
       },
-      "auth-dark-canvas": {
-        "role": "neutral",
-        "displayName": "Auth Dark Canvas",
-        "tonalRamp": [
-          "oklch(15% 0.009 172)",
-          "oklch(26% 0.016 172)",
-          "oklch(38% 0.023 172)",
-          "oklch(49% 0.024 172)",
-          "oklch(61% 0.023 172)",
-          "oklch(72% 0.017 172)",
-          "oklch(84% 0.010 172)",
-          "oklch(95% 0.003 172)"
-        ]
-      },
-      "auth-dark-panel": {
-        "role": "neutral",
-        "displayName": "Auth Dark Panel",
-        "tonalRamp": [
-          "oklch(15% 0.010 167)",
-          "oklch(26% 0.017 167)",
-          "oklch(38% 0.025 167)",
-          "oklch(49% 0.026 167)",
-          "oklch(61% 0.026 167)",
-          "oklch(72% 0.018 167)",
-          "oklch(84% 0.010 167)",
-          "oklch(95% 0.003 167)"
-        ]
-      },
-      "auth-dark-ink": {
-        "role": "neutral",
-        "displayName": "Auth Dark Ink",
-        "tonalRamp": [
-          "oklch(15% 0.005 135)",
-          "oklch(26% 0.009 135)",
-          "oklch(38% 0.013 135)",
-          "oklch(49% 0.013 135)",
-          "oklch(61% 0.013 135)",
-          "oklch(72% 0.009 135)",
-          "oklch(84% 0.005 135)",
-          "oklch(95% 0.002 135)"
-        ]
-      },
-      "auth-dark-muted": {
-        "role": "neutral",
-        "displayName": "Auth Dark Muted",
-        "tonalRamp": [
-          "oklch(15% 0.007 153)",
-          "oklch(26% 0.013 153)",
-          "oklch(38% 0.019 153)",
-          "oklch(49% 0.020 153)",
-          "oklch(61% 0.019 153)",
-          "oklch(72% 0.014 153)",
-          "oklch(84% 0.008 153)",
-          "oklch(95% 0.002 153)"
-        ]
-      },
-      "auth-dark-line": {
-        "role": "neutral",
-        "displayName": "Auth Dark Line",
-        "tonalRamp": [
-          "oklch(15% 0.012 157)",
-          "oklch(26% 0.020 157)",
-          "oklch(38% 0.029 157)",
-          "oklch(49% 0.031 157)",
-          "oklch(61% 0.030 157)",
-          "oklch(72% 0.022 157)",
-          "oklch(84% 0.012 157)",
-          "oklch(95% 0.004 157)"
-        ]
-      },
-      "auth-dark-accent": {
-        "role": "primary",
-        "displayName": "Auth Dark Accent",
-        "tonalRamp": [
-          "oklch(15% 0.032 159)",
-          "oklch(26% 0.056 159)",
-          "oklch(38% 0.082 159)",
-          "oklch(49% 0.086 159)",
-          "oklch(61% 0.084 159)",
-          "oklch(72% 0.060 159)",
-          "oklch(84% 0.034 159)",
-          "oklch(95% 0.011 159)"
-        ]
-      },
       "cove-dark-canvas": {
         "role": "neutral",
         "displayName": "Cove Dark Canvas",
@@ -578,62 +396,6 @@
           "oklch(95% 0.010 162)"
         ]
       },
-      "auth-art": {
-        "role": "neutral",
-        "displayName": "Auth Art",
-        "tonalRamp": [
-          "oklch(15% 0.018 176)",
-          "oklch(26% 0.031 176)",
-          "oklch(38% 0.045 176)",
-          "oklch(49% 0.047 176)",
-          "oklch(61% 0.046 176)",
-          "oklch(72% 0.033 176)",
-          "oklch(84% 0.019 176)",
-          "oklch(95% 0.006 176)"
-        ]
-      },
-      "auth-art-text": {
-        "role": "neutral",
-        "displayName": "Auth Art Text",
-        "tonalRamp": [
-          "oklch(15% 0.007 123)",
-          "oklch(26% 0.012 123)",
-          "oklch(38% 0.018 123)",
-          "oklch(49% 0.019 123)",
-          "oklch(61% 0.019 123)",
-          "oklch(72% 0.013 123)",
-          "oklch(84% 0.008 123)",
-          "oklch(95% 0.002 123)"
-        ]
-      },
-      "auth-brand-fill": {
-        "role": "secondary",
-        "displayName": "Auth Brand Fill",
-        "tonalRamp": [
-          "oklch(15% 0.033 133)",
-          "oklch(26% 0.058 133)",
-          "oklch(38% 0.085 133)",
-          "oklch(49% 0.089 133)",
-          "oklch(61% 0.087 133)",
-          "oklch(72% 0.062 133)",
-          "oklch(84% 0.036 133)",
-          "oklch(95% 0.011 133)"
-        ]
-      },
-      "auth-brand-ink": {
-        "role": "secondary",
-        "displayName": "Auth Brand Ink",
-        "tonalRamp": [
-          "oklch(15% 0.016 172)",
-          "oklch(26% 0.029 172)",
-          "oklch(38% 0.042 172)",
-          "oklch(49% 0.044 172)",
-          "oklch(61% 0.043 172)",
-          "oklch(72% 0.031 172)",
-          "oklch(84% 0.018 172)",
-          "oklch(95% 0.005 172)"
-        ]
-      },
       "field-invalid": {
         "role": "secondary",
         "displayName": "Field Invalid",
@@ -752,10 +514,6 @@
         "displayName": "Headline",
         "purpose": "Protected page title."
       },
-      "auth-headline": {
-        "displayName": "Auth Headline",
-        "purpose": "Public form and protected gate titles."
-      },
       "identity-name": {
         "displayName": "Identity Name",
         "purpose": "Account holder's name on desktop."
@@ -795,6 +553,14 @@
       "wordmark": {
         "displayName": "Wordmark",
         "purpose": "Shared TaskFlow wordmark."
+      },
+      "form-title": {
+        "displayName": "Form title",
+        "purpose": "Heading for sign-in and registration."
+      },
+      "gate-title": {
+        "displayName": "Session gate title",
+        "purpose": "Heading for a protected profile load failure."
       }
     },
     "shadows": [],
@@ -812,12 +578,20 @@
   },
   "components": [
     {
+      "name": "Authentication panel",
+      "kind": "card",
+      "refersTo": "auth-panel",
+      "description": "Shared masthead, form alignment and route switch on the public entry pages.",
+      "html": "<section class=\"ds-auth\" aria-label=\"Sign in\"><header><strong><span><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z\"/><path d=\"m20 14.285 1.5.845a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74l1.5-.845\"/></svg></span>TaskFlow</strong><svg class=\"ds-auth-wave\" preserveAspectRatio=\"xMaxYMid slice\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 320 160\" fill=\"none\" ><g stroke=\"#a59bcf\" stroke-width=\"2\"><path d=\"M-18 175 C65 140 55 17 132 22 S229 160 321 -12\"/> <path d=\"M-13 175 C69 140 60 17 137 22 S234 160 326 -12\"/> <path d=\"M-8 175 C73 140 65 17 142 22 S239 160 331 -12\"/> <path d=\"M-3 175 C77 140 70 17 147 22 S244 160 336 -12\"/> <path d=\"M2 175 C81 140 75 17 152 22 S249 160 341 -12\"/> <path d=\"M7 175 C85 140 80 17 157 22 S254 160 346 -12\"/> <path d=\"M12 175 C89 140 85 17 162 22 S259 160 351 -12\"/> <path d=\"M17 175 C93 140 90 17 167 22 S264 160 356 -12\"/> <path d=\"M22 175 C97 140 95 17 172 22 S269 160 361 -12\"/> <path d=\"M27 175 C101 140 100 17 177 22 S274 160 366 -12\"/> <path d=\"M32 175 C105 140 105 17 182 22 S279 160 371 -12\"/> <path d=\"M37 175 C109 140 110 17 187 22 S284 160 376 -12\"/> <path d=\"M42 175 C113 140 115 17 192 22 S289 160 381 -12\"/></g></svg></header><div class=\"ds-box\"><h1>Welcome back</h1><p>Sign in to your TaskFlow account.</p><div class=\"ds-field\"><label for=\"ds-email\">Email address</label><input type=\"email\" id=\"ds-email\" autocomplete=\"email\"></div><div class=\"ds-field\"><label for=\"ds-password\">Password</label><input id=\"ds-password\" type=\"password\" autocomplete=\"current-password\"></div><button type=\"button\" class=\"ds-primary\">Sign in</button><footer>New to TaskFlow? <a href=\"/register\">Create an account</a></footer></div></section>",
+      "css": ".ds-auth,.ds-auth *{box-sizing:border-box}.ds-auth{font:400 15px/1.5 'DM Sans Variable',sans-serif;max-width:480px;border:1px solid #dbd9e5;border-radius:14px;background:#fff;color:#29273b;overflow-wrap:anywhere}.ds-auth header{display:flex;align-items:center;min-height:84px;overflow:hidden;padding-left:clamp(20px,4vw,38px);background:#e8e4f6;border-radius:13px 13px 0 0}.ds-auth header strong{display:flex;align-items:center;gap:10px;font-size:24px;letter-spacing:-1.3px;font-weight:690}.ds-auth header span{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#51468b;color:white}.ds-auth-wave{margin-left:auto;width:40%;height:84px}.ds-box{padding:28px clamp(20px,4vw,38px) 20px}.ds-box h1{margin:0;font-size:clamp(28px,4vw,36px);font-weight:600;line-height:1.15;letter-spacing:-.035em}.ds-box p{margin:8px 0 24px;color:#585567}.ds-box .ds-field{margin-bottom:18px}.ds-box footer{border-top:1px solid #dbd9e5;margin-top:20px;padding-top:16px;font-size:14px;color:#585567}.ds-box footer a{color:#29273b;font-weight:650;text-underline-offset:3px}.ds-field { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); color: #29273b; } .ds-field label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; } .ds-field input { box-sizing: border-box; width: 100%; min-height: 48px; padding: 12px; font: inherit; color: inherit; background: #fff; border: 1px solid #888298; border-radius: 9px; } .ds-field input[aria-invalid=\"true\"] { border-color: #c45145; } .ds-field input:focus-visible { outline: 3px solid #5744a5; outline-offset: 4px; }.ds-primary { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); font-size: 15px; line-height: 1.5; font-weight: 650; color: white; background: #51468b; border: 0; border-radius: 9px; width: 100%; min-height: 44px; padding: 12px 19px; cursor: pointer; } .ds-primary:hover { filter: brightness(1.1); } .ds-primary:disabled { opacity: .7; cursor: wait; } .ds-primary:focus-visible { outline: 3px solid #5744a5; outline-offset: 4px; }"
+    },
+    {
       "name": "Primary action",
       "kind": "button",
       "refersTo": "auth-submit",
       "description": "Submit an authentication form.",
       "html": "<button type=\"button\" class=\"ds-primary\">Sign in</button>",
-      "css": ".ds-primary { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); font-size: 15px; line-height: 1.5; font-weight: 650; color: white; background: var(--color-accent, #125942); border: 0; border-radius: 9px; min-height: 44px; padding: 12px 19px; cursor: pointer; } .ds-primary:hover { filter: brightness(1.1); } .ds-primary:disabled { opacity: .7; cursor: wait; } .ds-primary:focus-visible { outline: 3px solid var(--color-focus, #a56512); outline-offset: 4px; }"
+      "css": ".ds-primary { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); font-size: 15px; line-height: 1.5; font-weight: 650; color: white; background: #51468b; border: 0; border-radius: 9px; width: 100%; min-height: 44px; padding: 12px 19px; cursor: pointer; } .ds-primary:hover { filter: brightness(1.1); } .ds-primary:disabled { opacity: .7; cursor: wait; } .ds-primary:focus-visible { outline: 3px solid #5744a5; outline-offset: 4px; }"
     },
     {
       "name": "View account",
@@ -833,7 +607,7 @@
       "refersTo": "text-input",
       "description": "A labeled email input on the public forms.",
       "html": "<div class=\"ds-field\"><label for=\"ds-email\">Email address</label><input type=\"email\" id=\"ds-email\" autocomplete=\"email\"></div>",
-      "css": ".ds-field { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); color: var(--color-ink, #182b27); } .ds-field label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; } .ds-field input { box-sizing: border-box; width: 100%; height: 48px; padding: 12px; font: inherit; color: inherit; background: var(--color-panel, #fff); border: 1px solid var(--color-control-border, #7a8a80); border-radius: 9px; } .ds-field input[aria-invalid=\"true\"] { border-color: #c45145; } .ds-field input:focus-visible { outline: 3px solid var(--color-focus, #a56512); outline-offset: 4px; }"
+      "css": ".ds-field { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); color: #29273b; } .ds-field label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; } .ds-field input { box-sizing: border-box; width: 100%; min-height: 48px; padding: 12px; font: inherit; color: inherit; background: #fff; border: 1px solid #888298; border-radius: 9px; } .ds-field input[aria-invalid=\"true\"] { border-color: #c45145; } .ds-field input:focus-visible { outline: 3px solid #5744a5; outline-offset: 4px; }"
     },
     {
       "name": "Navigation",
@@ -862,27 +636,27 @@
   ],
   "narrative": {
     "northStar": "Cove",
-    "overview": "A project manager or contributor opening TaskFlow can locate the current page, identify the signed-in account and read its details in one column. A pale lavender rail anchors the workspace. The same hue recurs in the identity strip and the action that opens Account.\n\nSign-in and registration use a forest-green landscape beside a short form. Across both surfaces, the TaskFlow wordmark, DM Sans typography and visible field labels keep the transition familiar.",
+    "overview": "The same violet wordmark greets people at sign-in and in the workspace. A centered form gives returning users a direct route to their account. Registration adds the name field and password guidance within the same layout.\n\nIn the workspace, the route title orients the reader before the name, signed-in status and account details. The lavender wave appears beside the brand on public forms and beside the account identity on the desktop dashboard.",
     "keyCharacteristics": [
-      "A stable navigation rail on desktop and a labeled navigation dialog on phones.",
-      "One tinted identity strip above a bordered list of account details.",
-      "Visible text for session status and field errors."
+      "One reading column for the form, its validation messages and the link to the other route.",
+      "A fixed position for the current destination in desktop navigation and a keyboard-accessible drawer on phones.",
+      "Plain-language status, field labels and account values in both color schemes."
     ],
     "rules": [
       {
         "name": "The Surface Palette Rule",
-        "body": "Resolve text, focus and action colors against the palette of the enclosing surface, including the portaled mobile drawer.",
+        "body": "Resolve the palette on the page shell and on the mobile drawer, which renders outside that shell.",
         "section": "colors"
       }
     ],
     "dos": [
-      "Do keep visible labels paired with values when account rows stack.",
-      "Do preserve the current-page indication, skip link and drawer focus return.",
-      "Do let long names and email addresses wrap in the main content."
+      "Do give password hints and errors space below their field.",
+      "Do keep the navigation dialog’s focus inside the drawer and return focus to its opener when dismissed.",
+      "Do allow account values and form messages to wrap as text grows."
     ],
     "donts": [
-      "Don't rely on color alone to identify a field error or the current page.",
-      "Don't add project or task metrics to the personal account overview without a corresponding product feature."
+      "Don't let the decorative wave cover a label, control or account name.",
+      "Don't use a color change as the only indication of an invalid field, active route or session state."
     ]
   }
 }

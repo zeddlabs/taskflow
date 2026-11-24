@@ -82,16 +82,14 @@ export function AuthForm({ create = false }: { create?: boolean }) {
   });
   return (
     <main className="auth-page">
-      <aside className="auth-art">
-        <Brand />
-        <div className="art-landscape" aria-hidden="true" />
-      </aside>
-      <section className="auth-content">
+      <section className="auth-content" aria-labelledby="auth-title">
+        <header className="auth-masthead">
+          <Brand />
+        </header>
         <div className="auth-box">
-          <div className="mobile-brand">
-            <Brand />
-          </div>
-          <h1>{create ? "Create your account" : "Welcome back"}</h1>
+          <h1 id="auth-title">
+            {create ? "Create your account" : "Welcome back"}
+          </h1>
           <p className="muted" id="auth-introduction">
             {create
               ? "Enter your details to get started with TaskFlow."

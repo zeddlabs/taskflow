@@ -284,6 +284,38 @@ async function doubleText(container: Locator) {
   });
 }
 
+test("both account forms reflow and keep password controls keyboard accessible", async ({
+  page,
+}, info) => {
+  for (const route of ["login", "register"]) {
+    for (const width of [1440, 390, 320]) {
+      await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
+      await page.goto("/" + route);
+      await screenshot(page, info, route + "-" + width);
+      if (width !== 320) continue;
+      await doubleText(page.locator("main"));
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBe(width);
+      const password = page.getByLabel("Password", { exact: true });
+      await password.fill("example-password-for-display");
+      await password.press("Tab");
+      const reveal = page.getByRole("button", { name: "Show password" });
+      await expect(reveal).toBeFocused();
+      await reveal.press("Enter");
+      await expect(password).toHaveAttribute("type", "text");
+      await page.keyboard.press("Enter");
+      await expect(password).toHaveAttribute("type", "password");
+      await page.keyboard.press("Tab");
+      await expect(
+        page.getByRole("button", {
+          name: route === "login" ? "Sign in" : "Create account",
+        }),
+      ).toBeFocused();
+    }
+  }
+});
+
 test("dashboard controls and account details reflow with enlarged text", async ({
   page,
 }) => {
@@ -379,6 +411,8 @@ for (const colorScheme of ["light", "dark"] as const) {
     await page.emulateMedia({ colorScheme });
     for (const route of ["/login", "/register"]) {
       await page.goto(route);
+      if (colorScheme === "dark")
+        await screenshot(page, info, route.slice(1) + "-dark");
       const panel = page.locator(".auth-content");
       const field = page.getByLabel("Email address");
       await page.keyboard.press("Tab");
