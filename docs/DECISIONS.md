@@ -6,6 +6,12 @@
 
 Workspace creation, the creator's OWNER membership and the WORKSPACE_CREATED audit row share one PostgreSQL transaction. The actor comes from the authenticated session and the request ID from server middleware. This event stores an empty JSON object for details. The audit table requires a workspace and retains events with a null actor reference when the actor is deleted.
 
+## M1 workspace settings and archival
+
+Issue #37 centralizes workspace permissions. Owners and admins can read settings through `GET /api/v1/workspaces/:wid/settings` and update the name, slug, timezone and member project-creation setting through `PATCH /api/v1/workspaces/:wid`. An owner can archive through `POST /api/v1/workspaces/:wid/archive`. The ordinary workspace detail remains available to every active member. An insufficient role yields 403. A missing membership or inactive workspace yields 404.
+
+Settings writes and archival lock the active workspace and the actor's current membership in PostgreSQL through commit. Concurrent writes are serialized and an archived workspace cannot accept another settings change. Each successful mutation records the actor, workspace, target, action and request ID in the same transaction. Settings events record field names. Archival preserves memberships and audit history.
+
 ## M1 workspace directory
 
 The directory reads the caller's current membership together with the active workspace. The session establishes identity and the database query establishes access, so removal takes effect on the next request. The list orders by workspace ID and uses a signed continuation bound to the actor and the directory version. Rotating the signing secret invalidates existing cursors. A client can restart pagination from the first page.

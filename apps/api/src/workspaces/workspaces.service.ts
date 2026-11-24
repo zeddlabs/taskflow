@@ -4,6 +4,11 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { Prisma } from "../generated/prisma/client";
+import type { WorkspaceRole } from "../generated/prisma/enums";
+import {
+  requireWorkspacePermission,
+  type WorkspaceAction,
+} from "./workspace-policy";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { AuthConfig } from "../auth/auth.config";
 import { DatabaseService } from "../database.service";
@@ -14,12 +19,29 @@ import {
   WorkspaceListQuery,
   WorkspacePage,
   WorkspaceSummary,
+  UpdateWorkspaceDto,
+  WorkspaceSettings,
 } from "./workspaces.dto";
 
 const membershipSelect = {
   role: true,
   workspace: { select: { id: true, name: true, slug: true } },
 } as const;
+
+const settingsSelect = {
+  ...membershipSelect.workspace.select,
+  timezone: true,
+  allowMemberCreateProjects: true,
+} as const;
+
+function workspaceConflict(error: unknown): never {
+  if (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2002"
+  )
+    throw new ConflictException();
+  throw error;
+}
 
 @Injectable()
 export class WorkspacesService {
@@ -39,14 +61,7 @@ export class WorkspacesService {
           data: { name: dto.name, slug: dto.slug },
           select: { id: true, name: true, slug: true, createdAt: true },
         })
-        .catch((error: unknown) => {
-          if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === "P2002"
-          )
-            throw new ConflictException();
-          throw error;
-        });
+        .catch(workspaceConflict);
       await tx.workspaceMember.create({
         data: { workspaceId: workspace.id, userId, role: "OWNER" },
       });
@@ -62,6 +77,97 @@ export class WorkspacesService {
         },
       });
       return { ...workspace, myRole: "OWNER" };
+    });
+  }
+
+  async settings(
+    userId: string,
+    workspaceId: string,
+  ): Promise<WorkspaceSettings> {
+    const member = await this.db.workspaceMember.findFirst({
+      where: { userId, workspaceId, workspace: { archivedAt: null } },
+      select: { role: true, workspace: { select: settingsSelect } },
+    });
+    if (!member) throw new NotFoundException();
+    requireWorkspacePermission(member.role, "settings");
+    return { ...member.workspace, myRole: member.role };
+  }
+
+  private async authorizeWrite(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    workspaceId: string,
+    action: WorkspaceAction,
+  ) {
+    // Serialize lifecycle changes and keep the caller's membership valid through commit.
+    const [member] = await tx.$queryRaw<{ role: WorkspaceRole }[]>`
+      SELECT m.role FROM workspaces w JOIN workspace_members m ON m."workspaceId" = w.id
+      WHERE w.id = ${workspaceId} AND m."userId" = ${userId} AND w."archivedAt" IS NULL
+      FOR UPDATE OF w, m`;
+    if (!member) throw new NotFoundException();
+    requireWorkspacePermission(member.role, action);
+    return member.role;
+  }
+
+  async update(
+    userId: string,
+    workspaceId: string,
+    dto: UpdateWorkspaceDto,
+    requestId: string,
+  ): Promise<WorkspaceSettings> {
+    return this.db.$transaction(async (tx) => {
+      const role = await this.authorizeWrite(
+        tx,
+        userId,
+        workspaceId,
+        "settings",
+      );
+      const data = {
+        name: dto.name,
+        slug: dto.slug,
+        timezone: dto.timezone,
+        allowMemberCreateProjects: dto.allowMemberCreateProjects,
+      };
+      const fields = Object.entries(data)
+        .filter(([, value]) => value !== undefined)
+        .map(([key]) => key);
+      if (!fields.length) throw new InvalidDtoException();
+      const workspace = await tx.workspace
+        .update({ where: { id: workspaceId }, data, select: settingsSelect })
+        .catch(workspaceConflict);
+      await tx.auditLog.create({
+        data: {
+          workspaceId,
+          actorId: userId,
+          targetType: "Workspace",
+          targetId: workspaceId,
+          requestId,
+          action: "WORKSPACE_SETTINGS_UPDATED",
+          details: { fields },
+        },
+      });
+      return { ...workspace, myRole: role };
+    });
+  }
+
+  async archive(userId: string, workspaceId: string, requestId: string) {
+    await this.db.$transaction(async (tx) => {
+      await this.authorizeWrite(tx, userId, workspaceId, "archive");
+      await tx.workspace.update({
+        where: { id: workspaceId },
+        data: { archivedAt: new Date() },
+      });
+      await tx.auditLog.create({
+        data: {
+          workspaceId,
+          actorId: userId,
+          targetType: "Workspace",
+          targetId: workspaceId,
+          requestId,
+          action: "WORKSPACE_ARCHIVED",
+          details: {},
+        },
+      });
     });
   }
 
