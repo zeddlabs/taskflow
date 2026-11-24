@@ -14,6 +14,8 @@ The post-M0 [mobile header touch target improvement (#23)](https://github.com/ze
 
 The post-M0 [design metadata update (#24)](https://github.com/zeddlabs/taskflow/issues/24) is [DONE](https://github.com/zeddlabs/taskflow/pull/30).
 
+The post-M0 [Cove dashboard redesign (#31)](https://github.com/zeddlabs/taskflow/issues/31) is [DONE](https://github.com/zeddlabs/taskflow/pull/32).
+
 [M0 — Foundation](https://github.com/zeddlabs/taskflow/milestone/1) covers a runnable local stack, the authentication flow, a responsive web shell and pull-request quality checks. GitHub tracks issue closure and owner merges.
 
 | Issue                                                                                           | Dependencies | Status                                               |

@@ -8,7 +8,7 @@
   --color-ink: #182b27;
   --color-muted: #566761;
   --color-line: #dbe2db;
-  --color-control-border: #7a8a80;
+  --color-control-border: #888298;
   --color-focus: #a56512;
   --color-focus-on-dark: #ffe3a8;
   --color-accent: #125942;
@@ -59,73 +59,47 @@ button:disabled {
   flex-shrink: 0;
 }
 .brand-mark {
-  width: 35px;
-  height: 35px;
-  border-radius: 11px;
-  color: #193b31;
-  background: #c8ecaf;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  color: white;
+  background: var(--color-accent);
 }
 .auth-page {
   display: grid;
-  grid-template-columns: minmax(280px, 0.85fr) 1.15fr;
+  grid-template-columns: minmax(0, 480px);
+  place-content: center;
   min-height: 100svh;
+  padding: clamp(16px, 5vw, 64px) clamp(12px, 4vw, 32px);
 }
-.auth-art {
-  --color-focus: var(--color-focus-on-dark);
+.auth-content {
+  --inset: clamp(20px, 4vw, 38px);
+  min-width: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: var(--color-panel);
+  overflow-wrap: anywhere;
+}
+.auth-masthead {
   isolation: isolate;
   position: relative;
   overflow: hidden;
-  background: #183f36;
-  color: #f4f9eb;
-}
-.auth-art {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: clamp(30px, 4vw, 72px);
-}
-.art-landscape {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 100% 0%, #446a57, transparent 67%);
-}
-.art-landscape::before,
-.art-landscape::after {
-  content: "";
-  position: absolute;
-  inset: -10% -18% -70% 10%;
-  transform: rotate(-24deg);
-  background: repeating-radial-gradient(
-    ellipse at 85% 110%,
-    transparent 0 16px,
-    #a3c49c80 17px,
-    transparent 18px 22px
-  );
-  mask-image: linear-gradient(90deg, transparent, #000 28%);
-}
-.art-landscape::after {
-  inset: 48% -40% -60% -35%;
-  transform: rotate(14deg);
-  background: repeating-radial-gradient(
-    ellipse at 20% 95%,
-    #507361 0 14px,
-    #9bb69a 15px,
-    #507361 16px 20px
-  );
-  border-radius: 50% 68% 0 0;
-  mask-image: linear-gradient(90deg, #000 38%, transparent);
-}
-.auth-content {
-  display: grid;
-  place-items: center;
-  padding: 40px 28px;
-  background: var(--color-panel);
+  align-items: center;
+  min-height: 84px;
+  padding: 16px var(--inset);
+  border-radius: 13px 13px 0 0;
+  background: var(--identity);
 }
 .auth-box {
-  width: min(100%, 390px);
+  padding: 28px var(--inset) 20px;
+}
+.auth-content .auth-box h1 {
+  font-size: clamp(28px, 4vw, 36px);
+  letter-spacing: -0.035em;
+}
+.auth-masthead .brand {
+  flex-wrap: wrap;
 }
 .auth-box h1,
 .gate h1 {
@@ -141,10 +115,10 @@ button:disabled {
   color: var(--color-muted);
 }
 .auth-box > .muted {
-  margin: 12px 0 32px;
+  margin: 8px 0 24px;
 }
 .field {
-  margin-bottom: 21px;
+  margin-bottom: 18px;
 }
 .field label {
   display: block;
@@ -161,7 +135,7 @@ button:disabled {
   border-radius: 9px;
   padding: 12px;
   width: 100%;
-  height: 48px;
+  min-height: 48px;
 }
 .input-wrap input[autocomplete$="password"] {
   padding-right: 48px;
@@ -174,7 +148,7 @@ button:disabled {
   right: 0;
   top: 0;
   width: 46px;
-  height: 48px;
+  height: 100%;
   display: grid;
   place-items: center;
   color: var(--color-muted);
@@ -216,8 +190,9 @@ button:disabled {
   margin-top: 5px;
 }
 .auth-switch {
-  margin-top: 25px;
-  text-align: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
   font-size: 14px;
 }
 .auth-switch a,
@@ -227,7 +202,6 @@ button:disabled {
   color: var(--color-ink);
   font-weight: 650;
 }
-.mobile-brand,
 .menu-button {
   display: none;
 }
@@ -240,7 +214,8 @@ button:disabled {
   padding: 24px;
   text-align: center;
 }
-/* Cove tokens are shared with the drawer rendered in the dialog portal. */
+/* The portaled drawer shares the same Cove palette as both page shells. */
+.auth-page,
 .shell,
 .mobile-drawer,
 .gate {
@@ -282,15 +257,6 @@ button:disabled {
 .sidebar .brand,
 .mobile-drawer .brand {
   padding-left: 10px;
-}
-.shell .brand-mark,
-.mobile-drawer .brand-mark,
-.gate .brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: var(--color-accent);
-  color: white;
 }
 .sidebar nav,
 .mobile-drawer nav {
@@ -405,6 +371,7 @@ button:disabled {
   border-radius: 14px;
   background: var(--identity);
 }
+.auth-masthead::after,
 .identity-strip::after {
   content: "";
   position: absolute;
@@ -413,6 +380,14 @@ button:disabled {
   z-index: -1;
   background: var(--wave);
   mask: url("/cove-wave.svg") no-repeat right center / auto 100%;
+}
+.auth-masthead::after {
+  position: static;
+  flex: 1;
+  align-self: stretch;
+  margin: -16px calc(0px - var(--inset)) -16px 12px;
+  mask-size: contain;
+  mask-position: right bottom;
 }
 .identity-strip .avatar {
   width: 60px;
@@ -529,21 +504,11 @@ button:disabled {
   padding: 10px;
 }
 @media (max-width: 740px) {
-  .auth-page,
   .shell {
     display: block;
   }
-  .auth-art,
   .sidebar {
     display: none;
-  }
-  .auth-content {
-    min-height: 100svh;
-    padding: 32px 24px;
-  }
-  .mobile-brand {
-    display: block;
-    margin-bottom: 38px;
   }
   .menu-button,
   .signout {
@@ -631,6 +596,9 @@ button:disabled {
     --color-focus: var(--color-focus-on-dark);
     --color-accent: #246747;
   }
+  .auth-page {
+    --color-control-border: #aaa2bb;
+  }
   .field-error {
     color: #ffb9aa;
   }
@@ -638,6 +606,7 @@ button:disabled {
     color: #ffe1d7;
     background: #59392e;
   }
+  .auth-page,
   .shell,
   .mobile-drawer,
   .gate {
