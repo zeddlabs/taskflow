@@ -7,8 +7,8 @@
 | Issue                                                                                                                  | Dependencies | Snapshot                                             |
 | ---------------------------------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------- |
 | [#35 List and read workspaces through current membership](https://github.com/zeddlabs/taskflow/issues/35)              | #7, #8       | [DONE](https://github.com/zeddlabs/taskflow/pull/46) |
-| [#36 Create workspaces with an owner and transactional audit](https://github.com/zeddlabs/taskflow/issues/36)          | #35          | IN_PROGRESS                                          |
-| [#37 Enforce workspace policies, settings and archival](https://github.com/zeddlabs/taskflow/issues/37)                | #36          | TODO                                                 |
+| [#36 Create workspaces with an owner and transactional audit](https://github.com/zeddlabs/taskflow/issues/36)          | #35          | [DONE](https://github.com/zeddlabs/taskflow/pull/47) |
+| [#37 Enforce workspace policies, settings and archival](https://github.com/zeddlabs/taskflow/issues/37)                | #36          | IN_PROGRESS                                          |
 | [#38 Manage workspace members and transfer ownership](https://github.com/zeddlabs/taskflow/issues/38)                  | #37          | TODO                                                 |
 | [#39 Verify account email for invitation acceptance](https://github.com/zeddlabs/taskflow/issues/39)                   | #36          | TODO                                                 |
 | [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | TODO                                                 |
@@ -23,6 +23,10 @@ Issue #35 provides two cookie-authenticated GET routes under `/api/v1/workspaces
 Local validation for #35 passed API lint, typecheck, production build, smoke and eight HTTP contract tests, four PostgreSQL constraint tests, twelve API integration tests and ten Chromium regression tests. Prisma validated the existing schema and applied both migrations on a disposable database. See [local database test setup](ISSUES.md).
 
 Issue #36 adds atomic workspace creation and the tenant audit table. Local verification passed Prisma validation, three migrations on disposable PostgreSQL, API lint/typecheck/build, smoke and eight HTTP contract tests, five database tests, thirteen integration tests and ten Chromium regression tests.
+
+Issue #37 adds owner/admin workspace settings and owner-only archival. Both mutations record an audit event in the same database transaction. The settings interface is tracked in #43.
+
+Local verification for #37 passed API lint, typecheck, production build, one smoke test, eight HTTP contract tests, six PostgreSQL tests, fourteen API integration tests and ten Chromium regression tests. Prisma validated the schema and applied all three existing migrations to a clean test database.
 
 ## Foundation and post-M0 history
 

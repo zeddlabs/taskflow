@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import {
   IsIn,
@@ -10,6 +10,9 @@ import {
   Max,
   Length,
   Matches,
+  IsBoolean,
+  IsTimeZone,
+  ValidateIf,
 } from "class-validator";
 import { WorkspaceRole } from "../generated/prisma/enums";
 
@@ -60,6 +63,27 @@ export class CreateWorkspaceDto {
 
 export class CreatedWorkspace extends WorkspaceSummary {
   @ApiProperty({ type: String, format: "date-time" }) createdAt!: Date;
+}
+
+export class UpdateWorkspaceDto extends PartialType(CreateWorkspaceDto, {
+  skipNullProperties: false,
+}) {
+  @ApiPropertyOptional({ example: "Asia/Jakarta" })
+  @ValidateIf((_object, value) => value !== undefined)
+  @IsString()
+  @MaxLength(64)
+  @IsTimeZone()
+  timezone?: string;
+
+  @ApiPropertyOptional()
+  @ValidateIf((_object, value) => value !== undefined)
+  @IsBoolean()
+  allowMemberCreateProjects?: boolean;
+}
+
+export class WorkspaceSettings extends WorkspaceSummary {
+  @ApiProperty() timezone!: string;
+  @ApiProperty() allowMemberCreateProjects!: boolean;
 }
 class WorkspacePageInfo {
   @ApiProperty({ type: String, nullable: true }) nextCursor!: string | null;

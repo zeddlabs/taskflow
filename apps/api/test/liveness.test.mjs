@@ -23,6 +23,18 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   assert.ok(paths["/api/v1/auth/register"].post.responses["201"]);
   assert.ok(paths["/api/v1/auth/login"].post.responses["200"]);
   const directory = paths["/api/v1/workspaces"].get;
+  const patch = paths["/api/v1/workspaces/{wid}"].patch;
+  const archive = paths["/api/v1/workspaces/{wid}/archive"].post;
+  for (const operation of [patch, archive]) {
+    assert.deepEqual(operation.security, [{ cookie: [] }]);
+    assert.ok(
+      operation.parameters.some((p) => p.name === "X-CSRF-Token" && p.required),
+    );
+    assert.ok(operation.responses["403"]);
+    assert.ok(operation.responses["404"]);
+  }
+  assert.ok(patch.responses["200"]);
+  assert.ok(archive.responses["204"]);
   const createWorkspace = paths["/api/v1/workspaces"].post;
   assert.deepEqual(createWorkspace.security, [{ cookie: [] }]);
   assert.ok(

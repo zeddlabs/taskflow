@@ -596,6 +596,179 @@ test("workspace creation binds ownership and audit to the authenticated winner o
   }
 });
 
+test("only authorized current workspace members can change settings or archive", async () => {
+  const owner = await signedIn();
+  const teammate = await signedIn();
+  const slug = "settings-" + randomUUID();
+  const root = "/api/v1/workspaces";
+  const sessionHeaders = (s: typeof owner) => ({
+    Origin: origin,
+    Cookie: "access_token=" + s.access,
+    "X-CSRF-Token": s.csrf,
+  });
+  const created = await request(base)
+    .post(root)
+    .set(sessionHeaders(owner))
+    .send({ name: "Studio", slug })
+    .expect(201);
+  const id = created.body.id,
+    path = root + "/" + id;
+  const edit = (s: typeof owner) =>
+    request(base).patch(path).set(sessionHeaders(s));
+  const archive = (s: typeof owner) =>
+    request(base)
+      .post(path + "/archive")
+      .set(sessionHeaders(s));
+  const settings = (s: typeof owner) =>
+    request(base)
+      .get(path + "/settings")
+      .set("Cookie", "access_token=" + s.access);
+  try {
+    await request(base)
+      .patch(path)
+      .set("Origin", origin)
+      .send({ name: "x" })
+      .expect(401);
+    await request(base)
+      .post(path + "/archive")
+      .set("Origin", origin)
+      .expect(401);
+    await edit(owner).unset("X-CSRF-Token").send({ name: "x" }).expect(403);
+    await archive(owner).set("X-CSRF-Token", teammate.csrf).expect(403);
+    await edit(owner)
+      .set("Origin", "https://other.example.invalid")
+      .send({ name: "x" })
+      .expect(403);
+    await settings(teammate).expect(404);
+    await archive(teammate).expect(404);
+    await edit(teammate).send({ name: "foreign" }).expect(404);
+    const initial = await settings(owner).expect(200);
+    expect(initial.body).toMatchObject({
+      id,
+      slug,
+      timezone: "UTC",
+      allowMemberCreateProjects: false,
+    });
+    for (const data of [
+      {},
+      { role: "OWNER" },
+      { archivedAt: new Date().toISOString() },
+      { ownerId: teammate.profile.id },
+      { name: null },
+      { name: "  " },
+      { timezone: "Nowhere/Unknown" },
+      { allowMemberCreateProjects: "false" },
+    ]) {
+      await edit(owner).send(data).expect(400);
+    }
+    await pool.query(
+      'INSERT INTO workspace_members (id,"workspaceId","userId",role) VALUES ($1,$2,$3,\'GUEST\')',
+      [randomUUID(), id, teammate.profile.id],
+    );
+    for (const role of ["GUEST", "MEMBER", "ADMIN"]) {
+      await pool.query(
+        'UPDATE workspace_members SET role=$1 WHERE "workspaceId"=$2 AND "userId"=$3',
+        [role, id, teammate.profile.id],
+      );
+      await archive(teammate).expect(403);
+      if (role === "ADMIN") {
+        await settings(teammate).expect(200);
+        const updated = await edit(teammate)
+          .send({
+            name: " Renamed ",
+            timezone: "Asia/Jakarta",
+            allowMemberCreateProjects: true,
+          })
+          .expect(200);
+        expect(updated.body).toMatchObject({
+          id,
+          name: "Renamed",
+          timezone: "Asia/Jakarta",
+          allowMemberCreateProjects: true,
+          myRole: "ADMIN",
+        });
+      } else {
+        await settings(teammate).expect(403);
+        await edit(teammate)
+          .send({ allowMemberCreateProjects: true })
+          .expect(403);
+      }
+    }
+    await edit(owner)
+      .send({
+        slug: " " + slug.toUpperCase() + "-NEW ",
+        allowMemberCreateProjects: false,
+      })
+      .expect(200);
+    const current = await settings(owner).expect(200);
+    expect(current.body).toMatchObject({
+      name: "Renamed",
+      slug: slug + "-new",
+      timezone: "Asia/Jakarta",
+      allowMemberCreateProjects: false,
+    });
+    await pool.query(
+      'DELETE FROM workspace_members WHERE "workspaceId"=$1 AND "userId"=$2',
+      [id, teammate.profile.id],
+    );
+    await edit(teammate).send({ timezone: "UTC" }).expect(404);
+    const [archived, write] = await Promise.all([
+      archive(owner),
+      edit(owner).send({ timezone: "Europe/Paris" }),
+    ]);
+    expect(archived.status).toBe(204);
+    expect([200, 404]).toContain(write.status);
+    await archive(owner).expect(404);
+    await edit(owner).send({ name: "too late" }).expect(404);
+    await settings(owner).expect(404);
+    await request(base)
+      .get(path)
+      .set("Cookie", "access_token=" + owner.access)
+      .expect(404);
+    const directory = await request(base)
+      .get(root)
+      .set("Cookie", "access_token=" + owner.access)
+      .expect(200);
+    expect(directory.body.data).toEqual([]);
+    const stored = await pool.query(
+      'SELECT timezone,"archivedAt" FROM workspaces WHERE id=$1',
+      [id],
+    );
+    expect(stored.rows[0].archivedAt).toBeTruthy();
+    expect(stored.rows[0].timezone).toBe(
+      write.status === 200 ? "Europe/Paris" : "Asia/Jakarta",
+    );
+    const audit = await pool.query(
+      'SELECT action,"actorId","targetId","requestId",details FROM audit_logs WHERE "workspaceId"=$1',
+      [id],
+    );
+    expect(audit.rows).toHaveLength(write.status === 200 ? 5 : 4);
+    expect(audit.rows).toContainEqual({
+      action: "WORKSPACE_ARCHIVED",
+      actorId: owner.profile.id,
+      targetId: id,
+      requestId: archived.headers["x-request-id"],
+      details: {},
+    });
+    expect(audit.rows).toContainEqual(
+      expect.objectContaining({
+        action: "WORKSPACE_SETTINGS_UPDATED",
+        actorId: teammate.profile.id,
+        targetId: id,
+        details: {
+          fields: expect.arrayContaining([
+            "name",
+            "timezone",
+            "allowMemberCreateProjects",
+          ]),
+        },
+      }),
+    );
+  } finally {
+    await pool.query("DELETE FROM workspaces WHERE id=$1", [id]);
+  }
+});
+
 test("limits repeated normalized identifiers and independent requests from one IP", async () => {
   const email = randomUUID() + "@example.invalid";
   for (let i = 0; i < 10; i++)

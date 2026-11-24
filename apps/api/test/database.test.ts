@@ -8,17 +8,18 @@ import type { Prisma } from "../src/generated/prisma/client";
 const db = new DatabaseService();
 after(() => db.$disconnect());
 
+const service = new WorkspacesService(db, {
+  secret: randomBytes(32).toString("hex"),
+  csrfSecret: randomBytes(32).toString("hex"),
+  origin: "https://test.example.invalid",
+  issuer: "test",
+  audience: "test",
+  secure: true,
+});
+
 test("a rejected audit insert rolls back workspace and owner membership", async () => {
   const user = await db.user.findUniqueOrThrow({
     where: { emailNormalized: "owner@example.invalid" },
-  });
-  const service = new WorkspacesService(db, {
-    secret: randomBytes(32).toString("hex"),
-    csrfSecret: randomBytes(32).toString("hex"),
-    origin: "https://test.example.invalid",
-    issuer: "test",
-    audience: "test",
-    secure: true,
   });
   const slug = "rollback-" + randomUUID();
   const memberships = await db.workspaceMember.count({
@@ -42,6 +43,52 @@ test("a rejected audit insert rolls back workspace and owner membership", async 
   } finally {
     await db.workspace.deleteMany({ where: { slug } });
   }
+});
+
+test("failed settings, archive and audit writes preserve the active workspace", async (t) => {
+  const owner = await db.user.findUniqueOrThrow({
+    where: { emailNormalized: "owner@example.invalid" },
+  });
+  const workspace = await service.create(
+    owner.id,
+    {
+      name: "Audit rollback",
+      slug: "settings-" + randomUUID(),
+    },
+    randomUUID(),
+  );
+  const id = workspace.id;
+  t.after(async () => {
+    await db.workspace.delete({ where: { id } });
+  });
+  const invalidRequestId = "r".repeat(101);
+  await assert.rejects(
+    service.update(
+      owner.id,
+      id,
+      { timezone: "Asia/Jakarta" },
+      invalidRequestId,
+    ),
+    { code: "P2000" },
+  );
+  await assert.rejects(service.archive(owner.id, id, invalidRequestId), {
+    code: "P2000",
+  });
+  await assert.rejects(
+    service.update(
+      owner.id,
+      id,
+      { name: "Duplicate", slug: "acme-studio" },
+      randomUUID(),
+    ),
+    { status: 409 },
+  );
+  const stored = await db.workspace.findUniqueOrThrow({ where: { id } });
+  assert.equal(stored.timezone, "UTC");
+  assert.equal(stored.archivedAt, null);
+  assert.equal(stored.name, workspace.name);
+  assert.equal(stored.slug, workspace.slug);
+  assert.equal(await db.auditLog.count({ where: { workspaceId: id } }), 1);
 });
 
 // Keep even unexpectedly successful constraint probes out of the database.

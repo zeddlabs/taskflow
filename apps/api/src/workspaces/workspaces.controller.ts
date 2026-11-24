@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Header,
+  HttpCode,
+  Patch,
   Param,
   Post,
   Query,
@@ -17,6 +19,7 @@ import {
   ApiForbiddenResponse,
   ApiHeader,
   ApiOkResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
@@ -34,6 +37,8 @@ import {
   WorkspaceListQuery,
   WorkspacePage,
   WorkspaceSummary,
+  UpdateWorkspaceDto,
+  WorkspaceSettings,
 } from "./workspaces.dto";
 
 @Controller("workspaces")
@@ -95,6 +100,72 @@ export class WorkspacesController {
   @ApiBadRequestResponse({ description: "Invalid pagination parameters." })
   async list(@Req() req: Request, @Query() query: WorkspaceListQuery) {
     return this.workspaces.list(await this.actor(req), query);
+  }
+
+  @Get(":wid/settings")
+  @Header("Cache-Control", "no-store")
+  @ApiOkResponse({ type: WorkspaceSettings, headers: requestIdResponseHeaders })
+  @ApiForbiddenResponse({
+    description: "Workspace settings require OWNER or ADMIN.",
+  })
+  @ApiNotFoundResponse({
+    description: "No active membership for this workspace.",
+  })
+  async settings(@Req() req: Request, @Param("wid") id: string) {
+    return this.workspaces.settings(await this.actor(req), id);
+  }
+
+  @Patch(":wid")
+  @Header("Cache-Control", "no-store")
+  @ApiHeader({ name: csrfHeader, required: true })
+  @ApiOkResponse({ type: WorkspaceSettings, headers: requestIdResponseHeaders })
+  @ApiForbiddenResponse({
+    description: "Invalid origin, CSRF proof or workspace permission.",
+  })
+  @ApiNotFoundResponse({
+    description: "No active membership for this workspace.",
+  })
+  @ApiBadRequestResponse({
+    description: "Provide at least one valid workspace setting.",
+  })
+  @ApiConflictResponse({
+    description: "The normalized slug is already in use.",
+  })
+  async update(
+    @Req() req: Request,
+    @Param("wid") id: string,
+    @Body() dto: UpdateWorkspaceDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.workspaces.update(
+      await this.actor(req),
+      id,
+      dto,
+      String(res.getHeader(requestIdHeader)),
+    );
+  }
+
+  @Post(":wid/archive")
+  @HttpCode(204)
+  @Header("Cache-Control", "no-store")
+  @ApiHeader({ name: csrfHeader, required: true })
+  @ApiNoContentResponse({ headers: requestIdResponseHeaders })
+  @ApiForbiddenResponse({
+    description: "Archival requires OWNER and a valid origin and CSRF proof.",
+  })
+  @ApiNotFoundResponse({
+    description: "No active membership for this workspace.",
+  })
+  async archive(
+    @Req() req: Request,
+    @Param("wid") id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.workspaces.archive(
+      await this.actor(req),
+      id,
+      String(res.getHeader(requestIdHeader)),
+    );
   }
 
   @Get(":wid")
