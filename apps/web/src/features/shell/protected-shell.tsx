@@ -10,14 +10,13 @@ import * as Dialog from "@radix-ui/react-dialog";
 import {
   ArrowRight,
   PanelLeft,
-  LayoutDashboard,
   UserRound,
   LogOut,
   X,
   ChevronRight,
   Mail,
   Globe2,
-  ShieldCheck,
+  Grid2X2,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -43,6 +42,17 @@ export function ProtectedShell(props: ShellProps) {
     </QueryClientProvider>
   );
 }
+function Initials({ name }: { name: string }) {
+  const words = name.trim().split(/\s+/u);
+  const first = Array.from(words[0] ?? "")[0] ?? "";
+  const last = words.length > 1 ? Array.from(words[words.length - 1])[0] : "";
+  return (
+    <span className="avatar" aria-hidden="true">
+      {(first + last).toUpperCase()}
+    </span>
+  );
+}
+
 function Sidebar({
   view,
   profile,
@@ -55,14 +65,13 @@ function Sidebar({
   return (
     <>
       <nav aria-label="Main navigation">
-        <span className="nav-label">Personal</span>
         {(
           [
             {
               href: "/app",
               label: "Overview",
               key: "overview",
-              icon: LayoutDashboard,
+              icon: Grid2X2,
             },
             {
               href: "/app/account",
@@ -85,7 +94,7 @@ function Sidebar({
         ))}
       </nav>
       <div className="sidebar-person">
-        <span className="avatar">{profile.name.charAt(0).toUpperCase()}</span>
+        <Initials name={profile.name} />
         <div>
           <strong>{profile.name}</strong>
           <small>Personal account</small>
@@ -246,40 +255,30 @@ function Shell({ view, initialProfile }: ShellProps) {
               {failure}
             </p>
           )}
-          {view === "overview" && (
-            <section className="welcome">
-              <div className="art-landscape" aria-hidden="true" />
-              <div className="welcome-text">
-                <h2>
-                  Welcome back,
-                  <br />
-                  <em>{profile.name}.</em>
-                </h2>
-                <Button asChild className="hero-link">
-                  <Link prefetch={false} href="/app/account">
-                    View account <ArrowRight size={16} />
-                  </Link>
-                </Button>
-              </div>
-            </section>
-          )}
-          <section className="profile-card">
+          <section className="identity-strip" aria-labelledby="identity-name">
+            <Initials name={profile.name} />
+            <div className="identity-copy">
+              <h2 id="identity-name">{profile.name}</h2>
+              <p className="session-note">Signed in to TaskFlow</p>
+            </div>
+          </section>
+          <section className="profile-card" aria-labelledby="profile-title">
             <div className="card-header">
-              <div className="icon-tile">
-                <UserRound size={20} />
-              </div>
-              <h2>
+              <h2 id="profile-title">
                 {view === "overview"
                   ? "Account at a glance"
                   : "Profile details"}
               </h2>
+              {view === "overview" && (
+                <Button asChild>
+                  <Link prefetch={false} href="/app/account">
+                    View account <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                </Button>
+              )}
             </div>
             {info}
           </section>
-          <div className="session-note">
-            <ShieldCheck size={16} />
-            <span>Signed in to TaskFlow</span>
-          </div>
         </main>
       </div>
     </div>

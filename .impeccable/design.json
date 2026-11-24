@@ -1,26 +1,26 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-21T23:33:44.572Z",
+  "generatedAt": "2026-11-24T09:00:27.627Z",
   "title": "Design System: TaskFlow",
   "extensions": {
     "colorMeta": {
-      "canvas": {
+      "auth-canvas": {
         "role": "neutral",
-        "displayName": "Canvas",
+        "displayName": "Auth Canvas",
         "tonalRamp": [
           "oklch(15% 0.002 118)",
-          "oklch(26% 0.004 118)",
+          "oklch(26% 0.003 118)",
           "oklch(38% 0.005 118)",
           "oklch(49% 0.005 118)",
           "oklch(61% 0.005 118)",
           "oklch(72% 0.004 118)",
-          "oklch(84% 0.003 118)",
+          "oklch(84% 0.002 118)",
           "oklch(95% 0.001 118)"
         ]
       },
-      "panel": {
+      "auth-panel": {
         "role": "neutral",
-        "displayName": "Panel",
+        "displayName": "Auth Panel",
         "tonalRamp": [
           "oklch(15% 0.000 0)",
           "oklch(26% 0.000 0)",
@@ -32,275 +32,135 @@
           "oklch(95% 0.000 0)"
         ]
       },
-      "ink": {
+      "auth-ink": {
         "role": "neutral",
-        "displayName": "Ink",
+        "displayName": "Auth Ink",
         "tonalRamp": [
-          "oklch(15% 0.012 179)",
-          "oklch(26% 0.019 179)",
-          "oklch(38% 0.024 179)",
+          "oklch(15% 0.010 179)",
+          "oklch(26% 0.017 179)",
+          "oklch(38% 0.025 179)",
           "oklch(49% 0.026 179)",
           "oklch(61% 0.025 179)",
-          "oklch(72% 0.020 179)",
-          "oklch(84% 0.013 179)",
-          "oklch(95% 0.004 179)"
+          "oklch(72% 0.018 179)",
+          "oklch(84% 0.010 179)",
+          "oklch(95% 0.003 179)"
         ]
       },
-      "muted": {
+      "auth-muted": {
         "role": "neutral",
-        "displayName": "Muted",
+        "displayName": "Auth Muted",
         "tonalRamp": [
-          "oklch(15% 0.010 172)",
-          "oklch(26% 0.017 172)",
-          "oklch(38% 0.021 172)",
+          "oklch(15% 0.009 172)",
+          "oklch(26% 0.015 172)",
+          "oklch(38% 0.022 172)",
           "oklch(49% 0.023 172)",
-          "oklch(61% 0.021 172)",
-          "oklch(72% 0.017 172)",
-          "oklch(84% 0.011 172)",
-          "oklch(95% 0.004 172)"
+          "oklch(61% 0.022 172)",
+          "oklch(72% 0.016 172)",
+          "oklch(84% 0.009 172)",
+          "oklch(95% 0.003 172)"
         ]
       },
-      "line": {
+      "auth-line": {
         "role": "neutral",
-        "displayName": "Line",
+        "displayName": "Auth Line",
         "tonalRamp": [
           "oklch(15% 0.005 145)",
-          "oklch(26% 0.009 145)",
+          "oklch(26% 0.008 145)",
           "oklch(38% 0.011 145)",
           "oklch(49% 0.012 145)",
-          "oklch(61% 0.011 145)",
-          "oklch(72% 0.009 145)",
-          "oklch(84% 0.006 145)",
+          "oklch(61% 0.012 145)",
+          "oklch(72% 0.008 145)",
+          "oklch(84% 0.005 145)",
           "oklch(95% 0.002 145)"
         ]
       },
-      "accent": {
-        "role": "primary",
-        "displayName": "Accent",
+      "auth-control-border": {
+        "role": "neutral",
+        "displayName": "Auth Control Border",
         "tonalRamp": [
-          "oklch(15% 0.036 166)",
-          "oklch(26% 0.057 166)",
-          "oklch(38% 0.073 166)",
+          "oklch(15% 0.009 158)",
+          "oklch(26% 0.015 158)",
+          "oklch(38% 0.023 158)",
+          "oklch(49% 0.024 158)",
+          "oklch(61% 0.023 158)",
+          "oklch(72% 0.017 158)",
+          "oklch(84% 0.010 158)",
+          "oklch(95% 0.003 158)"
+        ]
+      },
+      "auth-focus": {
+        "role": "secondary",
+        "displayName": "Auth Focus",
+        "tonalRamp": [
+          "oklch(15% 0.045 66)",
+          "oklch(26% 0.078 66)",
+          "oklch(38% 0.114 66)",
+          "oklch(49% 0.120 66)",
+          "oklch(61% 0.117 66)",
+          "oklch(72% 0.084 66)",
+          "oklch(84% 0.048 66)",
+          "oklch(95% 0.015 66)"
+        ]
+      },
+      "auth-focus-on-dark": {
+        "role": "secondary",
+        "displayName": "Auth Focus On Dark",
+        "tonalRamp": [
+          "oklch(15% 0.030 85)",
+          "oklch(26% 0.053 85)",
+          "oklch(38% 0.077 85)",
+          "oklch(49% 0.081 85)",
+          "oklch(61% 0.079 85)",
+          "oklch(72% 0.057 85)",
+          "oklch(84% 0.032 85)",
+          "oklch(95% 0.010 85)"
+        ]
+      },
+      "auth-accent": {
+        "role": "primary",
+        "displayName": "Auth Accent",
+        "tonalRamp": [
+          "oklch(15% 0.029 166)",
+          "oklch(26% 0.051 166)",
+          "oklch(38% 0.074 166)",
           "oklch(49% 0.078 166)",
-          "oklch(61% 0.074 166)",
-          "oklch(72% 0.060 166)",
-          "oklch(84% 0.038 166)",
-          "oklch(95% 0.012 166)"
+          "oklch(61% 0.076 166)",
+          "oklch(72% 0.055 166)",
+          "oklch(84% 0.031 166)",
+          "oklch(95% 0.010 166)"
         ]
       },
-      "dark-canvas": {
+      "cove-ink": {
         "role": "neutral",
-        "displayName": "Dark canvas",
+        "displayName": "Cove Ink",
         "tonalRamp": [
-          "oklch(15% 0.011 172)",
-          "oklch(26% 0.017 172)",
-          "oklch(38% 0.022 172)",
-          "oklch(49% 0.024 172)",
-          "oklch(61% 0.022 172)",
-          "oklch(72% 0.018 172)",
-          "oklch(84% 0.012 172)",
-          "oklch(95% 0.004 172)"
+          "oklch(15% 0.014 288)",
+          "oklch(26% 0.024 288)",
+          "oklch(38% 0.035 288)",
+          "oklch(49% 0.036 288)",
+          "oklch(61% 0.035 288)",
+          "oklch(72% 0.025 288)",
+          "oklch(84% 0.015 288)",
+          "oklch(95% 0.005 288)"
         ]
       },
-      "dark-panel": {
+      "cove-canvas": {
         "role": "neutral",
-        "displayName": "Dark panel",
+        "displayName": "Cove Canvas",
         "tonalRamp": [
-          "oklch(15% 0.012 167)",
-          "oklch(26% 0.019 167)",
-          "oklch(38% 0.024 167)",
-          "oklch(49% 0.026 167)",
-          "oklch(61% 0.025 167)",
-          "oklch(72% 0.020 167)",
-          "oklch(84% 0.013 167)",
-          "oklch(95% 0.004 167)"
+          "oklch(15% 0.001 286)",
+          "oklch(26% 0.003 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.003 286)",
+          "oklch(84% 0.002 286)",
+          "oklch(95% 0.000 286)"
         ]
       },
-      "dark-ink": {
+      "cove-panel": {
         "role": "neutral",
-        "displayName": "Dark ink",
-        "tonalRamp": [
-          "oklch(15% 0.006 135)",
-          "oklch(26% 0.010 135)",
-          "oklch(38% 0.013 135)",
-          "oklch(49% 0.013 135)",
-          "oklch(61% 0.013 135)",
-          "oklch(72% 0.010 135)",
-          "oklch(84% 0.007 135)",
-          "oklch(95% 0.002 135)"
-        ]
-      },
-      "dark-muted": {
-        "role": "neutral",
-        "displayName": "Dark muted",
-        "tonalRamp": [
-          "oklch(15% 0.009 153)",
-          "oklch(26% 0.014 153)",
-          "oklch(38% 0.018 153)",
-          "oklch(49% 0.020 153)",
-          "oklch(61% 0.019 153)",
-          "oklch(72% 0.015 153)",
-          "oklch(84% 0.010 153)",
-          "oklch(95% 0.003 153)"
-        ]
-      },
-      "dark-line": {
-        "role": "neutral",
-        "displayName": "Dark line",
-        "tonalRamp": [
-          "oklch(15% 0.014 157)",
-          "oklch(26% 0.023 157)",
-          "oklch(38% 0.029 157)",
-          "oklch(49% 0.031 157)",
-          "oklch(61% 0.029 157)",
-          "oklch(72% 0.024 157)",
-          "oklch(84% 0.015 157)",
-          "oklch(95% 0.005 157)"
-        ]
-      },
-      "dark-accent": {
-        "role": "primary",
-        "displayName": "Dark accent",
-        "tonalRamp": [
-          "oklch(15% 0.039 159)",
-          "oklch(26% 0.063 159)",
-          "oklch(38% 0.080 159)",
-          "oklch(49% 0.086 159)",
-          "oklch(61% 0.081 159)",
-          "oklch(72% 0.066 159)",
-          "oklch(84% 0.041 159)",
-          "oklch(95% 0.013 159)"
-        ]
-      },
-      "rail": {
-        "role": "neutral",
-        "displayName": "Rail",
-        "tonalRamp": [
-          "oklch(15% 0.016 177)",
-          "oklch(26% 0.026 177)",
-          "oklch(38% 0.033 177)",
-          "oklch(49% 0.035 177)",
-          "oklch(61% 0.033 177)",
-          "oklch(72% 0.027 177)",
-          "oklch(84% 0.017 177)",
-          "oklch(95% 0.005 177)"
-        ]
-      },
-      "nav-selected": {
-        "role": "neutral",
-        "displayName": "Nav selected",
-        "tonalRamp": [
-          "oklch(15% 0.020 166)",
-          "oklch(26% 0.032 166)",
-          "oklch(38% 0.041 166)",
-          "oklch(49% 0.044 166)",
-          "oklch(61% 0.042 166)",
-          "oklch(72% 0.034 166)",
-          "oklch(84% 0.021 166)",
-          "oklch(95% 0.007 166)"
-        ]
-      },
-      "nav-text": {
-        "role": "neutral",
-        "displayName": "Nav text",
-        "tonalRamp": [
-          "oklch(15% 0.010 152)",
-          "oklch(26% 0.017 152)",
-          "oklch(38% 0.021 152)",
-          "oklch(49% 0.023 152)",
-          "oklch(61% 0.021 152)",
-          "oklch(72% 0.018 152)",
-          "oklch(84% 0.011 152)",
-          "oklch(95% 0.004 152)"
-        ]
-      },
-      "welcome": {
-        "role": "neutral",
-        "displayName": "Welcome",
-        "tonalRamp": [
-          "oklch(15% 0.021 176)",
-          "oklch(26% 0.034 176)",
-          "oklch(38% 0.044 176)",
-          "oklch(49% 0.047 176)",
-          "oklch(61% 0.044 176)",
-          "oklch(72% 0.036 176)",
-          "oklch(84% 0.023 176)",
-          "oklch(95% 0.007 176)"
-        ]
-      },
-      "hero-link": {
-        "role": "neutral",
-        "displayName": "Hero link",
-        "tonalRamp": [
-          "oklch(15% 0.021 124)",
-          "oklch(26% 0.034 124)",
-          "oklch(38% 0.044 124)",
-          "oklch(49% 0.047 124)",
-          "oklch(61% 0.044 124)",
-          "oklch(72% 0.036 124)",
-          "oklch(84% 0.023 124)",
-          "oklch(95% 0.007 124)"
-        ]
-      },
-      "hero-ink": {
-        "role": "neutral",
-        "displayName": "Hero ink",
-        "tonalRamp": [
-          "oklch(15% 0.021 157)",
-          "oklch(26% 0.034 157)",
-          "oklch(38% 0.043 157)",
-          "oklch(49% 0.047 157)",
-          "oklch(61% 0.044 157)",
-          "oklch(72% 0.036 157)",
-          "oklch(84% 0.022 157)",
-          "oklch(95% 0.007 157)"
-        ]
-      },
-      "focus": {
-        "role": "accent",
-        "displayName": "Focus",
-        "tonalRamp": [
-          "oklch(15% 0.054 64)",
-          "oklch(26% 0.087 64)",
-          "oklch(38% 0.112 64)",
-          "oklch(49% 0.120 64)",
-          "oklch(61% 0.113 64)",
-          "oklch(72% 0.092 64)",
-          "oklch(84% 0.058 64)",
-          "oklch(95% 0.019 64)"
-        ]
-      },
-      "focus-on-dark": {
-        "role": "accent",
-        "displayName": "Focus on dark surfaces",
-        "tonalRamp": [
-          "oklch(15% 0.036 83)",
-          "oklch(26% 0.058 83)",
-          "oklch(38% 0.074 83)",
-          "oklch(49% 0.080 83)",
-          "oklch(61% 0.075 83)",
-          "oklch(72% 0.062 83)",
-          "oklch(84% 0.039 83)",
-          "oklch(95% 0.013 83)"
-        ]
-      },
-      "control-border": {
-        "role": "neutral",
-        "displayName": "Control border",
-        "tonalRamp": [
-          "oklch(15% 0.010 155)",
-          "oklch(26% 0.017 155)",
-          "oklch(38% 0.021 155)",
-          "oklch(49% 0.023 155)",
-          "oklch(61% 0.022 155)",
-          "oklch(72% 0.018 155)",
-          "oklch(84% 0.011 155)",
-          "oklch(95% 0.004 155)"
-        ]
-      },
-      "on-accent": {
-        "role": "neutral",
-        "displayName": "White action and selected-link text",
+        "displayName": "Cove Panel",
         "tonalRamp": [
           "oklch(15% 0.000 0)",
           "oklch(26% 0.000 0)",
@@ -312,360 +172,632 @@
           "oklch(95% 0.000 0)"
         ]
       },
-      "brand-mark": {
-        "role": "accent",
-        "displayName": "Brand tile",
-        "tonalRamp": [
-          "oklch(15% 0.040 133)",
-          "oklch(26% 0.065 133)",
-          "oklch(38% 0.083 133)",
-          "oklch(49% 0.089 133)",
-          "oklch(61% 0.084 133)",
-          "oklch(72% 0.069 133)",
-          "oklch(84% 0.043 133)",
-          "oklch(95% 0.014 133)"
-        ]
-      },
-      "brand-ink": {
+      "cove-line": {
         "role": "neutral",
-        "displayName": "Brand symbol",
+        "displayName": "Cove Line",
         "tonalRamp": [
-          "oklch(15% 0.020 172)",
-          "oklch(26% 0.032 172)",
-          "oklch(38% 0.041 172)",
-          "oklch(49% 0.044 172)",
-          "oklch(61% 0.041 172)",
-          "oklch(72% 0.034 172)",
-          "oklch(84% 0.021 172)",
-          "oklch(95% 0.007 172)"
+          "oklch(15% 0.006 294)",
+          "oklch(26% 0.011 294)",
+          "oklch(38% 0.016 294)",
+          "oklch(49% 0.016 294)",
+          "oklch(61% 0.016 294)",
+          "oklch(72% 0.011 294)",
+          "oklch(84% 0.007 294)",
+          "oklch(95% 0.002 294)"
         ]
       },
-      "dark-rail": {
+      "cove-muted": {
         "role": "neutral",
-        "displayName": "Dark rail",
+        "displayName": "Cove Muted",
         "tonalRamp": [
-          "oklch(15% 0.013 171)",
-          "oklch(26% 0.020 171)",
-          "oklch(38% 0.026 171)",
-          "oklch(49% 0.028 171)",
-          "oklch(61% 0.026 171)",
-          "oklch(72% 0.021 171)",
-          "oklch(84% 0.013 171)",
-          "oklch(95% 0.004 171)"
+          "oklch(15% 0.011 293)",
+          "oklch(26% 0.019 293)",
+          "oklch(38% 0.028 293)",
+          "oklch(49% 0.029 293)",
+          "oklch(61% 0.028 293)",
+          "oklch(72% 0.020 293)",
+          "oklch(84% 0.012 293)",
+          "oklch(95% 0.004 293)"
         ]
       },
-      "rail-text": {
+      "cove-accent": {
+        "role": "primary",
+        "displayName": "Cove Accent",
+        "tonalRamp": [
+          "oklch(15% 0.041 288)",
+          "oklch(26% 0.072 288)",
+          "oklch(38% 0.105 288)",
+          "oklch(49% 0.110 288)",
+          "oklch(61% 0.108 288)",
+          "oklch(72% 0.077 288)",
+          "oklch(84% 0.044 288)",
+          "oklch(95% 0.014 288)"
+        ]
+      },
+      "cove-focus": {
+        "role": "secondary",
+        "displayName": "Cove Focus",
+        "tonalRamp": [
+          "oklch(15% 0.056 288)",
+          "oklch(26% 0.097 288)",
+          "oklch(38% 0.142 288)",
+          "oklch(49% 0.150 288)",
+          "oklch(61% 0.146 288)",
+          "oklch(72% 0.105 288)",
+          "oklch(84% 0.060 288)",
+          "oklch(95% 0.019 288)"
+        ]
+      },
+      "cove-rail": {
         "role": "neutral",
-        "displayName": "Rail foreground",
+        "displayName": "Cove Rail",
         "tonalRamp": [
-          "oklch(15% 0.008 151)",
-          "oklch(26% 0.013 151)",
-          "oklch(38% 0.017 151)",
-          "oklch(49% 0.018 151)",
-          "oklch(61% 0.017 151)",
-          "oklch(72% 0.014 151)",
-          "oklch(84% 0.009 151)",
-          "oklch(95% 0.003 151)"
+          "oklch(15% 0.005 291)",
+          "oklch(26% 0.008 291)",
+          "oklch(38% 0.011 291)",
+          "oklch(49% 0.012 291)",
+          "oklch(61% 0.012 291)",
+          "oklch(72% 0.008 291)",
+          "oklch(84% 0.005 291)",
+          "oklch(95% 0.002 291)"
         ]
       },
-      "nav-label": {
+      "cove-selected": {
+        "role": "secondary",
+        "displayName": "Cove Selected",
+        "tonalRamp": [
+          "oklch(15% 0.011 292)",
+          "oklch(26% 0.020 292)",
+          "oklch(38% 0.029 292)",
+          "oklch(49% 0.030 292)",
+          "oklch(61% 0.029 292)",
+          "oklch(72% 0.021 292)",
+          "oklch(84% 0.012 292)",
+          "oklch(95% 0.004 292)"
+        ]
+      },
+      "cove-selected-ink": {
+        "role": "secondary",
+        "displayName": "Cove Selected Ink",
+        "tonalRamp": [
+          "oklch(15% 0.041 289)",
+          "oklch(26% 0.071 289)",
+          "oklch(38% 0.103 289)",
+          "oklch(49% 0.109 289)",
+          "oklch(61% 0.106 289)",
+          "oklch(72% 0.076 289)",
+          "oklch(84% 0.044 289)",
+          "oklch(95% 0.014 289)"
+        ]
+      },
+      "cove-identity": {
+        "role": "secondary",
+        "displayName": "Cove Identity",
+        "tonalRamp": [
+          "oklch(15% 0.009 296)",
+          "oklch(26% 0.016 296)",
+          "oklch(38% 0.023 296)",
+          "oklch(49% 0.025 296)",
+          "oklch(61% 0.024 296)",
+          "oklch(72% 0.017 296)",
+          "oklch(84% 0.010 296)",
+          "oklch(95% 0.003 296)"
+        ]
+      },
+      "cove-wave": {
+        "role": "secondary",
+        "displayName": "Cove Wave",
+        "tonalRamp": [
+          "oklch(15% 0.028 293)",
+          "oklch(26% 0.049 293)",
+          "oklch(38% 0.072 293)",
+          "oklch(49% 0.075 293)",
+          "oklch(61% 0.074 293)",
+          "oklch(72% 0.053 293)",
+          "oklch(84% 0.030 293)",
+          "oklch(95% 0.009 293)"
+        ]
+      },
+      "cove-session": {
+        "role": "secondary",
+        "displayName": "Cove Session",
+        "tonalRamp": [
+          "oklch(15% 0.027 169)",
+          "oklch(26% 0.047 169)",
+          "oklch(38% 0.068 169)",
+          "oklch(49% 0.072 169)",
+          "oklch(61% 0.070 169)",
+          "oklch(72% 0.050 169)",
+          "oklch(84% 0.029 169)",
+          "oklch(95% 0.009 169)"
+        ]
+      },
+      "auth-dark-canvas": {
         "role": "neutral",
-        "displayName": "Navigation group label",
+        "displayName": "Auth Dark Canvas",
         "tonalRamp": [
-          "oklch(15% 0.013 154)",
-          "oklch(26% 0.021 154)",
-          "oklch(38% 0.026 154)",
-          "oklch(49% 0.028 154)",
-          "oklch(61% 0.027 154)",
-          "oklch(72% 0.022 154)",
-          "oklch(84% 0.014 154)",
-          "oklch(95% 0.004 154)"
+          "oklch(15% 0.009 172)",
+          "oklch(26% 0.016 172)",
+          "oklch(38% 0.023 172)",
+          "oklch(49% 0.024 172)",
+          "oklch(61% 0.023 172)",
+          "oklch(72% 0.017 172)",
+          "oklch(84% 0.010 172)",
+          "oklch(95% 0.003 172)"
         ]
       },
-      "rail-caption": {
+      "auth-dark-panel": {
         "role": "neutral",
-        "displayName": "Account caption",
+        "displayName": "Auth Dark Panel",
         "tonalRamp": [
-          "oklch(15% 0.012 156)",
-          "oklch(26% 0.020 156)",
-          "oklch(38% 0.025 156)",
-          "oklch(49% 0.027 156)",
-          "oklch(61% 0.026 156)",
-          "oklch(72% 0.021 156)",
-          "oklch(84% 0.013 156)",
-          "oklch(95% 0.004 156)"
+          "oklch(15% 0.010 167)",
+          "oklch(26% 0.017 167)",
+          "oklch(38% 0.025 167)",
+          "oklch(49% 0.026 167)",
+          "oklch(61% 0.026 167)",
+          "oklch(72% 0.018 167)",
+          "oklch(84% 0.010 167)",
+          "oklch(95% 0.003 167)"
         ]
       },
-      "rail-divider": {
+      "auth-dark-ink": {
         "role": "neutral",
-        "displayName": "Account divider",
+        "displayName": "Auth Dark Ink",
         "tonalRamp": [
-          "oklch(15% 0.017 165)",
-          "oklch(26% 0.028 165)",
-          "oklch(38% 0.036 165)",
-          "oklch(49% 0.038 165)",
-          "oklch(61% 0.036 165)",
-          "oklch(72% 0.030 165)",
-          "oklch(84% 0.018 165)",
-          "oklch(95% 0.006 165)"
+          "oklch(15% 0.005 135)",
+          "oklch(26% 0.009 135)",
+          "oklch(38% 0.013 135)",
+          "oklch(49% 0.013 135)",
+          "oklch(61% 0.013 135)",
+          "oklch(72% 0.009 135)",
+          "oklch(84% 0.005 135)",
+          "oklch(95% 0.002 135)"
         ]
       },
-      "nav-hover": {
+      "auth-dark-muted": {
         "role": "neutral",
-        "displayName": "Navigation hover",
+        "displayName": "Auth Dark Muted",
         "tonalRamp": [
-          "oklch(15% 0.020 168)",
-          "oklch(26% 0.032 168)",
-          "oklch(38% 0.041 168)",
-          "oklch(49% 0.044 168)",
-          "oklch(61% 0.041 168)",
-          "oklch(72% 0.034 168)",
-          "oklch(84% 0.021 168)",
-          "oklch(95% 0.007 168)"
+          "oklch(15% 0.007 153)",
+          "oklch(26% 0.013 153)",
+          "oklch(38% 0.019 153)",
+          "oklch(49% 0.020 153)",
+          "oklch(61% 0.019 153)",
+          "oklch(72% 0.014 153)",
+          "oklch(84% 0.008 153)",
+          "oklch(95% 0.002 153)"
         ]
       },
-      "nav-indicator": {
-        "role": "accent",
-        "displayName": "Current page indicator",
-        "tonalRamp": [
-          "oklch(15% 0.041 131)",
-          "oklch(26% 0.066 131)",
-          "oklch(38% 0.084 131)",
-          "oklch(49% 0.091 131)",
-          "oklch(61% 0.085 131)",
-          "oklch(72% 0.070 131)",
-          "oklch(84% 0.044 131)",
-          "oklch(95% 0.014 131)"
-        ]
-      },
-      "avatar-surface": {
+      "auth-dark-line": {
         "role": "neutral",
-        "displayName": "Avatar surface",
+        "displayName": "Auth Dark Line",
         "tonalRamp": [
-          "oklch(15% 0.020 121)",
-          "oklch(26% 0.033 121)",
-          "oklch(38% 0.042 121)",
-          "oklch(49% 0.045 121)",
-          "oklch(61% 0.042 121)",
-          "oklch(72% 0.035 121)",
-          "oklch(84% 0.022 121)",
-          "oklch(95% 0.007 121)"
+          "oklch(15% 0.012 157)",
+          "oklch(26% 0.020 157)",
+          "oklch(38% 0.029 157)",
+          "oklch(49% 0.031 157)",
+          "oklch(61% 0.030 157)",
+          "oklch(72% 0.022 157)",
+          "oklch(84% 0.012 157)",
+          "oklch(95% 0.004 157)"
         ]
       },
-      "avatar-ink": {
-        "role": "neutral",
-        "displayName": "Avatar initial",
+      "auth-dark-accent": {
+        "role": "primary",
+        "displayName": "Auth Dark Accent",
         "tonalRamp": [
-          "oklch(15% 0.023 156)",
-          "oklch(26% 0.036 156)",
-          "oklch(38% 0.046 156)",
-          "oklch(49% 0.050 156)",
-          "oklch(61% 0.047 156)",
-          "oklch(72% 0.038 156)",
-          "oklch(84% 0.024 156)",
-          "oklch(95% 0.008 156)"
+          "oklch(15% 0.032 159)",
+          "oklch(26% 0.056 159)",
+          "oklch(38% 0.082 159)",
+          "oklch(49% 0.086 159)",
+          "oklch(61% 0.084 159)",
+          "oklch(72% 0.060 159)",
+          "oklch(84% 0.034 159)",
+          "oklch(95% 0.011 159)"
         ]
       },
-      "welcome-text": {
+      "cove-dark-canvas": {
         "role": "neutral",
-        "displayName": "Welcome and auth art text",
+        "displayName": "Cove Dark Canvas",
         "tonalRamp": [
-          "oklch(15% 0.009 123)",
-          "oklch(26% 0.014 123)",
+          "oklch(15% 0.009 292)",
+          "oklch(26% 0.015 292)",
+          "oklch(38% 0.022 292)",
+          "oklch(49% 0.023 292)",
+          "oklch(61% 0.023 292)",
+          "oklch(72% 0.016 292)",
+          "oklch(84% 0.009 292)",
+          "oklch(95% 0.003 292)"
+        ]
+      },
+      "cove-dark-panel": {
+        "role": "neutral",
+        "displayName": "Cove Dark Panel",
+        "tonalRamp": [
+          "oklch(15% 0.011 294)",
+          "oklch(26% 0.018 294)",
+          "oklch(38% 0.027 294)",
+          "oklch(49% 0.028 294)",
+          "oklch(61% 0.027 294)",
+          "oklch(72% 0.020 294)",
+          "oklch(84% 0.011 294)",
+          "oklch(95% 0.004 294)"
+        ]
+      },
+      "cove-dark-ink": {
+        "role": "neutral",
+        "displayName": "Cove Dark Ink",
+        "tonalRamp": [
+          "oklch(15% 0.005 301)",
+          "oklch(26% 0.008 301)",
+          "oklch(38% 0.012 301)",
+          "oklch(49% 0.012 301)",
+          "oklch(61% 0.012 301)",
+          "oklch(72% 0.009 301)",
+          "oklch(84% 0.005 301)",
+          "oklch(95% 0.002 301)"
+        ]
+      },
+      "cove-dark-muted": {
+        "role": "neutral",
+        "displayName": "Cove Dark Muted",
+        "tonalRamp": [
+          "oklch(15% 0.010 298)",
+          "oklch(26% 0.017 298)",
+          "oklch(38% 0.026 298)",
+          "oklch(49% 0.027 298)",
+          "oklch(61% 0.026 298)",
+          "oklch(72% 0.019 298)",
+          "oklch(84% 0.011 298)",
+          "oklch(95% 0.003 298)"
+        ]
+      },
+      "cove-dark-line": {
+        "role": "neutral",
+        "displayName": "Cove Dark Line",
+        "tonalRamp": [
+          "oklch(15% 0.012 297)",
+          "oklch(26% 0.021 297)",
+          "oklch(38% 0.030 297)",
+          "oklch(49% 0.032 297)",
+          "oklch(61% 0.031 297)",
+          "oklch(72% 0.022 297)",
+          "oklch(84% 0.013 297)",
+          "oklch(95% 0.004 297)"
+        ]
+      },
+      "cove-dark-accent": {
+        "role": "primary",
+        "displayName": "Cove Dark Accent",
+        "tonalRamp": [
+          "oklch(15% 0.045 290)",
+          "oklch(26% 0.078 290)",
+          "oklch(38% 0.113 290)",
+          "oklch(49% 0.119 290)",
+          "oklch(61% 0.116 290)",
+          "oklch(72% 0.084 290)",
+          "oklch(84% 0.048 290)",
+          "oklch(95% 0.015 290)"
+        ]
+      },
+      "cove-dark-focus": {
+        "role": "secondary",
+        "displayName": "Cove Dark Focus",
+        "tonalRamp": [
+          "oklch(15% 0.030 296)",
+          "oklch(26% 0.053 296)",
+          "oklch(38% 0.077 296)",
+          "oklch(49% 0.081 296)",
+          "oklch(61% 0.079 296)",
+          "oklch(72% 0.057 296)",
+          "oklch(84% 0.032 296)",
+          "oklch(95% 0.010 296)"
+        ]
+      },
+      "cove-dark-rail": {
+        "role": "neutral",
+        "displayName": "Cove Dark Rail",
+        "tonalRamp": [
+          "oklch(15% 0.011 293)",
+          "oklch(26% 0.018 293)",
+          "oklch(38% 0.027 293)",
+          "oklch(49% 0.028 293)",
+          "oklch(61% 0.028 293)",
+          "oklch(72% 0.020 293)",
+          "oklch(84% 0.011 293)",
+          "oklch(95% 0.004 293)"
+        ]
+      },
+      "cove-dark-selected": {
+        "role": "secondary",
+        "displayName": "Cove Dark Selected",
+        "tonalRamp": [
+          "oklch(15% 0.018 299)",
+          "oklch(26% 0.031 299)",
+          "oklch(38% 0.045 299)",
+          "oklch(49% 0.047 299)",
+          "oklch(61% 0.046 299)",
+          "oklch(72% 0.033 299)",
+          "oklch(84% 0.019 299)",
+          "oklch(95% 0.006 299)"
+        ]
+      },
+      "cove-dark-selected-ink": {
+        "role": "secondary",
+        "displayName": "Cove Dark Selected Ink",
+        "tonalRamp": [
+          "oklch(15% 0.017 297)",
+          "oklch(26% 0.029 297)",
+          "oklch(38% 0.043 297)",
+          "oklch(49% 0.045 297)",
+          "oklch(61% 0.044 297)",
+          "oklch(72% 0.032 297)",
+          "oklch(84% 0.018 297)",
+          "oklch(95% 0.006 297)"
+        ]
+      },
+      "cove-dark-identity": {
+        "role": "secondary",
+        "displayName": "Cove Dark Identity",
+        "tonalRamp": [
+          "oklch(15% 0.014 300)",
+          "oklch(26% 0.023 300)",
+          "oklch(38% 0.034 300)",
+          "oklch(49% 0.036 300)",
+          "oklch(61% 0.035 300)",
+          "oklch(72% 0.025 300)",
+          "oklch(84% 0.014 300)",
+          "oklch(95% 0.005 300)"
+        ]
+      },
+      "cove-dark-wave": {
+        "role": "secondary",
+        "displayName": "Cove Dark Wave",
+        "tonalRamp": [
+          "oklch(15% 0.022 300)",
+          "oklch(26% 0.039 300)",
+          "oklch(38% 0.056 300)",
+          "oklch(49% 0.059 300)",
+          "oklch(61% 0.058 300)",
+          "oklch(72% 0.041 300)",
+          "oklch(84% 0.024 300)",
+          "oklch(95% 0.007 300)"
+        ]
+      },
+      "cove-dark-session": {
+        "role": "secondary",
+        "displayName": "Cove Dark Session",
+        "tonalRamp": [
+          "oklch(15% 0.031 162)",
+          "oklch(26% 0.053 162)",
+          "oklch(38% 0.078 162)",
+          "oklch(49% 0.082 162)",
+          "oklch(61% 0.080 162)",
+          "oklch(72% 0.057 162)",
+          "oklch(84% 0.033 162)",
+          "oklch(95% 0.010 162)"
+        ]
+      },
+      "auth-art": {
+        "role": "neutral",
+        "displayName": "Auth Art",
+        "tonalRamp": [
+          "oklch(15% 0.018 176)",
+          "oklch(26% 0.031 176)",
+          "oklch(38% 0.045 176)",
+          "oklch(49% 0.047 176)",
+          "oklch(61% 0.046 176)",
+          "oklch(72% 0.033 176)",
+          "oklch(84% 0.019 176)",
+          "oklch(95% 0.006 176)"
+        ]
+      },
+      "auth-art-text": {
+        "role": "neutral",
+        "displayName": "Auth Art Text",
+        "tonalRamp": [
+          "oklch(15% 0.007 123)",
+          "oklch(26% 0.012 123)",
           "oklch(38% 0.018 123)",
           "oklch(49% 0.019 123)",
-          "oklch(61% 0.018 123)",
-          "oklch(72% 0.015 123)",
-          "oklch(84% 0.009 123)",
-          "oklch(95% 0.003 123)"
+          "oklch(61% 0.019 123)",
+          "oklch(72% 0.013 123)",
+          "oklch(84% 0.008 123)",
+          "oklch(95% 0.002 123)"
         ]
       },
-      "welcome-name": {
-        "role": "accent",
-        "displayName": "Welcome name",
+      "auth-brand-fill": {
+        "role": "secondary",
+        "displayName": "Auth Brand Fill",
         "tonalRamp": [
-          "oklch(15% 0.032 124)",
-          "oklch(26% 0.051 124)",
-          "oklch(38% 0.065 124)",
-          "oklch(49% 0.070 124)",
-          "oklch(61% 0.066 124)",
-          "oklch(72% 0.054 124)",
-          "oklch(84% 0.034 124)",
-          "oklch(95% 0.011 124)"
+          "oklch(15% 0.033 133)",
+          "oklch(26% 0.058 133)",
+          "oklch(38% 0.085 133)",
+          "oklch(49% 0.089 133)",
+          "oklch(61% 0.087 133)",
+          "oklch(72% 0.062 133)",
+          "oklch(84% 0.036 133)",
+          "oklch(95% 0.011 133)"
         ]
       },
-      "icon-surface": {
-        "role": "neutral",
-        "displayName": "Account icon tile",
+      "auth-brand-ink": {
+        "role": "secondary",
+        "displayName": "Auth Brand Ink",
         "tonalRamp": [
-          "oklch(15% 0.011 127)",
-          "oklch(26% 0.018 127)",
-          "oklch(38% 0.024 127)",
-          "oklch(49% 0.025 127)",
-          "oklch(61% 0.024 127)",
-          "oklch(72% 0.019 127)",
-          "oklch(84% 0.012 127)",
-          "oklch(95% 0.004 127)"
+          "oklch(15% 0.016 172)",
+          "oklch(26% 0.029 172)",
+          "oklch(38% 0.042 172)",
+          "oklch(49% 0.044 172)",
+          "oklch(61% 0.043 172)",
+          "oklch(72% 0.031 172)",
+          "oklch(84% 0.018 172)",
+          "oklch(95% 0.005 172)"
         ]
       },
-      "icon-ink": {
-        "role": "neutral",
-        "displayName": "Account icon",
+      "field-invalid": {
+        "role": "secondary",
+        "displayName": "Field Invalid",
         "tonalRamp": [
-          "oklch(15% 0.033 160)",
-          "oklch(26% 0.053 160)",
-          "oklch(38% 0.068 160)",
-          "oklch(49% 0.073 160)",
-          "oklch(61% 0.069 160)",
-          "oklch(72% 0.057 160)",
-          "oklch(84% 0.035 160)",
-          "oklch(95% 0.011 160)"
-        ]
-      },
-      "invalid-border": {
-        "role": "accent",
-        "displayName": "Invalid field border",
-        "tonalRamp": [
-          "oklch(15% 0.068 28)",
-          "oklch(26% 0.109 28)",
-          "oklch(38% 0.139 28)",
+          "oklch(15% 0.056 28)",
+          "oklch(26% 0.097 28)",
+          "oklch(38% 0.142 28)",
           "oklch(49% 0.150 28)",
-          "oklch(61% 0.141 28)",
-          "oklch(72% 0.116 28)",
-          "oklch(84% 0.072 28)",
-          "oklch(95% 0.023 28)"
+          "oklch(61% 0.146 28)",
+          "oklch(72% 0.105 28)",
+          "oklch(84% 0.060 28)",
+          "oklch(95% 0.019 28)"
         ]
       },
       "error-text": {
-        "role": "accent",
-        "displayName": "Field and notice error text",
+        "role": "secondary",
+        "displayName": "Error Text",
         "tonalRamp": [
-          "oklch(15% 0.066 30)",
-          "oklch(26% 0.106 30)",
-          "oklch(38% 0.136 30)",
+          "oklch(15% 0.055 30)",
+          "oklch(26% 0.095 30)",
+          "oklch(38% 0.138 30)",
           "oklch(49% 0.146 30)",
-          "oklch(61% 0.137 30)",
-          "oklch(72% 0.112 30)",
-          "oklch(84% 0.070 30)",
-          "oklch(95% 0.023 30)"
+          "oklch(61% 0.142 30)",
+          "oklch(72% 0.102 30)",
+          "oklch(84% 0.058 30)",
+          "oklch(95% 0.018 30)"
         ]
       },
-      "notice-surface": {
-        "role": "neutral",
-        "displayName": "Error notice surface",
+      "error-fill": {
+        "role": "secondary",
+        "displayName": "Error Fill",
         "tonalRamp": [
-          "oklch(15% 0.008 45)",
-          "oklch(26% 0.013 45)",
+          "oklch(15% 0.006 45)",
+          "oklch(26% 0.011 45)",
           "oklch(38% 0.016 45)",
           "oklch(49% 0.017 45)",
-          "oklch(61% 0.016 45)",
-          "oklch(72% 0.013 45)",
-          "oklch(84% 0.008 45)",
-          "oklch(95% 0.003 45)"
+          "oklch(61% 0.017 45)",
+          "oklch(72% 0.012 45)",
+          "oklch(84% 0.007 45)",
+          "oklch(95% 0.002 45)"
         ]
       },
       "dark-error-text": {
-        "role": "accent",
-        "displayName": "Dark field error text",
+        "role": "secondary",
+        "displayName": "Dark Error Text",
         "tonalRamp": [
-          "oklch(15% 0.038 32)",
-          "oklch(26% 0.062 32)",
-          "oklch(38% 0.079 32)",
-          "oklch(49% 0.084 32)",
-          "oklch(61% 0.080 32)",
-          "oklch(72% 0.065 32)",
-          "oklch(84% 0.041 32)",
-          "oklch(95% 0.013 32)"
+          "oklch(15% 0.032 32)",
+          "oklch(26% 0.055 32)",
+          "oklch(38% 0.080 32)",
+          "oklch(49% 0.085 32)",
+          "oklch(61% 0.082 32)",
+          "oklch(72% 0.059 32)",
+          "oklch(84% 0.034 32)",
+          "oklch(95% 0.011 32)"
         ]
       },
-      "dark-notice-text": {
-        "role": "accent",
-        "displayName": "Dark notice text",
-        "tonalRamp": [
-          "oklch(15% 0.016 39)",
-          "oklch(26% 0.026 39)",
-          "oklch(38% 0.033 39)",
-          "oklch(49% 0.036 39)",
-          "oklch(61% 0.034 39)",
-          "oklch(72% 0.028 39)",
-          "oklch(84% 0.017 39)",
-          "oklch(95% 0.006 39)"
-        ]
-      },
-      "dark-notice-surface": {
+      "dark-alert-text": {
         "role": "neutral",
-        "displayName": "Dark notice surface",
+        "displayName": "Dark Alert Text",
         "tonalRamp": [
-          "oklch(15% 0.022 40)",
-          "oklch(26% 0.036 40)",
-          "oklch(38% 0.046 40)",
-          "oklch(49% 0.049 40)",
-          "oklch(61% 0.047 40)",
-          "oklch(72% 0.038 40)",
-          "oklch(84% 0.024 40)",
-          "oklch(95% 0.008 40)"
+          "oklch(15% 0.013 39)",
+          "oklch(26% 0.023 39)",
+          "oklch(38% 0.034 39)",
+          "oklch(49% 0.036 39)",
+          "oklch(61% 0.035 39)",
+          "oklch(72% 0.025 39)",
+          "oklch(84% 0.014 39)",
+          "oklch(95% 0.004 39)"
+        ]
+      },
+      "dark-error-fill": {
+        "role": "secondary",
+        "displayName": "Dark Error Fill",
+        "tonalRamp": [
+          "oklch(15% 0.019 40)",
+          "oklch(26% 0.032 40)",
+          "oklch(38% 0.047 40)",
+          "oklch(49% 0.050 40)",
+          "oklch(61% 0.048 40)",
+          "oklch(72% 0.035 40)",
+          "oklch(84% 0.020 40)",
+          "oklch(95% 0.006 40)"
         ]
       },
       "drawer-scrim": {
         "role": "neutral",
-        "displayName": "Modal drawer overlay",
+        "displayName": "Drawer Scrim",
         "tonalRamp": [
-          "oklch(15% 0.013 171 / 0.667)",
-          "oklch(26% 0.021 171 / 0.667)",
-          "oklch(38% 0.027 171 / 0.667)",
-          "oklch(49% 0.029 171 / 0.667)",
-          "oklch(61% 0.027 171 / 0.667)",
-          "oklch(72% 0.022 171 / 0.667)",
-          "oklch(84% 0.014 171 / 0.667)",
-          "oklch(95% 0.005 171 / 0.667)"
+          "oklch(15% 0.014 288)",
+          "oklch(26% 0.024 288)",
+          "oklch(38% 0.036 288)",
+          "oklch(49% 0.038 288)",
+          "oklch(61% 0.037 288)",
+          "oklch(72% 0.026 288)",
+          "oklch(84% 0.015 288)",
+          "oklch(95% 0.005 288)"
+        ]
+      },
+      "on-accent": {
+        "role": "neutral",
+        "displayName": "On Accent",
+        "tonalRamp": [
+          "oklch(15% 0.000 0)",
+          "oklch(26% 0.000 0)",
+          "oklch(38% 0.000 0)",
+          "oklch(49% 0.000 0)",
+          "oklch(61% 0.000 0)",
+          "oklch(72% 0.000 0)",
+          "oklch(84% 0.000 0)",
+          "oklch(95% 0.000 0)"
         ]
       }
     },
     "typographyMeta": {
-      "display": {
-        "displayName": "Display",
-        "purpose": "Personal greeting on Overview."
-      },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Page title on the dashboard and auth forms."
+        "purpose": "Protected page title."
+      },
+      "auth-headline": {
+        "displayName": "Auth Headline",
+        "purpose": "Public form and protected gate titles."
+      },
+      "identity-name": {
+        "displayName": "Identity Name",
+        "purpose": "Account holder's name on desktop."
+      },
+      "identity-name-mobile": {
+        "displayName": "Identity Name Mobile",
+        "purpose": "Account holder's name on mobile."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Account card headings."
+        "purpose": "Desktop profile heading."
+      },
+      "title-mobile": {
+        "displayName": "Title Mobile",
+        "purpose": "Mobile profile heading."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Interface copy and standard controls."
+        "purpose": "Default interface text."
+      },
+      "value": {
+        "displayName": "Value",
+        "purpose": "Read-only account values."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Visible field labels."
-      },
-      "wordmark": {
-        "displayName": "Wordmark",
-        "purpose": "TaskFlow wordmark in the brand lockup."
+        "purpose": "Form field labels."
       },
       "supporting": {
-        "displayName": "Supporting text",
-        "purpose": "Field hints and errors, and the breadcrumb. Sign-out and welcome actions use the same size with their own weights."
+        "displayName": "Supporting",
+        "purpose": "Hints, errors, session note and breadcrumb."
       },
       "caption": {
         "displayName": "Caption",
-        "purpose": "Sidebar account caption and session note."
+        "purpose": "Account caption in the rail."
       },
-      "nav-group": {
-        "displayName": "Navigation group",
-        "purpose": "Uppercase group label in the rail and navigation drawer."
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Shared TaskFlow wordmark."
       }
     },
-    "shadows": [
-      {
-        "name": "current-link",
-        "value": "inset 3px 0 #c6e8a9",
-        "purpose": "Marks the current page along the inside edge of the navigation link."
-      }
-    ],
+    "shadows": [],
     "motion": [],
     "breakpoints": [
       {
@@ -682,18 +814,18 @@
     {
       "name": "Primary action",
       "kind": "button",
-      "refersTo": "button-primary",
+      "refersTo": "auth-submit",
       "description": "Submit an authentication form.",
       "html": "<button type=\"button\" class=\"ds-primary\">Sign in</button>",
       "css": ".ds-primary { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); font-size: 15px; line-height: 1.5; font-weight: 650; color: white; background: var(--color-accent, #125942); border: 0; border-radius: 9px; min-height: 44px; padding: 12px 19px; cursor: pointer; } .ds-primary:hover { filter: brightness(1.1); } .ds-primary:disabled { opacity: .7; cursor: wait; } .ds-primary:focus-visible { outline: 3px solid var(--color-focus, #a56512); outline-offset: 4px; }"
     },
     {
-      "name": "Welcome link",
+      "name": "View account",
       "kind": "button",
-      "refersTo": "welcome-link",
-      "description": "Open account details from the overview.",
-      "html": "<div class=\"ds-welcome\"><a class=\"ds-welcome-link\" href=\"/app/account\">View account <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14m-7-7 7 7-7 7\"/></svg></a></div>",
-      "css": ".ds-welcome { background: #183f36; padding: 12px; } .ds-welcome-link { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); display: inline-flex; align-items: center; gap: 9px; box-sizing: border-box; min-height: 44px; padding: 9px 13px; background: #e4f1cf; color: #203d2c; border-radius: 9px; font-size: 13px; font-weight: 650; text-decoration: none; } .ds-welcome-link:hover { filter: brightness(1.1); } .ds-welcome-link:focus-visible { outline: 3px solid var(--color-focus-on-dark, #ffe3a8); outline-offset: 4px; }"
+      "refersTo": "account-link",
+      "description": "Navigate from Overview to Account.",
+      "html": "<a class=\"ds-account\" href=\"/app/account\">View account <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M5 12h14m-7-7 7 7-7 7\"/></svg></a>",
+      "css": ".ds-account{font-family:var(--font-sans,'DM Sans Variable',sans-serif);display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:9px 13px;border-radius:9px;background:#51468b;color:white;text-decoration:none;font-size:14px;font-weight:650}.ds-account:hover{filter:brightness(1.1)}.ds-account:focus-visible{outline:3px solid #5744a5;outline-offset:4px}"
     },
     {
       "name": "Email field",
@@ -704,49 +836,53 @@
       "css": ".ds-field { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); color: var(--color-ink, #182b27); } .ds-field label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; } .ds-field input { box-sizing: border-box; width: 100%; height: 48px; padding: 12px; font: inherit; color: inherit; background: var(--color-panel, #fff); border: 1px solid var(--color-control-border, #7a8a80); border-radius: 9px; } .ds-field input[aria-invalid=\"true\"] { border-color: #c45145; } .ds-field input:focus-visible { outline: 3px solid var(--color-focus, #a56512); outline-offset: 4px; }"
     },
     {
-      "name": "Current navigation item",
+      "name": "Navigation",
       "kind": "nav",
       "refersTo": "nav-current",
-      "description": "Current page in the desktop rail and mobile drawer.",
-      "html": "<nav class=\"ds-rail\" aria-label=\"Main navigation\"><a href=\"/app\" aria-current=\"page\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/></svg> Overview</a></nav>",
-      "css": ".ds-rail { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); background: #142f29; padding: 18px; } .ds-rail a { display: flex; align-items: center; gap: 12px; padding: 11px 14px; font-size: 14px; border-radius: 8px; color: #d1e0d4; text-decoration: none; } .ds-rail a[aria-current=\"page\"] { color: white; background: #2d4d40; font-weight: 650; box-shadow: inset 3px 0 #c6e8a9; } .ds-rail a:hover { background: #28483c; } .ds-rail a:focus-visible { outline: 3px solid var(--color-focus-on-dark, #ffe3a8); outline-offset: 4px; } @media (prefers-color-scheme: dark) { .ds-rail { background: #0e211b; } }"
+      "description": "Workspace destinations with the current page highlighted.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"/app\" aria-current=\"page\">Overview</a><a href=\"/app/account\">Account</a></nav>",
+      "css": ".ds-nav{font-family:var(--font-sans,'DM Sans Variable',sans-serif);display:grid;gap:5px;background:#eeedf6;padding:12px}.ds-nav a{display:flex;align-items:center;padding:8px 14px;min-height:44px;border-radius:8px;text-decoration:none;color:#29273b;font-size:14px;font-weight:550}.ds-nav a:hover{background:#e8e4f6}.ds-nav a[aria-current]{color:#493d80;background:#dcd9ef;font-weight:650}.ds-nav a:focus-visible{outline:3px solid #5744a5;outline-offset:4px}"
     },
     {
-      "name": "Account detail card",
+      "name": "Account identity",
+      "kind": "card",
+      "refersTo": "identity-strip",
+      "description": "Name and signed-in state with a decorative wave.",
+      "html": "<section class=\"ds-identity\" aria-label=\"Account identity\"><span class=\"ds-initials\" aria-hidden=\"true\">AL</span><div class=\"ds-copy\"><h2>Avery Lane</h2><p>Signed in to TaskFlow</p></div><svg class=\"ds-wave\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 320 160\" fill=\"none\" ><g stroke=\"#a59bcf\" stroke-width=\"2\"><path d=\"M-18 175 C65 140 55 17 132 22 S229 160 321 -12\"/> <path d=\"M-13 175 C69 140 60 17 137 22 S234 160 326 -12\"/> <path d=\"M-8 175 C73 140 65 17 142 22 S239 160 331 -12\"/> <path d=\"M-3 175 C77 140 70 17 147 22 S244 160 336 -12\"/> <path d=\"M2 175 C81 140 75 17 152 22 S249 160 341 -12\"/> <path d=\"M7 175 C85 140 80 17 157 22 S254 160 346 -12\"/> <path d=\"M12 175 C89 140 85 17 162 22 S259 160 351 -12\"/> <path d=\"M17 175 C93 140 90 17 167 22 S264 160 356 -12\"/> <path d=\"M22 175 C97 140 95 17 172 22 S269 160 361 -12\"/> <path d=\"M27 175 C101 140 100 17 177 22 S274 160 366 -12\"/> <path d=\"M32 175 C105 140 105 17 182 22 S279 160 371 -12\"/> <path d=\"M37 175 C109 140 110 17 187 22 S284 160 376 -12\"/> <path d=\"M42 175 C113 140 115 17 192 22 S289 160 381 -12\"/></g></svg></section>",
+      "css": ".ds-identity{font-family:var(--font-sans,'DM Sans Variable',sans-serif);display:flex;align-items:center;gap:18px;isolation:isolate;position:relative;overflow:hidden;min-height:152px;padding:30px 36px;border-radius:14px;background:#e8e4f6;color:#29273b}.ds-copy{max-width:55%;overflow-wrap:anywhere}.ds-copy h2{margin:0;font-size:30px;font-weight:620;line-height:1.25;letter-spacing:-.03em}.ds-copy p{display:flex;align-items:center;gap:8px;margin:6px 0 0;font-size:13px;color:#585567}.ds-copy p:before{content:'';display:block;width:7px;height:7px;border-radius:50%;background:#33705c}.ds-initials{display:grid;place-items:center;width:60px;height:60px;border-radius:18px;background:#51468b;color:white;font-size:24px;font-weight:650}.ds-wave{position:absolute;right:0;top:0;width:30%;height:100%;z-index:-1}@media(max-width:740px){.ds-wave{display:none}.ds-identity{min-height:124px;padding:18px;gap:12px}.ds-copy{max-width:none}.ds-copy h2{font-size:24px}.ds-initials{width:46px;height:46px;font-size:18px;border-radius:13px}}"
+    },
+    {
+      "name": "Profile card",
       "kind": "card",
       "refersTo": "profile-card",
-      "description": "Read-only personal account details with the mobile label/value layout.",
-      "html": "<section class=\"ds-card\"><h2>Profile details</h2><dl><div><dt>Time zone</dt><dd>UTC</dd></div></dl></section>",
-      "css": ".ds-card { font-family: var(--font-sans, 'DM Sans Variable', sans-serif); border: 1px solid var(--color-line, #dbe2db); border-radius: 15px; padding: 24px clamp(20px, 3vw, 32px); background: var(--color-panel, #fff); color: var(--color-ink, #182b27); } .ds-card h2 { margin: 0 0 13px; font-size: 20px; font-weight: 600; letter-spacing: -.6px; } .ds-card dl, .ds-card dd { margin: 0; } .ds-card dl div { display: grid; grid-template-columns: minmax(120px, .65fr) 1fr; gap: 16px; padding: 13px 0; font-size: 14px; } .ds-card dt { color: var(--color-muted, #566761); } .ds-card dd { font-weight: 550; overflow-wrap: anywhere; } @media (max-width: 740px) { .ds-card dl div { grid-template-columns: minmax(94px, .68fr) 1fr; gap: 8px; } } @media (max-width: 420px) { .ds-card dl div { grid-template-columns: 1fr; gap: 3px; } .ds-card dd { padding-left: 27px; } }"
+      "description": "Labeled account data with dividing rules.",
+      "html": "<section class=\"ds-profile\" aria-label=\"Profile details\"><h2>Profile details</h2><dl><div><dt>Full name</dt><dd>Avery Lane</dd></div><div><dt>Email address</dt><dd>avery@example.invalid</dd></div><div><dt>Time zone</dt><dd>UTC</dd></div></dl></section>",
+      "css": ".ds-profile{font-family:var(--font-sans,'DM Sans Variable',sans-serif);padding:12px 30px;border:1px solid #dbd9e5;border-radius:14px;color:#29273b;background:#fff}.ds-profile h2{margin:12px 0 18px;font-size:21px;font-weight:620}.ds-profile dl{margin:0}.ds-profile dl>div{border-top:1px solid #dbd9e5;min-height:62px;display:grid;grid-template-columns:minmax(90px,36%) minmax(0,1fr);align-items:center;gap:12px}.ds-profile dt{font-size:14px;color:#585567}.ds-profile dd{margin:0;font-size:15px;font-weight:520;overflow-wrap:anywhere}@media(max-width:420px){.ds-profile{padding:8px 16px}.ds-profile dl>div{grid-template-columns:1fr;align-content:center;gap:3px}}"
     }
   ],
   "narrative": {
-    "northStar": "An editorial workspace with a personal serif greeting.",
-    "overview": "The dark green rail orients the user. A personal greeting introduces the overview, and labeled rows make account details easy to scan.",
+    "northStar": "Cove",
+    "overview": "A project manager or contributor opening TaskFlow can locate the current page, identify the signed-in account and read its details in one column. A pale lavender rail anchors the workspace. The same hue recurs in the identity strip and the action that opens Account.\n\nSign-in and registration use a forest-green landscape beside a short form. Across both surfaces, the TaskFlow wordmark, DM Sans typography and visible field labels keep the transition familiar.",
     "keyCharacteristics": [
-      "Green navigation and welcome surfaces",
-      "DM Sans for controls and data",
-      "Instrument Serif for the personal greeting"
+      "A stable navigation rail on desktop and a labeled navigation dialog on phones.",
+      "One tinted identity strip above a bordered list of account details.",
+      "Visible text for session status and field errors."
     ],
     "rules": [
       {
-        "name": "Welcome typography",
-        "body": "Reserve the display face for the greeting.",
-        "section": "typography"
-      },
-      {
-        "name": "Current page",
-        "body": "Combine a label, selected fill, heavier weight and an inset stripe.",
-        "section": "elevation"
+        "name": "The Surface Palette Rule",
+        "body": "Resolve text, focus and action colors against the palette of the enclosing surface, including the portaled mobile drawer.",
+        "section": "colors"
       }
     ],
     "dos": [
-      "Keep field errors associated with their inputs.",
-      "Check long values and reading order at mobile widths."
+      "Do keep visible labels paired with values when account rows stack.",
+      "Do preserve the current-page indication, skip link and drawer focus return.",
+      "Do let long names and email addresses wrap in the main content."
     ],
     "donts": [
-      "Don't use color alone to convey selection or errors.",
-      "Don't introduce project or task placeholders on the personal overview."
+      "Don't rely on color alone to identify a field error or the current page.",
+      "Don't add project or task metrics to the personal account overview without a corresponding product feature."
     ]
   }
 }
