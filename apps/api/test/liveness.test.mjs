@@ -23,6 +23,15 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   assert.ok(paths["/api/v1/auth/register"].post.responses["201"]);
   assert.ok(paths["/api/v1/auth/login"].post.responses["200"]);
   const directory = paths["/api/v1/workspaces"].get;
+  const createWorkspace = paths["/api/v1/workspaces"].post;
+  assert.deepEqual(createWorkspace.security, [{ cookie: [] }]);
+  assert.ok(
+    createWorkspace.parameters.some(
+      (p) => p.name === "X-CSRF-Token" && p.required,
+    ),
+  );
+  assert.ok(createWorkspace.responses["201"].headers.Location);
+  assert.ok(createWorkspace.responses["409"]);
   assert.deepEqual(directory.security, [{ cookie: [] }]);
   assert.ok(directory.responses["400"]);
   assert.ok(directory.responses["401"]);

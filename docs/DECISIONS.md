@@ -1,5 +1,11 @@
 # Implementation decisions
 
+## M1 workspace creation and audit
+
+`POST /api/v1/workspaces` accepts a display name and a globally unique slug. Slugs are trimmed, lowercased and validated as alphanumeric segments separated by hyphens. The database unique constraint arbitrates concurrent requests. A committed creation returns 201 with the new resource location; a colliding slug returns 409.
+
+Workspace creation, the creator's OWNER membership and the WORKSPACE_CREATED audit row share one PostgreSQL transaction. The actor comes from the authenticated session and the request ID from server middleware. This event stores an empty JSON object for details. The audit table requires a workspace and retains events with a null actor reference when the actor is deleted.
+
 ## M1 workspace directory
 
 The directory reads the caller's current membership together with the active workspace. The session establishes identity and the database query establishes access, so removal takes effect on the next request. The list orders by workspace ID and uses a signed continuation bound to the actor and the directory version. Rotating the signing secret invalidates existing cursors. A client can restart pagination from the first page.
