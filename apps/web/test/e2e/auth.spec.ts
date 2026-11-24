@@ -224,7 +224,7 @@ test.describe("mobile header", () => {
   }
 });
 
-test("the profile card stays in place when the welcome fonts arrive", async ({
+test("the profile card stays in place when the dashboard font arrives", async ({
   page,
   browser,
 }) => {
@@ -238,16 +238,15 @@ test("the profile card stays in place when the welcome fonts arrive", async ({
     Promise.withResolvers<void>();
   try {
     const overview = await cold.newPage();
-    await overview.route("**/instrument-serif-*.woff2", async (route) => {
+    await overview.route("**/dm-sans-*.woff2", async (route) => {
       await holdFonts;
       await route.continue();
     });
     await overview.goto(page.url(), { waitUntil: "domcontentloaded" });
-    await expect(overview.locator(".welcome em")).toHaveText(name + ".");
-    await overview.evaluate(() =>
-      document.fonts.load('15px "DM Sans Variable"').then(() => true),
-    );
-    const face = 'italic 60px "Instrument Serif"';
+    await expect(
+      overview.getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+    const face = '600 30px "DM Sans Variable"';
     expect(
       await overview.evaluate((font) => document.fonts.check(font), face),
     ).toBe(false);
@@ -376,7 +375,7 @@ async function expectControlContrast(
 for (const colorScheme of ["light", "dark"] as const) {
   test(`fields and keyboard focus have sufficient contrast in the ${colorScheme} theme`, async ({
     page,
-  }) => {
+  }, info) => {
     await page.emulateMedia({ colorScheme });
     for (const route of ["/login", "/register"]) {
       await page.goto(route);
@@ -398,6 +397,17 @@ for (const colorScheme of ["light", "dark"] as const) {
     }
 
     await createAccount(page);
+    await screenshot(page, info, "overview-" + colorScheme);
+    const accountLink = page.getByRole("link", { name: "View account" });
+    await accountLink.click();
+    await expect(
+      page.getByRole("heading", { name: "Profile details" }),
+    ).toBeVisible();
+    await screenshot(page, info, "account-" + colorScheme);
+    await page.getByRole("link", { name: "Overview" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Overview", exact: true }),
+    ).toBeVisible();
     await page.keyboard.press("Tab");
     await expectControlContrast(
       page.locator(".sidebar a").first(),
@@ -406,7 +416,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     );
     await expectControlContrast(
       page.getByRole("link", { name: "View account" }),
-      page.locator(".welcome"),
+      page.locator(".profile-card"),
       "outlineColor",
     );
     await expectControlContrast(

@@ -1,205 +1,229 @@
 ---
-name: TaskFlow
-description: The M0 web interface for authentication, personal navigation and account details.
+name: "TaskFlow"
+description: "Cove workspace and public authentication interfaces."
 colors:
-  canvas: "#f7f8f4"
-  panel: "#ffffff"
-  ink: "#182b27"
-  muted: "#566761"
-  line: "#dbe2db"
-  accent: "#125942"
-  dark-canvas: "#12221d"
-  dark-panel: "#1a2b24"
-  dark-ink: "#edf3ea"
-  dark-muted: "#bcc9bf"
-  dark-line: "#3e5145"
-  dark-accent: "#246747"
-  rail: "#142f29"
-  nav-selected: "#2d4d40"
-  nav-text: "#d1e0d4"
-  welcome: "#183f36"
-  hero-link: "#e4f1cf"
-  hero-ink: "#203d2c"
-  control-border: "#7a8a80"
-  focus: "#a56512"
-  focus-on-dark: "#ffe3a8"
-  on-accent: "#ffffff"
-  brand-mark: "#c8ecaf"
-  brand-ink: "#193b31"
-  dark-rail: "#0e211b"
-  rail-text: "#e5f1e7"
-  nav-label: "#b4c7b9"
-  rail-caption: "#b5c8bb"
-  rail-divider: "#385347"
-  nav-hover: "#28483c"
-  nav-indicator: "#c6e8a9"
-  avatar-surface: "#e0eac9"
-  avatar-ink: "#294835"
-  welcome-text: "#f4f9eb"
-  welcome-name: "#dcefbc"
-  icon-surface: "#e9f1df"
-  icon-ink: "#2c6247"
-  invalid-border: "#c45145"
+  auth-canvas: "#f7f8f4"
+  auth-panel: "#ffffff"
+  auth-ink: "#182b27"
+  auth-muted: "#566761"
+  auth-line: "#dbe2db"
+  auth-control-border: "#7a8a80"
+  auth-focus: "#a56512"
+  auth-focus-on-dark: "#ffe3a8"
+  auth-accent: "#125942"
+  cove-ink: "#29273b"
+  cove-canvas: "#f9f9fc"
+  cove-panel: "#fff"
+  cove-line: "#dbd9e5"
+  cove-muted: "#585567"
+  cove-accent: "#51468b"
+  cove-focus: "#5744a5"
+  cove-rail: "#eeedf6"
+  cove-selected: "#dcd9ef"
+  cove-selected-ink: "#493d80"
+  cove-identity: "#e8e4f6"
+  cove-wave: "#a59bcf"
+  cove-session: "#33705c"
+  auth-dark-canvas: "#12221d"
+  auth-dark-panel: "#1a2b24"
+  auth-dark-ink: "#edf3ea"
+  auth-dark-muted: "#bcc9bf"
+  auth-dark-line: "#3e5145"
+  auth-dark-accent: "#246747"
+  cove-dark-canvas: "#1b1925"
+  cove-dark-panel: "#252231"
+  cove-dark-ink: "#f5f2fb"
+  cove-dark-muted: "#c6c1d4"
+  cove-dark-line: "#4b4659"
+  cove-dark-accent: "#6557a4"
+  cove-dark-focus: "#d3c5ff"
+  cove-dark-rail: "#211e2d"
+  cove-dark-selected: "#403752"
+  cove-dark-selected-ink: "#e6deff"
+  cove-dark-identity: "#373044"
+  cove-dark-wave: "#6e6186"
+  cove-dark-session: "#92d4b3"
+  auth-art: "#183f36"
+  auth-art-text: "#f4f9eb"
+  auth-brand-fill: "#c8ecaf"
+  auth-brand-ink: "#193b31"
+  field-invalid: "#c45145"
   error-text: "#9a2e21"
-  notice-surface: "#fff1eb"
+  error-fill: "#fff1eb"
   dark-error-text: "#ffb9aa"
-  dark-notice-text: "#ffe1d7"
-  dark-notice-surface: "#59392e"
-  drawer-scrim: "#071b15aa"
+  dark-alert-text: "#ffe1d7"
+  dark-error-fill: "#59392e"
+  drawer-scrim: "#201e32aa"
+  on-accent: "#ffffff"
 typography:
-  display:
-    fontFamily: "Instrument Serif, Instrument Serif Fallback, Georgia, serif"
-    fontSize: "clamp(38px, 4.4vw, 64px)"
-    fontWeight: 400
-    lineHeight: 0.99
-    letterSpacing: "-0.7px"
   headline:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "clamp(34px, 3.1vw, 48px)"
+    fontWeight: 620
+    lineHeight: 1.1
+    letterSpacing: "-0.04em"
+  auth-headline:
     fontFamily: "DM Sans Variable, sans-serif"
     fontSize: "clamp(32px, 4vw, 42px)"
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: "-1.8px"
+  identity-name:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "30px"
+    fontWeight: 620
+    lineHeight: 1.25
+    letterSpacing: "-0.03em"
+  identity-name-mobile:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "24px"
+    fontWeight: 620
+    lineHeight: 1.25
+    letterSpacing: "-0.03em"
   title:
     fontFamily: "DM Sans Variable, sans-serif"
-    fontSize: "20px"
-    fontWeight: 600
-    letterSpacing: "-0.6px"
+    fontSize: "21px"
+    fontWeight: 620
+    lineHeight: 1.25
+    letterSpacing: "-0.026em"
+  title-mobile:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "18px"
+    fontWeight: 620
+    lineHeight: 1.25
+    letterSpacing: "-0.026em"
   body:
     fontFamily: "DM Sans Variable, sans-serif"
     fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.5
+  value:
+    fontFamily: "DM Sans Variable, sans-serif"
+    fontSize: "15px"
+    fontWeight: 520
   label:
     fontFamily: "DM Sans Variable, sans-serif"
     fontSize: "14px"
     fontWeight: 600
-  wordmark:
-    fontFamily: "DM Sans Variable, sans-serif"
-    fontSize: "24px"
-    fontWeight: 690
-    lineHeight: 1.5
-    letterSpacing: "-1.3px"
   supporting:
     fontFamily: "DM Sans Variable, sans-serif"
     fontSize: "13px"
     fontWeight: 400
-    lineHeight: 1.5
   caption:
     fontFamily: "DM Sans Variable, sans-serif"
     fontSize: "12px"
     fontWeight: 400
-    lineHeight: 1.5
-  nav-group:
+  wordmark:
     fontFamily: "DM Sans Variable, sans-serif"
-    fontSize: "11px"
-    fontWeight: 650
-    lineHeight: 1.5
-    letterSpacing: "1.7px"
+    fontSize: "24px"
+    fontWeight: 690
+    letterSpacing: "-1.3px"
 rounded:
-  nav: "8px"
+  utility: "7px"
+  navigation: "8px"
   control: "9px"
-  brand: "11px"
-  card: "15px"
-  welcome: "16px"
+  auth-brand: "11px"
+  mobile-initials: "13px"
+  panel: "14px"
+  initials: "18px"
+  circle: "50%"
 spacing:
-  label-gap: "7px"
-  input-inset: "12px"
-  detail-gap: "16px"
-  field-gap: "21px"
-  card-gap: "22px"
-  section-gap: "24px"
+  paired: "8px"
+  inline: "12px"
+  gutter: "16px"
+  group: "20px"
+  section: "32px"
 components:
-  button-primary:
-    backgroundColor: "{colors.accent}"
+  auth-submit:
+    backgroundColor: "{colors.auth-accent}"
     textColor: "{colors.on-accent}"
     rounded: "{rounded.control}"
     padding: "12px 19px"
-  welcome-link:
-    backgroundColor: "{colors.hero-link}"
-    textColor: "{colors.hero-ink}"
+  account-link:
+    backgroundColor: "{colors.cove-accent}"
+    textColor: "{colors.on-accent}"
     rounded: "{rounded.control}"
     padding: "9px 13px"
   text-input:
-    backgroundColor: "{colors.panel}"
+    backgroundColor: "{colors.auth-panel}"
+    textColor: "{colors.auth-ink}"
     rounded: "{rounded.control}"
+    padding: "12px"
     height: "48px"
-    padding: "{spacing.input-inset}"
   nav-current:
-    backgroundColor: "{colors.nav-selected}"
-    textColor: "{colors.on-accent}"
-    rounded: "{rounded.nav}"
-    padding: "11px 14px"
+    backgroundColor: "{colors.cove-selected}"
+    textColor: "{colors.cove-selected-ink}"
+    rounded: "{rounded.navigation}"
+    padding: "8px 14px"
+  identity-strip:
+    backgroundColor: "{colors.cove-identity}"
+    textColor: "{colors.cove-ink}"
+    rounded: "{rounded.panel}"
+    padding: "30px 36px"
   profile-card:
-    backgroundColor: "{colors.panel}"
-    rounded: "{rounded.card}"
-    padding: "24px clamp(20px, 3vw, 32px)"
+    backgroundColor: "{colors.cove-panel}"
+    textColor: "{colors.cove-ink}"
+    rounded: "{rounded.panel}"
+    padding: "12px 30px"
 ---
 
 # Design System: TaskFlow
 
 ## Overview
 
-TaskFlow is an editorial workspace. On the personal dashboard, a large serif greeting gives the user's name prominence, while the deep green rail locates the current page. The account details below use plain labels, aligned values and thin dividers. The sign-in and registration screens use the same green landscape beside a single column of fields. The decorative lines carry no information.
+**Creative North Star: "Cove"**
 
-This baseline covers the M0 web app. The CSS owns the theme and dimensions. The frontmatter records its light-theme defaults and dark overrides; the spacing and radius names describe observed uses. The [stylesheet](apps/web/src/app/globals.css), [auth form](apps/web/src/features/auth/auth-form.tsx), [protected shell](apps/web/src/features/shell/protected-shell.tsx) and [review screenshots](docs/review/issue-7) show the implementation.
+A project manager or contributor opening TaskFlow can locate the current page, identify the signed-in account and read its details in one column. A pale lavender rail anchors the workspace. The same hue recurs in the identity strip and the action that opens Account.
+
+Sign-in and registration use a forest-green landscape beside a short form. Across both surfaces, the TaskFlow wordmark, DM Sans typography and visible field labels keep the transition familiar.
+
+- A stable navigation rail on desktop and a labeled navigation dialog on phones.
+- One tinted identity strip above a bordered list of account details.
+- Visible text for session status and field errors.
 
 ## Colors
 
-| CSS role       | Light     | Dark      | Where it appears                                    |
-| -------------- | --------- | --------- | --------------------------------------------------- |
-| Canvas         | `#f7f8f4` | `#12221d` | Page behind dashboard sections                      |
-| Panel          | `#ffffff` | `#1a2b24` | Auth form surface, inputs, top bar and account card |
-| Ink            | `#182b27` | `#edf3ea` | Headings and values                                 |
-| Muted          | `#566761` | `#bcc9bf` | Instructions, field hints, labels and breadcrumbs   |
-| Line           | `#dbe2db` | `#3e5145` | Surface borders and row dividers                    |
-| Control border | `#7a8a80` | `#7a8a80` | Editable field boundaries                           |
-| Focus          | `#a56512` | `#ffe3a8` | Keyboard focus on the surrounding surface           |
-| Accent         | `#125942` | `#246747` | Primary button behind white text                    |
+Cove uses violet for primary actions and the initials tile. The current navigation link has a lavender fill, darker ink and a heavier label. Porcelain, white and a fine cool-gray divider separate the canvas, toolbar and profile rows. A small green dot accompanies the written session status.
 
-The OS color preference selects the theme. The rail changes from `#142f29` to `#0e211b`. The welcome panel keeps its `#183f36` background and `#f4f9eb` text, with the user's name in `#dcefbc`. Keyboard focus uses a 3px outline with a 4px offset. Use the pale amber focus token on the dark rail, drawer and welcome panel in either theme. Field boundaries and focus indicators need at least 3:1 contrast against their adjacent surface.
+Public forms use forest green for submission, sage for the brand mark and neutral ink for help text. Invalid controls acquire a contrasting border and a written error. The user's dark color scheme activates separate graphite-violet and deep-green palettes. Dark public forms use the pale amber focus color.
 
-Invalid inputs use a `#c45145` border and an associated text error. Error text uses `#9a2e21` in light mode and `#ffb9aa` in dark mode. Form-level notices use `#fff1eb` behind the light error text and `#59392e` behind `#ffe1d7` in dark mode.
-
-The landscape in the auth and welcome panels uses `#446a57`, `#a3c49c80`, `#507361` and `#9bb69a` for its gradient and contours. Its three masks blend transparent stops with opaque black (`#000`) to reveal the drawing. These values belong to the illustration. The translucent drawer scrim has a separate interaction role and uses the `drawer-scrim` primitive.
+**The Surface Palette Rule.** Resolve text, focus and action colors against the palette of the enclosing surface, including the portaled mobile drawer.
 
 ## Typography
 
-DM Sans Variable carries page headings, navigation, forms and data. Body copy is 15px with a 1.5 line height. Page headings scale from 32px to 42px. Card titles are 20px at weight 600, field labels 14px at 600, and field hints and errors 13px. Navigation group labels are 11px uppercase at 650 with 1.7px tracking.
-
-Instrument Serif appears in the welcome greeting at 38–64px with a 0.99 line height. Only the user's name takes the italic face. While those fonts load, locally available Times New Roman or Liberation Serif uses separate size adjustments for the greeting and the name to keep their line breaks stable. The panel grows naturally when a name needs more lines.
+DM Sans Variable is self-hosted with a sans-serif fallback. Page titles are the largest text. The signed-in name ranks above the profile heading, and their shared weight ties them together. The name and heading reduce in size on mobile. Read-only values sit beside quieter labels and icons. Sentence case carries through the navigation, buttons, form hints and status text.
 
 ## Layout
 
-| Surface         | Desktop                                                                                                                                                 | At 740px and below                                                                                                                                                                              |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Authentication  | Full-height grid with `minmax(280px, 0.85fr) 1.15fr`. The form caps at 390px and its parent has 40px vertical and 28px horizontal padding.              | A single panel with the brand above the form, 32px vertical and 24px horizontal padding. The illustration is hidden.                                                                            |
-| App shell       | Sticky 238px sidebar, flexible content and a 70px top bar.                                                                                              | The bar is at least 60px high. Menu and sign-out targets are at least 44 × 44px. The controls and breadcrumb wrap when needed. The drawer can grow up to the viewport width with enlarged text. |
-| Dashboard       | Centered, 1150px maximum including gutters. Top padding is 39px; horizontal padding scales from 20px to 72px. The welcome panel is at least 240px tall. | Top padding drops to 26px and the welcome panel to a 214px minimum.                                                                                                                             |
-| Account details | Two columns, `minmax(120px, 0.65fr) 1fr`, with a 16px gap.                                                                                              | The first column shrinks to `minmax(94px, 0.68fr)` and the gap to 8px. At 420px and below, each value sits below its label with a 3px gap and 27px indent.                                      |
-
-Use the spacing of the enclosing component. In auth forms, leave 7px between label and input and 21px after each field. The dashboard leaves 24px after the page heading and 22px before the account card. Detail rows have 13px of vertical padding. Long account values and greeting names wrap.
+| Surface              | Desktop                                                                                                                                                                       | Mobile                                                                                                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Protected navigation | A 230px sticky rail contains the brand, Overview, Account and the personal account footer. The toolbar starts at 64px and holds the breadcrumb and sign-out.                  | At 740px and below a menu button opens the drawer. The toolbar starts at 60px and can wrap when text is enlarged. Menu and sign-out each have at least a 44px touch target.    |
+| Overview and Account | The centered work area has a maximum width of 1180px. A 30px gap follows the page title. The identity strip is at least 152px high and the profile card starts 32px below it. | Content has 16px side gutters. The identity strip starts at 124px and the space above the profile card falls to 20px. The decorative wave drops out to make room for the name. |
+| Profile rows         | Labels use 36% of the row with a 110px minimum. Values can wrap. Each row is at least 62px high.                                                                              | Rows are at least 70px high. At 420px and below each value moves under its label, aligned with the label text past its icon.                                                   |
+| Public forms         | The artwork and form use two columns. The form caps at 390px. Labels sit 7px above the inputs and fields have 21px of space below.                                            | At 740px and below, the brand moves above the heading and the form occupies a single column with 24px side padding.                                                            |
 
 ## Elevation & Depth
 
-Panel fills and one-pixel borders distinguish the card and top bar. Resting surfaces have no drop shadow. The selected navigation link uses an inset 3px pale green stripe. On mobile the translucent `#071b15aa` scrim sits at z-index 7 and the navigation dialog at 8. Current component states change without authored animation.
+The toolbar and profile card use a one-pixel divider or border. These surfaces remain flat. Opening the navigation drawer places a translucent ink scrim over the page. The drawer sits above it and scrolls independently. Selection, hover and focus take effect immediately.
 
 ## Shapes
 
-Controls and icon tiles have 9px corners. Navigation items and error notices have 8px corners. The account card uses 15px and the welcome panel 16px. The brand pairs a 35px pale green tile with 11px corners and a layered icon with a 24px wordmark. The 37px circular avatar holds the user's initial. See the [brand component](apps/web/src/components/brand.tsx).
+The brand keeps its layered icon and wordmark on both surfaces. The public mark uses a 35px sage tile. Inside the workspace it becomes a 32px violet tile. The identity strip and account panel share 14px corners. The account holder's initials appear in a rounded square in the strip and a smaller circle in the rail footer.
 
 ## Components
 
-- **Primary action.** Use the shared [Button](apps/web/src/components/ui/button.tsx) for actions. It defaults to `type="button"`; auth forms explicitly use submit. The primary style has a 44px minimum height and fills the auth form width. Hover brightens it by 10%. Disabled buttons use 70% opacity and a wait cursor. The welcome panel uses `Button asChild` around the account link, with a pale green fill, dark text and an arrow.
-- **Form controls.** Inputs are 48px tall with 12px padding and a one-pixel border. Keep visible labels, appropriate autocomplete and associated hint/error IDs. Password fields reserve 48px on the right for the 46 × 48px reveal button. Preserve its accessible name and pressed state. Announce submission errors and keep the user's entered values available for correction.
-- **Navigation.** Overview and Account share a Personal group. The current link uses `aria-current="page"`, a heavier weight, a `#2d4d40` fill and a `#c6e8a9` inset stripe. Hover uses `#28483c`. The account identity sits at the foot of the rail; sign-out is in the top bar. The mobile Radix dialog gives these same links a named, focus-contained surface with a close control and Escape dismissal.
-- **Account data.** Use a heading, icon tile and definition list for read-only name, email and time zone. Put the muted label before the value in reading order. Separate rows with thin rules inside one card. The overview link opens the account view.
-- **Keyboard access.** The shell's first skip link becomes visible on focus and targets the focusable main region. Keep the focus ring visible on controls, maintain source order across breakpoints, and return focus to the menu trigger when dismissing the drawer with Escape.
+- **Navigation.** Use links for Overview and Account. Set `aria-current="page"` on the active route. Hover fills the target. The mobile dialog presents the same destinations, contains keyboard focus and returns focus to its opener on Escape. A skip link targets the main region.
+- **Identity strip.** Pair the account holder's name with “Signed in to TaskFlow.” Keep space for the name to wrap. The fine violet wave sits at the far edge on desktop and carries no information.
+- **Profile card.** Render full name, email address and time zone as a definition list with a rule above each row. Overview places the View account link beside the section heading. The heading and action can wrap onto separate lines. Account labels this section “Profile details.”
+- **Actions.** Use the shared Button for form submission and for the styled account link. The public submit fills the form width. Both primary actions have at least 44px height and brighten on hover. The toolbar keeps sign-out as a button. Pending actions show their busy label.
+- **Fields and recovery.** Inputs have a 48px height and a visible label. Password fields reserve 48px for the show/hide control. Associate help and error text with its field. A lost session explains the return to sign-in and focuses email. A failed profile load offers retry and a route back to sign-in.
+- **Keyboard focus.** Controls use a three-pixel solid outline with four pixels of offset. Select the focus color for the surface and color scheme. Keep space for the ring around drawer links and toolbar actions.
 
 ## Do's and Don'ts
 
-- Do use the paired foreground and surface roles in both color schemes.
-- Do keep route links navigable as anchors and use buttons for actions such as sign-out.
-- Do test the drawer with a keyboard and the account card with a long email at 420px.
-- Don't use the welcome display face for fields or tabular information.
-- Don't convey a field error or the selected navigation item through color alone.
-- Don't populate the personal overview with placeholder projects or task counts.
+- Do keep visible labels paired with values when account rows stack.
+- Do preserve the current-page indication, skip link and drawer focus return.
+- Do let long names and email addresses wrap in the main content.
+
+- Don't rely on color alone to identify a field error or the current page.
+- Don't add project or task metrics to the personal account overview without a corresponding product feature.
