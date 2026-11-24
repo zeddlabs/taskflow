@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { Prisma } from "../generated/prisma/client";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { AuthConfig } from "../auth/auth.config";
 import { DatabaseService } from "../database.service";
 import { InvalidDtoException } from "../http/problem-details";
 import {
+  CreateWorkspaceDto,
+  CreatedWorkspace,
   WorkspaceListQuery,
   WorkspacePage,
   WorkspaceSummary,
@@ -20,6 +27,43 @@ export class WorkspacesService {
     private readonly db: DatabaseService,
     private readonly config: AuthConfig,
   ) {}
+
+  async create(
+    userId: string,
+    dto: CreateWorkspaceDto,
+    requestId: string,
+  ): Promise<CreatedWorkspace> {
+    return this.db.$transaction(async (tx) => {
+      const workspace = await tx.workspace
+        .create({
+          data: { name: dto.name, slug: dto.slug },
+          select: { id: true, name: true, slug: true, createdAt: true },
+        })
+        .catch((error: unknown) => {
+          if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+          )
+            throw new ConflictException();
+          throw error;
+        });
+      await tx.workspaceMember.create({
+        data: { workspaceId: workspace.id, userId, role: "OWNER" },
+      });
+      await tx.auditLog.create({
+        data: {
+          workspaceId: workspace.id,
+          actorId: userId,
+          action: "WORKSPACE_CREATED",
+          targetType: "Workspace",
+          targetId: workspace.id,
+          requestId,
+          details: {},
+        },
+      });
+      return { ...workspace, myRole: "OWNER" };
+    });
+  }
 
   private cursor(userId: string, workspaceId: string) {
     const key = Buffer.from(workspaceId).toString("base64url");

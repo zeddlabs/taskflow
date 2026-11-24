@@ -2,10 +2,47 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { after, test } from "node:test";
 import { DatabaseService } from "../src/database.service";
+import { WorkspacesService } from "../src/workspaces/workspaces.service";
 import type { Prisma } from "../src/generated/prisma/client";
 
 const db = new DatabaseService();
 after(() => db.$disconnect());
+
+test("a rejected audit insert rolls back workspace and owner membership", async () => {
+  const user = await db.user.findUniqueOrThrow({
+    where: { emailNormalized: "owner@example.invalid" },
+  });
+  const service = new WorkspacesService(db, {
+    secret: randomBytes(32).toString("hex"),
+    csrfSecret: randomBytes(32).toString("hex"),
+    origin: "https://test.example.invalid",
+    issuer: "test",
+    audience: "test",
+    secure: true,
+  });
+  const slug = "rollback-" + randomUUID();
+  const memberships = await db.workspaceMember.count({
+    where: { userId: user.id },
+  });
+  try {
+    // requestId is limited to 100 characters by PostgreSQL; fail the final write.
+    await assert.rejects(
+      service.create(
+        user.id,
+        { name: "Rollback probe", slug },
+        "r".repeat(101),
+      ),
+      { code: "P2000" },
+    );
+    assert.equal(await db.workspace.count({ where: { slug } }), 0);
+    assert.equal(
+      await db.workspaceMember.count({ where: { userId: user.id } }),
+      memberships,
+    );
+  } finally {
+    await db.workspace.deleteMany({ where: { slug } });
+  }
+});
 
 // Keep even unexpectedly successful constraint probes out of the database.
 async function rejectsWrite(

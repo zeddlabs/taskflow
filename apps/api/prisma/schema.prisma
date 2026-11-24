@@ -27,6 +27,7 @@ model User {
   updatedAt       DateTime          @updatedAt
   sessions        AuthSession[]
   memberships     WorkspaceMember[]
+  auditEvents     AuditLog[]        @relation("AuditActor")
 
   @@map("users")
 }
@@ -68,6 +69,7 @@ model Workspace {
   updatedAt                 DateTime          @updatedAt
   archivedAt                DateTime?
   members                   WorkspaceMember[]
+  auditLogs                 AuditLog[]
 
   @@map("workspaces")
 }
@@ -85,4 +87,22 @@ model WorkspaceMember {
   @@index([userId])
   @@index([workspaceId, role])
   @@map("workspace_members")
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  workspaceId String
+  actorId     String?
+  action      String    @db.VarChar(100)
+  targetType  String    @db.VarChar(80)
+  targetId    String    @db.VarChar(100)
+  requestId   String?   @db.VarChar(100)
+  details     Json
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  actor       User?     @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, createdAt, id])
+  @@index([workspaceId, targetType, targetId])
+  @@map("audit_logs")
 }

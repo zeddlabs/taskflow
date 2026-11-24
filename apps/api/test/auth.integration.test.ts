@@ -489,6 +489,113 @@ test("workspace reads follow current membership and conceal inaccessible tenants
   }
 });
 
+test("workspace creation binds ownership and audit to the authenticated winner of a slug race", async () => {
+  const alice = await signedIn();
+  const bob = await signedIn();
+  const path = "/api/v1/workspaces";
+  const slug = "team-" + randomUUID();
+  const input = { name: "  Design team  ", slug };
+  const create = (session: typeof alice, proof = session.csrf) =>
+    request(base)
+      .post(path)
+      .set("Origin", origin)
+      .set("Cookie", "access_token=" + session.access)
+      .set("X-CSRF-Token", proof);
+  try {
+    await request(base)
+      .post(path)
+      .set("Origin", origin)
+      .send(input)
+      .expect(401);
+    await request(base)
+      .post(path)
+      .set("Origin", origin)
+      .set("Cookie", "access_token=" + alice.access)
+      .send(input)
+      .expect(403);
+    await create(alice, bob.csrf).send(input).expect(403);
+    await create(alice)
+      .set("Origin", "https://foreign.example.invalid")
+      .send(input)
+      .expect(403);
+    for (const invalid of [
+      { role: "OWNER" },
+      { actorId: bob.profile.id },
+      { workspaceId: slug },
+      { name: "  " },
+      { slug: "bad slug" },
+      { slug: "x".repeat(81) },
+    ]) {
+      await create(alice)
+        .send({ ...input, ...invalid })
+        .expect(400);
+    }
+    const responses = await Promise.all([
+      create(alice).send({ ...input, slug: " " + slug.toUpperCase() + " " }),
+      create(bob).send(input),
+    ]);
+    expect(responses.map((r) => r.status).sort()).toEqual([201, 409]);
+    const index = responses.findIndex((r) => r.status === 201);
+    const winner = [alice, bob][index],
+      other = [bob, alice][index];
+    const result = responses[index],
+      id = result.body.id;
+    expect(result.body).toEqual({
+      id: expect.any(String),
+      name: "Design team",
+      slug,
+      myRole: "OWNER",
+      createdAt: expect.any(String),
+    });
+    expect(result.headers.location).toBe(path + "/" + id);
+    await request(base)
+      .get(result.headers.location)
+      .set("Cookie", "access_token=" + winner.access)
+      .expect(200);
+    await request(base)
+      .get(result.headers.location)
+      .set("Cookie", "access_token=" + other.access)
+      .expect(404);
+    expect(
+      (
+        await pool.query(
+          'SELECT timezone,"allowMemberCreateProjects","archivedAt" FROM workspaces WHERE id=$1',
+          [id],
+        )
+      ).rows,
+    ).toEqual([
+      { timezone: "UTC", allowMemberCreateProjects: false, archivedAt: null },
+    ]);
+    expect(
+      (
+        await pool.query(
+          'SELECT "userId",role FROM workspace_members WHERE "workspaceId"=$1',
+          [id],
+        )
+      ).rows,
+    ).toEqual([{ userId: winner.profile.id, role: "OWNER" }]);
+    expect(
+      (
+        await pool.query(
+          'SELECT "actorId",action,"targetType","targetId","requestId",details FROM audit_logs WHERE "workspaceId"=$1',
+          [id],
+        )
+      ).rows,
+    ).toEqual([
+      {
+        actorId: winner.profile.id,
+        action: "WORKSPACE_CREATED",
+        targetType: "Workspace",
+        targetId: id,
+        requestId: result.headers["x-request-id"],
+        details: {},
+      },
+    ]);
+  } finally {
+    await pool.query("DELETE FROM workspaces WHERE slug=$1", [slug]);
+  }
+});
+
 test("limits repeated normalized identifiers and independent requests from one IP", async () => {
   const email = randomUUID() + "@example.invalid";
   for (let i = 0; i < 10; i++)
