@@ -85,7 +85,7 @@ export class WorkspaceSettings extends WorkspaceSummary {
   @ApiProperty() timezone!: string;
   @ApiProperty() allowMemberCreateProjects!: boolean;
 }
-class WorkspacePageInfo {
+export class WorkspacePageInfo {
   @ApiProperty({ type: String, nullable: true }) nextCursor!: string | null;
   @ApiProperty() hasNextPage!: boolean;
 }

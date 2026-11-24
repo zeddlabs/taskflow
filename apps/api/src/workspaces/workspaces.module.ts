@@ -4,9 +4,11 @@ import { DatabaseModule } from "../database.module";
 import { WorkspacesController } from "./workspaces.controller";
 import { WorkspacesService } from "./workspaces.service";
 
+import { WorkspaceMembersService } from "./workspace-members.service";
+
 @Module({
   imports: [AuthModule, DatabaseModule],
   controllers: [WorkspacesController],
-  providers: [WorkspacesService],
+  providers: [WorkspacesService, WorkspaceMembersService],
 })
 export class WorkspacesModule {}

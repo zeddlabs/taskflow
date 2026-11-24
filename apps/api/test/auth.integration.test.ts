@@ -1,114 +1,21 @@
-import "dotenv/config";
-import { fork, type ChildProcess } from "node:child_process";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { once } from "node:events";
-import { join } from "node:path";
 import { verify } from "@node-rs/argon2";
 import jwt from "jsonwebtoken";
-import { Pool } from "pg";
 import request from "supertest";
-
-jest.setTimeout(30000);
-const origin = "https://web.example.invalid";
-const secret = randomBytes(32).toString("hex");
-const password = randomBytes(32).toString("base64url");
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const fixtureEmails: string[] = [];
-let api: ChildProcess;
-let base: string;
-let logs = "";
-
-beforeAll(async () => {
-  if (!process.env.DATABASE_URL)
-    throw new Error("Set DATABASE_URL to a disposable migrated database.");
-  api = fork(join(__dirname, "auth-server.mjs"), [], {
-    silent: true,
-    env: {
-      ...process.env,
-      NODE_ENV: "production",
-      WEB_ORIGIN: origin,
-      JWT_ACCESS_SECRET: secret,
-      CSRF_SECRET: randomBytes(32).toString("hex"),
-      JWT_ISSUER: "taskflow-test",
-      JWT_AUDIENCE: "taskflow-browser-test",
-      COOKIE_SECURE: "false",
-    },
-  });
-  api.stdout!.on("data", (chunk) => {
-    logs += chunk;
-  });
-  api.stderr!.on("data", (chunk) => {
-    logs += chunk;
-  });
-  base = await new Promise<string>((resolve, reject) => {
-    api.once("error", reject);
-    api.once("exit", (code) =>
-      reject(new Error("API exited during startup: " + code)),
-    );
-    api.once("message", (url) => resolve(String(url)));
-  });
-});
-
-afterAll(async () => {
-  try {
-    if (api?.connected) {
-      const stopped = once(api, "exit");
-      api.disconnect();
-      await stopped;
-    }
-    if (fixtureEmails.length)
-      await pool.query(
-        'DELETE FROM users WHERE "emailNormalized" = ANY($1::text[])',
-        [fixtureEmails],
-      );
-  } finally {
-    await pool.end();
-  }
-});
-
-function account() {
-  const email = randomUUID() + "@example.invalid";
-  fixtureEmails.push(email);
-  return { email, password, name: "Test member" };
-}
-function post(path: string) {
-  return request(base)
-    .post("/api/v1/auth/" + path)
-    .set("Origin", origin);
-}
-function me(access: string) {
-  return request(base)
-    .get("/api/v1/auth/me")
-    .set("Cookie", "access_token=" + access);
-}
-function cookieValue(cookies: string[], name: string) {
-  return cookies
-    .find((cookie) => cookie.startsWith(name + "="))!
-    .split(";")[0]
-    .slice(name.length + 1);
-}
-function renew(token: string, proof: string) {
-  return post("refresh")
-    .set("Cookie", "refresh_token=" + token)
-    .set("X-CSRF-Token", proof);
-}
-async function signedIn() {
-  const user = account();
-  const registered = await post("register").send(user).expect(201);
-  const login = await post("login")
-    .send({ email: user.email, password })
-    .expect(200);
-  const cookies = login.headers["set-cookie"] as unknown as string[];
-  return {
-    profile: registered.body,
-    login,
-    cookies,
-    access: cookieValue(cookies, "access_token"),
-    refresh: cookieValue(cookies, "refresh_token"),
-    logout: cookieValue(cookies, "logout_session"),
-    csrf: login.headers["x-csrf-token"] as string,
-  };
-}
+import {
+  account,
+  base,
+  cookieValue,
+  logs,
+  me,
+  origin,
+  password,
+  pool,
+  post,
+  renew,
+  secret,
+  signedIn,
+} from "./integration-fixture";
 
 test("registration normalizes identity, rejects duplicates atomically and stores only an Argon2id hash", async () => {
   const user = account();
