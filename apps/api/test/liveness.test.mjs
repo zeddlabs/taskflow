@@ -22,6 +22,15 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   ).json();
   assert.ok(paths["/api/v1/auth/register"].post.responses["201"]);
   assert.ok(paths["/api/v1/auth/login"].post.responses["200"]);
+  const directory = paths["/api/v1/workspaces"].get;
+  assert.deepEqual(directory.security, [{ cookie: [] }]);
+  assert.ok(directory.responses["400"]);
+  assert.ok(directory.responses["401"]);
+  assert.equal(
+    directory.responses["200"].content["application/json"].schema.$ref,
+    "#/components/schemas/WorkspacePage",
+  );
+  assert.ok(paths["/api/v1/workspaces/{wid}"].get.responses["404"]);
   assert.deepEqual(paths["/api/v1/auth/me"].get.security, [{ cookie: [] }]);
   assert.equal(components.securitySchemes.cookie.name, "access_token");
   assert.equal(components.securitySchemes.refresh.name, "refresh_token");

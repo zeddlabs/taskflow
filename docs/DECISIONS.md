@@ -1,5 +1,9 @@
 # Implementation decisions
 
+## M1 workspace directory
+
+The directory reads the caller's current membership together with the active workspace. The session establishes identity and the database query establishes access, so removal takes effect on the next request. The list orders by workspace ID and uses a signed continuation bound to the actor and the directory version. Rotating the signing secret invalidates existing cursors. A client can restart pagination from the first page.
+
 ## M0 monorepo bootstrap
 
 Issue [#1](https://github.com/zeddlabs/taskflow/issues/1) pins Node.js 24.x, pnpm 10 and the application dependencies in the package manifests and lockfile. Turborepo runs package-level scripts. Both apps inherit strict TypeScript settings from the root and select their own module settings for NestJS and Next.js.
