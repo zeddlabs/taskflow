@@ -8,8 +8,8 @@
 | ---------------------------------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------- |
 | [#35 List and read workspaces through current membership](https://github.com/zeddlabs/taskflow/issues/35)              | #7, #8       | [DONE](https://github.com/zeddlabs/taskflow/pull/46) |
 | [#36 Create workspaces with an owner and transactional audit](https://github.com/zeddlabs/taskflow/issues/36)          | #35          | [DONE](https://github.com/zeddlabs/taskflow/pull/47) |
-| [#37 Enforce workspace policies, settings and archival](https://github.com/zeddlabs/taskflow/issues/37)                | #36          | IN_PROGRESS                                          |
-| [#38 Manage workspace members and transfer ownership](https://github.com/zeddlabs/taskflow/issues/38)                  | #37          | TODO                                                 |
+| [#37 Enforce workspace policies, settings and archival](https://github.com/zeddlabs/taskflow/issues/37)                | #36          | [DONE](https://github.com/zeddlabs/taskflow/pull/48) |
+| [#38 Manage workspace members and transfer ownership](https://github.com/zeddlabs/taskflow/issues/38)                  | #37          | IN_PROGRESS                                          |
 | [#39 Verify account email for invitation acceptance](https://github.com/zeddlabs/taskflow/issues/39)                   | #36          | TODO                                                 |
 | [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | TODO                                                 |
 | [#41 Create and read visibility-scoped projects with default statuses](https://github.com/zeddlabs/taskflow/issues/41) | #37          | TODO                                                 |
@@ -27,6 +27,10 @@ Issue #36 adds atomic workspace creation and the tenant audit table. Local verif
 Issue #37 adds owner/admin workspace settings and owner-only archival. Both mutations record an audit event in the same database transaction. The settings interface is tracked in #43.
 
 Local verification for #37 passed API lint, typecheck, production build, one smoke test, eight HTTP contract tests, six PostgreSQL tests, fourteen API integration tests and ten Chromium regression tests. Prisma validated the schema and applied all three existing migrations to a clean test database.
+
+Issue #38 adds the member directory, role updates, removal and atomic ownership transfer. The existing tables support all four routes. The frontend is tracked in #44.
+
+Local validation for #38 passed API lint, typecheck, build, one smoke/OpenAPI test, eight HTTP contract tests, seven PostgreSQL tests, eighteen API integration tests and ten Chromium regression tests. Coverage includes concurrent ownership transfers, concurrent removal and transfer, rollback on audit failure, profile minimization and tenant-specific revocation. Prisma validated the schema and applied all three existing migrations to a clean test database.
 
 ## Foundation and post-M0 history
 

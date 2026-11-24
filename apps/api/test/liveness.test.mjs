@@ -35,6 +35,26 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   }
   assert.ok(patch.responses["200"]);
   assert.ok(archive.responses["204"]);
+  const memberPath = paths["/api/v1/workspaces/{wid}/members/{userId}"];
+  const transfer = paths["/api/v1/workspaces/{wid}/transfer-ownership"].post;
+  assert.ok(paths["/api/v1/workspaces/{wid}/members"].get.responses["200"]);
+  for (const [operation, success] of [
+    [memberPath.patch, "200"],
+    [memberPath.delete, "204"],
+    [transfer, "200"],
+  ]) {
+    assert.deepEqual(operation.security, [{ cookie: [] }]);
+    assert.ok(
+      operation.parameters.some((p) => p.name === "X-CSRF-Token" && p.required),
+    );
+    assert.ok(operation.responses[success]);
+    for (const code of ["401", "403", "404"])
+      assert.equal(
+        operation.responses[code].content["application/problem+json"].schema
+          .$ref,
+        "#/components/schemas/ProblemDetails",
+      );
+  }
   const createWorkspace = paths["/api/v1/workspaces"].post;
   assert.deepEqual(createWorkspace.security, [{ cookie: [] }]);
   assert.ok(

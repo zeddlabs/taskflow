@@ -6,6 +6,14 @@
 
 Workspace creation, the creator's OWNER membership and the WORKSPACE_CREATED audit row share one PostgreSQL transaction. The actor comes from the authenticated session and the request ID from server middleware. This event stores an empty JSON object for details. The audit table requires a workspace and retains events with a null actor reference when the actor is deleted.
 
+## M1 workspace membership and ownership
+
+Issue #38 uses the active workspace membership for every directory read and mutation. The directory returns only user ID, display name, avatar URL and workspace role to owners, admins and members. Guests cannot list members. The cursor sorts by user ID and is signed for the current actor and workspace.
+
+Owners and admins may change or remove a non-owner membership. PATCH accepts ADMIN, MEMBER or GUEST. Repeating the current role succeeds without recording another event. Only the current owner can transfer ownership to an existing admin or member. Transfer demotes the former owner to ADMIN and promotes the target to OWNER. A guest must first be explicitly assigned an eligible role.
+
+Membership, settings and archive writes acquire the workspace lock before rechecking the actor. The unique owner index and demotion/promotion transaction preserve exactly one owner. Each effective membership change commits alongside its audit event. Removing a member revokes access to that workspace on the next request. Other workspace memberships and the account session stay valid.
+
 ## M1 workspace settings and archival
 
 Issue #37 centralizes workspace permissions. Owners and admins can read settings through `GET /api/v1/workspaces/:wid/settings` and update the name, slug, timezone and member project-creation setting through `PATCH /api/v1/workspaces/:wid`. An owner can archive through `POST /api/v1/workspaces/:wid/archive`. The ordinary workspace detail remains available to every active member. An insufficient role yields 403. A missing membership or inactive workspace yields 404.

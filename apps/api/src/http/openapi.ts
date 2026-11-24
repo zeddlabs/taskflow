@@ -10,6 +10,18 @@ export const requestIdResponseHeaders = {
   },
 };
 
+export function problemResponse(description: string) {
+  return {
+    description,
+    headers: requestIdResponseHeaders,
+    content: {
+      "application/problem+json": {
+        schema: { $ref: getSchemaPath(ProblemDetails) },
+      },
+    },
+  };
+}
+
 export function configureOpenApi(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle("TaskFlow API")
@@ -19,14 +31,9 @@ export function configureOpenApi(app: INestApplication) {
     .addCookieAuth("logout_session", { type: "apiKey" }, "logout")
     .addGlobalResponse({
       status: "default",
-      description:
+      ...problemResponse(
         "Request failed. Use the request ID to correlate the response with the server log.",
-      headers: requestIdResponseHeaders,
-      content: {
-        "application/problem+json": {
-          schema: { $ref: getSchemaPath(ProblemDetails) },
-        },
-      },
+      ),
     })
     .build();
   const document = () =>

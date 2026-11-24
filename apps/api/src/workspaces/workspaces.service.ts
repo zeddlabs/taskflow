@@ -4,12 +4,11 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { Prisma } from "../generated/prisma/client";
-import type { WorkspaceRole } from "../generated/prisma/enums";
 import {
   requireWorkspacePermission,
-  type WorkspaceAction,
+  authorizeWorkspaceWrite,
 } from "./workspace-policy";
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { directoryCursor, directoryAfter } from "./directory-cursor";
 import { AuthConfig } from "../auth/auth.config";
 import { DatabaseService } from "../database.service";
 import { InvalidDtoException } from "../http/problem-details";
@@ -93,22 +92,6 @@ export class WorkspacesService {
     return { ...member.workspace, myRole: member.role };
   }
 
-  private async authorizeWrite(
-    tx: Prisma.TransactionClient,
-    userId: string,
-    workspaceId: string,
-    action: WorkspaceAction,
-  ) {
-    // Serialize lifecycle changes and keep the caller's membership valid through commit.
-    const [member] = await tx.$queryRaw<{ role: WorkspaceRole }[]>`
-      SELECT m.role FROM workspaces w JOIN workspace_members m ON m."workspaceId" = w.id
-      WHERE w.id = ${workspaceId} AND m."userId" = ${userId} AND w."archivedAt" IS NULL
-      FOR UPDATE OF w, m`;
-    if (!member) throw new NotFoundException();
-    requireWorkspacePermission(member.role, action);
-    return member.role;
-  }
-
   async update(
     userId: string,
     workspaceId: string,
@@ -116,7 +99,7 @@ export class WorkspacesService {
     requestId: string,
   ): Promise<WorkspaceSettings> {
     return this.db.$transaction(async (tx) => {
-      const role = await this.authorizeWrite(
+      const role = await authorizeWorkspaceWrite(
         tx,
         userId,
         workspaceId,
@@ -152,7 +135,7 @@ export class WorkspacesService {
 
   async archive(userId: string, workspaceId: string, requestId: string) {
     await this.db.$transaction(async (tx) => {
-      await this.authorizeWrite(tx, userId, workspaceId, "archive");
+      await authorizeWorkspaceWrite(tx, userId, workspaceId, "archive");
       await tx.workspace.update({
         where: { id: workspaceId },
         data: { archivedAt: new Date() },
@@ -171,33 +154,18 @@ export class WorkspacesService {
     });
   }
 
-  private cursor(userId: string, workspaceId: string) {
-    const key = Buffer.from(workspaceId).toString("base64url");
-    const mac = createHmac("sha256", this.config.secret)
-      .update(JSON.stringify(["workspace-list-v1", userId, key]))
-      .digest("base64url");
-    return key + "." + mac;
-  }
-
-  private after(userId: string, cursor: string) {
-    const id = Buffer.from(cursor.split(".")[0], "base64url").toString();
-    const expected = Buffer.from(this.cursor(userId, id));
-    const supplied = Buffer.from(cursor);
-    if (
-      !id ||
-      expected.length !== supplied.length ||
-      !timingSafeEqual(expected, supplied)
-    )
-      throw new InvalidDtoException();
-    return id;
-  }
-
   async list(
     userId: string,
     query: WorkspaceListQuery,
   ): Promise<WorkspacePage> {
     const after =
-      query.cursor === undefined ? undefined : this.after(userId, query.cursor);
+      query.cursor === undefined
+        ? undefined
+        : directoryAfter(
+            this.config.secret,
+            ["workspace-list-v1", userId],
+            query.cursor,
+          );
     const rows = await this.db.workspaceMember.findMany({
       where: {
         userId,
@@ -217,7 +185,11 @@ export class WorkspacesService {
       pageInfo: {
         hasNextPage,
         nextCursor: hasNextPage
-          ? this.cursor(userId, data[data.length - 1].id)
+          ? directoryCursor(
+              this.config.secret,
+              ["workspace-list-v1", userId],
+              data[data.length - 1].id,
+            )
           : null,
       },
     };

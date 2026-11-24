@@ -4,18 +4,20 @@ import { after, test } from "node:test";
 import { DatabaseService } from "../src/database.service";
 import { WorkspacesService } from "../src/workspaces/workspaces.service";
 import type { Prisma } from "../src/generated/prisma/client";
+import { WorkspaceMembersService } from "../src/workspaces/workspace-members.service";
 
 const db = new DatabaseService();
 after(() => db.$disconnect());
 
-const service = new WorkspacesService(db, {
+const config = {
   secret: randomBytes(32).toString("hex"),
   csrfSecret: randomBytes(32).toString("hex"),
   origin: "https://test.example.invalid",
   issuer: "test",
   audience: "test",
   secure: true,
-});
+};
+const service = new WorkspacesService(db, config);
 
 test("a rejected audit insert rolls back workspace and owner membership", async () => {
   const user = await db.user.findUniqueOrThrow({
@@ -89,6 +91,66 @@ test("failed settings, archive and audit writes preserve the active workspace", 
   assert.equal(stored.name, workspace.name);
   assert.equal(stored.slug, workspace.slug);
   assert.equal(await db.auditLog.count({ where: { workspaceId: id } }), 1);
+});
+
+test("membership edits, removal and transfer roll back when their audit record fails", async (t) => {
+  const members = new WorkspaceMembersService(db, config);
+  const owner = await db.user.findUniqueOrThrow({
+    where: { emailNormalized: "owner@example.invalid" },
+  });
+  const workspace = await service.create(
+    owner.id,
+    { name: "Member audit rollback", slug: "rollback-" + randomUUID() },
+    randomUUID(),
+  );
+  t.after(async () => {
+    await db.workspace.delete({ where: { id: workspace.id } });
+  });
+  const user = await db.user.create({
+    data: {
+      name: "Member",
+      emailNormalized: randomUUID() + "@example.invalid",
+      passwordHash: owner.passwordHash,
+    },
+  });
+  t.after(async () => {
+    await db.user.delete({ where: { id: user.id } });
+  });
+  const workspaceId = workspace.id;
+  await db.workspaceMember.create({
+    data: { workspaceId, userId: user.id, role: "MEMBER" },
+  });
+  const invalidRequestId = "r".repeat(101);
+  await assert.rejects(
+    members.changeRole(
+      owner.id,
+      workspaceId,
+      user.id,
+      "ADMIN",
+      invalidRequestId,
+    ),
+    { code: "P2000" },
+  );
+  await assert.rejects(
+    members.remove(owner.id, workspaceId, user.id, invalidRequestId),
+    { code: "P2000" },
+  );
+  await assert.rejects(
+    members.transfer(owner.id, workspaceId, user.id, invalidRequestId),
+    { code: "P2000" },
+  );
+  const rows = await db.workspaceMember.findMany({
+    where: { workspaceId },
+    select: { userId: true, role: true },
+  });
+  assert.deepEqual(
+    new Map(rows.map((m) => [m.userId, m.role])),
+    new Map([
+      [owner.id, "OWNER"],
+      [user.id, "MEMBER"],
+    ]),
+  );
+  assert.equal(await db.auditLog.count({ where: { workspaceId } }), 1);
 });
 
 // Keep even unexpectedly successful constraint probes out of the database.
