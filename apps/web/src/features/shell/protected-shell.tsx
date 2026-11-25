@@ -38,7 +38,14 @@ import {
   WorkspaceDirectory,
 } from "../workspaces/workspace-area";
 import type { WorkspaceSnapshot } from "../workspaces/workspace-directory";
-export type View = "overview" | "account" | "create" | "workspace" | "settings";
+import { JoinWorkspace } from "../workspaces/join-workspace";
+export type View =
+  | "overview"
+  | "account"
+  | "create"
+  | "workspace"
+  | "settings"
+  | "members";
 type ShellProps = {
   view: View;
   initialProfile?: Profile;
@@ -124,7 +131,9 @@ function Sidebar({
             aria-current={
               view === key ||
               (key === "workspace" &&
-                (view === "create" || view === "settings"))
+                (view === "create" ||
+                  view === "settings" ||
+                  view === "members"))
                 ? "page"
                 : undefined
             }
@@ -180,11 +189,14 @@ function Shell({ view, initialProfile, slug }: ShellProps) {
       const knownSession = query.data || readSessionHint() === "authenticated";
       writeSessionHint(knownSession ? "ended" : null);
       client.clear();
-      window.location.replace("/login");
+      const joining =
+        view === "account" &&
+        new URLSearchParams(window.location.search).get("join") === "1";
+      window.location.replace(joining ? "/login?join=1" : "/login");
     } else if (query.data) {
       writeSessionHint("authenticated");
     }
-  }, [expired, client, query.data]);
+  }, [expired, client, query.data, view]);
   async function signOut() {
     setBusy(true);
     setFailure("");
@@ -221,6 +233,7 @@ function Shell({ view, initialProfile, slug }: ShellProps) {
     account: "Account",
     create: "Create workspace",
     workspace: "Overview",
+    members: "Members",
     settings: "Settings",
   }[view];
   const info = (
@@ -350,6 +363,13 @@ function Shell({ view, initialProfile, slug }: ShellProps) {
                   />
                 )}
               </section>
+              {view === "account" && (
+                <JoinWorkspace
+                  key={profile.id}
+                  profile={profile}
+                  onSessionLost={() => void query.refetch()}
+                />
+              )}
             </>
           ) : (
             <WorkspaceArea

@@ -1,5 +1,11 @@
 # Implementation decisions
 
+## M1 workspace members and invitation acceptance
+
+The Members route resolves the slug through the current actor's workspace directory. Its member and pending invitation queries are keyed by actor, workspace ID and resource. Role edits, removal, ownership transfer and invitation writes refresh the membership and workspace data. The API remains authoritative when a displayed role has changed. A member can read the directory, a guest sees restricted access, and invitation metadata is requested only for owners and admins.
+
+Invitation email links open Account with a fixed join marker. Sign-in and registration preserve only that destination. The recipient verifies their email using the existing Account flow, pastes the separately emailed token into a masked field, and explicitly accepts. The token is submitted in the CSRF-protected POST body and is never used as a URL, query key or browser storage value. Previously issued emails can still be used on Account.
+
 ## M1 workspace navigation
 
 Overview lists the signed-in user's active workspaces and links to `/onboarding/workspace`. The URL selects the current tenant at `/w/[workspaceSlug]`. The server resolves that slug from the caller's paginated directory, then requests authorized detail or settings with the same access cookie and uncached fetches. The browser can recover an expired access cookie through the shared session coordinator. Client query keys include the actor, workspace ID and resource. Switching workspaces starts a fresh document, and an unavailable selection leads back to Overview.

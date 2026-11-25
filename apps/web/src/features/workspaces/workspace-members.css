@@ -1,0 +1,107 @@
+.ws-links,
+.team-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.team-line {
+  padding-block: 12px;
+  min-height: 58px;
+}
+.team-name {
+  min-width: 0;
+  flex: 1 1 12rem;
+  overflow-wrap: anywhere;
+}
+.team-name small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+.team-row {
+  border-top: 1px solid var(--color-line);
+}
+.team-row strong {
+  font-weight: 600;
+}
+.team-line > span {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+.team input,
+.team select {
+  min-height: 46px;
+  min-width: 0;
+  border: 1px solid var(--color-control-border);
+  border-radius: 9px;
+  background: var(--color-panel);
+  color: var(--color-ink);
+  padding: 9px 12px;
+}
+.team input {
+  width: 100%;
+}
+.team legend,
+.team-edit label {
+  font-weight: 600;
+}
+.team-edit label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.team-invite,
+.team-edit,
+.team-confirm {
+  background: var(--color-canvas);
+  border-radius: 9px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.team-inputs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  margin-top: 14px;
+}
+.team-invite .field {
+  margin-bottom: 12px;
+}
+.team-pending {
+  margin-top: 24px;
+}
+.team-pending h2 {
+  font-size: 21px;
+  font-weight: 620;
+  letter-spacing: -0.025em;
+  margin-bottom: 12px;
+}
+.team-pending > p {
+  color: var(--color-muted);
+}
+.team-confirm p {
+  margin-bottom: 8px;
+}
+.team-edit .team-confirm {
+  padding: 0;
+  margin: 0;
+}
+.team :disabled {
+  opacity: 0.65;
+}
+.team-join {
+  max-width: 32rem;
+}
+@media (max-width: 540px) {
+  .team-inputs {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .team-inputs select {
+    width: 100%;
+  }
+  .team-name {
+    flex-basis: 100%;
+  }
+}

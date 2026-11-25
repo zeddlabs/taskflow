@@ -215,6 +215,8 @@ The layered TaskFlow mark sits in a 32px violet tile with 9px corners on public 
 
 - **Workspaces.** Overview places the workspace directory below the personal identity strip. Each row pairs the workspace name with its address and the user's role. The native workspace selector requires an explicit Switch action. Settings group editable fields above a separate archive section. Confirming archive names the workspace and moves keyboard focus to Keep workspace.
 
+- **Member management.** Place the member directory and the inline invite form above Pending invitations. Pair each name with its role. Keep secondary controls in an expandable row and identify the target in removal, revocation and ownership confirmations. Give Cancel the initial focus. On Account, place the masked invitation entry after email verification.
+
 ## Do's and Don'ts
 
 - Do give password hints and errors space below their field.
