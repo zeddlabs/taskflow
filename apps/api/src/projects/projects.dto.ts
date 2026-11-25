@@ -1,8 +1,15 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  PartialType,
+  PickType,
+} from "@nestjs/swagger";
+import { applyDecorators } from "@nestjs/common";
 import { Transform } from "class-transformer";
 import {
   IsDateString,
   IsEnum,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -10,10 +17,22 @@ import {
   ValidateIf,
 } from "class-validator";
 import {
+  ProjectRole,
   ProjectVisibility,
   TaskStatusCategory,
 } from "../generated/prisma/enums";
 import { WorkspacePageInfo } from "../workspaces/workspaces.dto";
+
+function ProjectDate(nullable = false) {
+  return applyDecorators(
+    ApiPropertyOptional({ type: String, format: "date", nullable }),
+    nullable
+      ? IsOptional()
+      : ValidateIf((_object, value) => value !== undefined),
+    Matches(/^\d{4}-\d{2}-\d{2}$/),
+    IsDateString({ strict: true }),
+  );
+}
 
 export class CreateProjectDto {
   @ApiProperty({ pattern: "^[A-Z0-9]{2,12}$", example: "ENG" })
@@ -38,17 +57,45 @@ export class CreateProjectDto {
   @IsEnum(ProjectVisibility)
   visibility?: ProjectVisibility;
 
-  @ApiPropertyOptional({ format: "date", example: "2027-01-01" })
-  @ValidateIf((_object, value) => value !== undefined)
-  @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  @IsDateString({ strict: true })
+  @ProjectDate()
   startDate?: string;
 
-  @ApiPropertyOptional({ format: "date", example: "2027-01-31" })
-  @ValidateIf((_object, value) => value !== undefined)
-  @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  @IsDateString({ strict: true })
+  @ProjectDate()
   dueDate?: string;
+}
+
+export class UpdateProjectDto extends PartialType(
+  PickType(CreateProjectDto, ["name", "visibility"] as const),
+  { skipNullProperties: false },
+) {
+  @ApiPropertyOptional({ type: String, maxLength: 10000, nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(10000)
+  description?: string | null;
+
+  @ProjectDate(true) startDate?: string | null;
+  @ProjectDate(true) dueDate?: string | null;
+}
+
+export class ProjectRoleDto {
+  @ApiProperty({ enum: ProjectRole }) @IsEnum(ProjectRole) role!: ProjectRole;
+}
+
+export class AddProjectMemberDto extends ProjectRoleDto {
+  @ApiProperty() @IsString() @Length(1, 100) userId!: string;
+}
+
+export class ProjectMemberProfile {
+  @ApiProperty() userId!: string;
+  @ApiProperty() name!: string;
+  @ApiProperty({ type: String, nullable: true }) avatarUrl!: string | null;
+  @ApiProperty({ enum: ProjectRole }) role!: ProjectRole;
+}
+
+export class ProjectMembersPage {
+  @ApiProperty({ type: [ProjectMemberProfile] }) data!: ProjectMemberProfile[];
+  @ApiProperty({ type: WorkspacePageInfo }) pageInfo!: WorkspacePageInfo;
 }
 
 export class ProjectSummary {
