@@ -22,7 +22,7 @@ import {
   ProjectStatusSummary,
 } from "./projects.dto";
 
-const summary = {
+export const projectSummarySelect = {
   id: true,
   workspaceId: true,
   key: true,
@@ -81,7 +81,7 @@ export class ProjectsService {
             startDate: dto.startDate ? new Date(dto.startDate) : undefined,
             dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
           },
-          select: summary,
+          select: projectSummarySelect,
         })
         .catch((error: unknown) => {
           if (
@@ -137,7 +137,7 @@ export class ProjectsService {
           },
           orderBy: { id: "asc" },
           take: query.limit + 1,
-          select: summary,
+          select: projectSummarySelect,
         },
       },
     });
@@ -158,7 +158,7 @@ export class ProjectsService {
   async detail(userId: string, id: string): Promise<ProjectSummary> {
     const project = await this.db.project.findFirst({
       where: { id, ...readableProjects(userId) },
-      select: summary,
+      select: projectSummarySelect,
     });
     if (!project) throw new NotFoundException();
     return project;

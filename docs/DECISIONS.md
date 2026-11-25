@@ -1,5 +1,13 @@
 # Implementation decisions
 
+## M1 project management
+
+Project settings, archive and explicit membership changes resolve the tenant from a visible project, acquire the workspace lifecycle lock, then recheck the actor's current access. This serializes changes with workspace archival, ownership transfer and member removal. Each change and its audit record commit together. The existing composite foreign keys revoke project grants when a workspace membership ends.
+
+Owners manage all projects. Admins manage workspace-visible projects. Managing a private project as a non-owner requires an explicit manager role. The PRD guest restriction also applies after a workspace role change: guests cannot manage project settings or grants. Archival freezes management writes (409) and preserves authorized reads. A project key remains immutable. Settings patches may clear description and dates with null, and validate partial date changes against stored values.
+
+The members directory exposes explicit project roles and public profile fields through a cursor bound to actor and project. Adding an existing grant returns 409. PATCH on the member resource changes an existing role. Removing a grant immediately ends access that depended on it. Workspace-level owner and admin capabilities continue to follow the project's visibility.
+
 ## M1 project creation and visibility
 
 Issue #41 uses one read policy for the project directory, detail and statuses. The workspace must be active. Its owner can read all projects. Admins and members can read workspace-visible projects. Every other grant requires explicit project membership. Composite foreign keys tie that grant to both the project and a current membership in the same workspace. Removing a workspace member removes their project grants. Rejoining requires new grants.

@@ -24,11 +24,10 @@ export function requireWorkspacePermission(
 
 // Take the workspace lock first for every lifecycle write. Read the actor again
 // after acquiring it so a queued request observes transfers and removals.
-export async function authorizeWorkspaceWrite(
+export async function lockWorkspaceForMember(
   tx: Prisma.TransactionClient,
   userId: string,
   workspaceId: string,
-  action: WorkspaceAction,
 ) {
   const workspace = await tx.$queryRaw<{ id: string }[]>`
     SELECT w.id FROM workspaces w
@@ -40,8 +39,18 @@ export async function authorizeWorkspaceWrite(
     SELECT role FROM workspace_members WHERE "workspaceId" = ${workspaceId}
     AND "userId" = ${userId} FOR UPDATE`;
   if (!actor) throw new NotFoundException();
-  requireWorkspacePermission(actor.role, action);
   return actor.role;
+}
+
+export async function authorizeWorkspaceWrite(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  workspaceId: string,
+  action: WorkspaceAction,
+) {
+  const role = await lockWorkspaceForMember(tx, userId, workspaceId);
+  requireWorkspacePermission(role, action);
+  return role;
 }
 
 export function requireAssignableRole(role: WorkspaceRole) {

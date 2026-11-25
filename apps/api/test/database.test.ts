@@ -3,6 +3,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { after, test } from "node:test";
 import { DatabaseService } from "../src/database.service";
 import { ProjectsService } from "../src/projects/projects.service";
+import { ProjectManagementService } from "../src/projects/project-management.service";
 import { InvitationsService } from "../src/workspaces/invitations.service";
 import { EmailVerificationService } from "../src/auth/email-verification.service";
 import { WorkspacesService } from "../src/workspaces/workspaces.service";
@@ -21,6 +22,50 @@ const config = {
   secure: true,
 };
 const service = new WorkspacesService(db, config);
+
+test("audit failure rolls back project edits, archive and grant changes", async (t) => {
+  const workspace = await db.workspace.findUniqueOrThrow({
+    where: { slug: "acme-studio" },
+    include: { members: { where: { role: "OWNER" } } },
+  });
+  const actorId = workspace.members[0].userId;
+  const projects = new ProjectsService(db, config);
+  const management = new ProjectManagementService(db, config);
+  const key = randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase();
+  const project = await projects.create(
+    actorId,
+    workspace.id,
+    { key, name: "History", visibility: "PRIVATE" },
+    randomUUID(),
+  );
+  t.after(async () => {
+    await db.project.delete({ where: { id: project.id } });
+    await db.auditLog.deleteMany({
+      where: { workspaceId: workspace.id, targetId: project.id },
+    });
+  });
+  const bad = "r".repeat(101);
+  await assert.rejects(
+    management.update(actorId, project.id, { visibility: "WORKSPACE" }, bad),
+    { code: "P2000" },
+  );
+  await assert.rejects(management.archive(actorId, project.id, bad), {
+    code: "P2000",
+  });
+  await assert.rejects(
+    management.changeRole(actorId, project.id, actorId, "VIEWER", bad),
+    { code: "P2000" },
+  );
+  await assert.rejects(management.remove(actorId, project.id, actorId, bad), {
+    code: "P2000",
+  });
+  assert.deepEqual(await projects.detail(actorId, project.id), project);
+  const grant = await db.projectMember.findUniqueOrThrow({
+    where: { projectId_userId: { projectId: project.id, userId: actorId } },
+  });
+  assert.equal(grant.role, "MANAGER");
+  assert.equal(await db.auditLog.count({ where: { targetId: project.id } }), 1);
+});
 
 test("failed project audit rolls back the project, statuses and manager membership", async () => {
   const workspace = await db.workspace.findUniqueOrThrow({

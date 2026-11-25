@@ -91,10 +91,26 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
     projects.get,
     paths["/api/v1/projects/{pid}"].get,
     paths["/api/v1/projects/{pid}/statuses"].get,
+    paths["/api/v1/projects/{pid}/members"].get,
   ]) {
     assert.deepEqual(operation.security, [{ cookie: [] }]);
     assert.ok(operation.responses["200"]);
     assert.ok(operation.responses["404"].content["application/problem+json"]);
+  }
+  for (const [operation, success] of [
+    [paths["/api/v1/projects/{pid}"].patch, "200"],
+    [paths["/api/v1/projects/{pid}/archive"].post, "200"],
+    [paths["/api/v1/projects/{pid}/members"].post, "201"],
+    [paths["/api/v1/projects/{pid}/members/{userId}"].patch, "200"],
+    [paths["/api/v1/projects/{pid}/members/{userId}"].delete, "204"],
+  ]) {
+    assert.deepEqual(operation.security, [{ cookie: [] }]);
+    assert.ok(
+      operation.parameters.some((p) => p.name === "X-CSRF-Token" && p.required),
+    );
+    assert.ok(operation.responses[success]);
+    for (const code of ["401", "403", "404", "409", "429"])
+      assert.ok(operation.responses[code].content["application/problem+json"]);
   }
   assert.ok(projects.post.responses["201"].headers.Location);
   assert.ok(projects.post.responses["409"].content["application/problem+json"]);

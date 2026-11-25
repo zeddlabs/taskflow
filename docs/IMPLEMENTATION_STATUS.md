@@ -12,8 +12,8 @@
 | [#38 Manage workspace members and transfer ownership](https://github.com/zeddlabs/taskflow/issues/38)                  | #37          | [DONE](https://github.com/zeddlabs/taskflow/pull/49) |
 | [#39 Verify account email for invitation acceptance](https://github.com/zeddlabs/taskflow/issues/39)                   | #36          | [DONE](https://github.com/zeddlabs/taskflow/pull/50) |
 | [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | [DONE](https://github.com/zeddlabs/taskflow/pull/51) |
-| [#41 Create and read visibility-scoped projects with default statuses](https://github.com/zeddlabs/taskflow/issues/41) | #37          | IN_PROGRESS                                          |
-| [#42 Manage project lifecycle and project memberships](https://github.com/zeddlabs/taskflow/issues/42)                 | #38, #41     | TODO                                                 |
+| [#41 Create and read visibility-scoped projects with default statuses](https://github.com/zeddlabs/taskflow/issues/41) | #37          | [DONE](https://github.com/zeddlabs/taskflow/pull/52) |
+| [#42 Manage project lifecycle and project memberships](https://github.com/zeddlabs/taskflow/issues/42)                 | #38, #41     | IN_PROGRESS                                          |
 | [#43 Build workspace onboarding, switcher and settings](https://github.com/zeddlabs/taskflow/issues/43)                | #37          | TODO                                                 |
 | [#44 Build member, ownership and invitation flows](https://github.com/zeddlabs/taskflow/issues/44)                     | #40, #43     | TODO                                                 |
 | [#45 Build project directory, settings and access management](https://github.com/zeddlabs/taskflow/issues/45)          | #42, #43     | TODO                                                 |
@@ -37,6 +37,8 @@ Issue #39 adds authenticated email verification by code in Account, with resend,
 Issue #40 adds the invitation API, including pending invitation lists, token rotation, revocation and verified-email acceptance. The member-facing UI is tracked in #44. Local API lint, typecheck, build, one smoke/OpenAPI test, eight HTTP contract tests, nine PostgreSQL tests, twenty-five API integration tests and eleven Chromium regression tests passed. All five migrations and the seed ran on a clean PostgreSQL database.
 
 Issue #41 adds project creation, a paginated workspace project directory, project detail and ordered status reads. Local verification passed formatting, API lint, typecheck and production build. All six migrations and the seed ran on disposable PostgreSQL. One smoke/OpenAPI test, eight HTTP contract tests, ten database tests, twenty-nine API integration tests and eleven Chromium regressions passed. Project management screens are tracked in #45.
+
+Issue #42 adds six project settings, archive and membership operations on the existing schema. Local validation passed Prettier, API lint, typecheck and production build. All six migrations and the seed ran on disposable PostgreSQL. One smoke/OpenAPI test, eight HTTP contracts, eleven database tests, thirty-three API integration tests and eleven Chromium regressions passed. Project management UI is tracked in #45.
 
 ## Foundation and post-M0 history
 
