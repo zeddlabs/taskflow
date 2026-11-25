@@ -64,6 +64,14 @@ pnpm --filter @taskflow/api exec prisma db seed
 
 The development seed creates one synthetic owner for Acme Studio and Northwind Labs. It hashes a random password with Argon2id, discards the password, and preserves existing fixture records on subsequent runs. To run the database integration tests, point `DATABASE_URL` at a disposable PostgreSQL database, run the four commands above, then run `pnpm --filter @taskflow/api test:db`.
 
+### Email verification
+
+In Account, choose **Send verification code**. Enter the eight digits from the email, or choose **I have a code** after signing in on another device. A code expires after 15 minutes. Sending a new code replaces the previous one. Allow one minute between sends.
+
+For local development, point the API's `SMTP_HOST`, `SMTP_PORT` and `SMTP_FROM` at a local SMTP capture service, such as Mailpit on port 1025. The automated suites use a private test mailbox. Production uses the SMTP adapter and never exposes the code through an HTTP endpoint.
+
+Configure a sender address authorized by the mail provider and supply `SMTP_USER` and `SMTP_PASSWORD` through the deployment secret store if the relay requires authentication. Port 465 uses implicit TLS. On other ports, production requires STARTTLS with certificate validation. An unavailable relay returns 503 and invalidates that delivery. Confirm that a message reaches a controlled mailbox when configuring a deployment. [Nodemailer SMTP configuration](https://nodemailer.com/smtp)
+
 ## Verify a change
 
 ### Reproduce the M0 pull request checks

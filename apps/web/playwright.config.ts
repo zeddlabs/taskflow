@@ -1,6 +1,13 @@
 import { defineConfig } from "@playwright/test";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { apiOrigin } from "./src/features/auth/api-origin";
+// Inherited by workers and the isolated API test process.
+process.env.TASKFLOW_TEST_MAILBOX ??= join(
+  tmpdir(),
+  "taskflow-browser-mail-" + randomUUID(),
+);
 
 const api = new URL(apiOrigin());
 if (
@@ -29,6 +36,7 @@ export default defineConfig({
       url: api.origin + "/api/v1/health/live",
       env: {
         NODE_ENV: "test",
+        TASKFLOW_TEST_MAILBOX: process.env.TASKFLOW_TEST_MAILBOX,
         PORT: api.port,
         WEB_ORIGIN: origin,
         COOKIE_SECURE: "false",

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { after, test } from "node:test";
 import { DatabaseService } from "../src/database.service";
+import { EmailVerificationService } from "../src/auth/email-verification.service";
 import { WorkspacesService } from "../src/workspaces/workspaces.service";
 import type { Prisma } from "../src/generated/prisma/client";
 import { WorkspaceMembersService } from "../src/workspaces/workspace-members.service";
@@ -151,6 +152,37 @@ test("membership edits, removal and transfer roll back when their audit record f
     ]),
   );
   assert.equal(await db.auditLog.count({ where: { workspaceId } }), 1);
+});
+
+test("failed mail delivery expires its code and preserves the resend cooldown", async (t) => {
+  const user = await db.user.create({
+    data: {
+      name: "Mailbox test",
+      emailNormalized: randomUUID() + "@example.invalid",
+      passwordHash: "unused-test-hash",
+    },
+  });
+  t.after(async () => {
+    await db.user.delete({ where: { id: user.id } });
+  });
+  let delivered = "";
+  const verification = new EmailVerificationService(db, config, {
+    async send(_email, code) {
+      delivered = code;
+      throw new Error("relay unavailable");
+    },
+  });
+  await assert.rejects(verification.request(user.id), { status: 503 });
+  assert.match(delivered, /^[0-9]{8}$/);
+  await assert.rejects(verification.consume(user.id, delivered), {
+    status: 409,
+  });
+  await assert.rejects(verification.request(user.id), { status: 429 });
+  assert.equal(
+    (await db.user.findUniqueOrThrow({ where: { id: user.id } }))
+      .emailVerifiedAt,
+    null,
+  );
 });
 
 // Keep even unexpectedly successful constraint probes out of the database.

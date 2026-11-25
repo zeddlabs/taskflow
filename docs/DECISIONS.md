@@ -1,5 +1,13 @@
 # Implementation decisions
 
+## M1 account email verification
+
+Issue #39 adds authenticated, CSRF-protected POST operations at `/api/v1/auth/email-verification/request` and `/consume`. The session determines the recipient. The API returns a verification flag in the safe profile. Invitation acceptance will use the stored verification timestamp in #40.
+
+One challenge row per user holds the normalized destination, a domain-separated HMAC of the account, address and random eight-digit code, expiry, issue time and failed-attempt count. Request and consume serialize on the user row. A challenge lasts 15 minutes, allows five failed guesses and can be replaced once per minute. Failed guesses commit before the API returns an error. Successful consumption deletes the challenge and sets the verification timestamp in one transaction. Rotating the signing secret invalidates outstanding codes.
+
+SMTP delivery runs after the transaction. Delivery failure expires only the challenge that failed to send. Logs and API responses omit codes. The SMTP adapter can be replaced in tests through the Nest provider.
+
 ## M1 workspace creation and audit
 
 `POST /api/v1/workspaces` accepts a display name and a globally unique slug. Slugs are trimmed, lowercased and validated as alphanumeric segments separated by hyphens. The database unique constraint arbitrates concurrent requests. A committed creation returns 201 with the new resource location; a colliding slug returns 409.

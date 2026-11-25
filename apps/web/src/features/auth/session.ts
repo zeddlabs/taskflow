@@ -5,6 +5,7 @@ export interface Profile {
   name: string;
   email: string;
   timezone: string;
+  emailVerified: boolean;
 }
 export class ApiError extends Error {
   constructor(
@@ -104,6 +105,23 @@ export function login(email: string, password: string) {
     notify("login");
   });
 }
+export async function verifyEmail(code?: string) {
+  await loadProfile();
+  return withSessionLock(async () => {
+    await call(
+      "email-verification/" + (code === undefined ? "request" : "consume"),
+      {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": await proof(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(code === undefined ? {} : { code }),
+      },
+    );
+  });
+}
+
 export function logout() {
   return withSessionLock(async () => {
     // A reload loses the in-memory proof. Login and refresh cookies remain HttpOnly.

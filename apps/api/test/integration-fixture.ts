@@ -4,6 +4,9 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { once } from "node:events";
 import { join } from "node:path";
 import { Pool } from "pg";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+export let mailbox: string;
 import request from "supertest";
 
 jest.setTimeout(30000);
@@ -19,11 +22,13 @@ export let logs = "";
 beforeAll(async () => {
   if (!process.env.DATABASE_URL)
     throw new Error("Set DATABASE_URL to a disposable migrated database.");
+  mailbox = await mkdtemp(join(tmpdir(), "taskflow-integration-mail-"));
   api = fork(join(__dirname, "auth-server.mjs"), [], {
     silent: true,
     env: {
       ...process.env,
       NODE_ENV: "production",
+      TASKFLOW_TEST_MAILBOX: mailbox,
       WEB_ORIGIN: origin,
       JWT_ACCESS_SECRET: secret,
       CSRF_SECRET: randomBytes(32).toString("hex"),
@@ -61,6 +66,7 @@ afterAll(async () => {
       );
   } finally {
     await pool.end();
+    if (mailbox) await rm(mailbox, { recursive: true, force: true });
   }
 });
 

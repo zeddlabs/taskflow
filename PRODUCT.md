@@ -35,7 +35,7 @@ The primary working context is a desktop browser. The same account and navigatio
 
 ## Capabilities and Constraints
 
-M0 includes the public login and registration forms, the protected personal overview and a read-only account view with name, email and time zone. A restored session must identify the current user before showing protected data. Signing out clears cached account data across tabs.
+The public login and registration forms lead to a protected personal overview. Account shows name, email and time zone. Users can verify their address there with an emailed code before accepting an invitation. A restored session must identify the current user before showing protected data. Signing out clears cached account data across tabs.
 
 Keep authentication and authorization on the backend. The browser uses the existing same-origin API integration, cookie-based session and CSRF protection. Keep session secrets out of browser storage and protected responses out of shared caches. Membership in one workspace conveys no access to another. Workspace administration alone conveys no right to read a private project's contents. The [technical design](docs/TDD.md) defines the security boundary and milestone dependencies.
 

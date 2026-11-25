@@ -21,6 +21,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brand } from "../../components/brand";
+import { EmailVerification } from "../auth/email-verification";
 import { Button } from "../../components/ui/button";
 import { readSessionHint, writeSessionHint } from "../auth/session-hint";
 import {
@@ -278,6 +279,19 @@ function Shell({ view, initialProfile }: ShellProps) {
               )}
             </div>
             {info}
+            {view === "account" && (
+              <EmailVerification
+                key={profile.id}
+                verified={profile.emailVerified}
+                onVerified={() =>
+                  client.setQueryData(["session", "me"], {
+                    ...profile,
+                    emailVerified: true,
+                  })
+                }
+                onSessionLost={() => void query.refetch()}
+              />
+            )}
           </section>
         </main>
       </div>

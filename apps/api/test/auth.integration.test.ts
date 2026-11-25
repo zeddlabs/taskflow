@@ -46,6 +46,7 @@ test("credentials set host-only production cookies and the session selects its o
   expect(Object.keys(profile).sort()).toEqual([
     "avatarUrl",
     "email",
+    "emailVerified",
     "id",
     "name",
     "timezone",

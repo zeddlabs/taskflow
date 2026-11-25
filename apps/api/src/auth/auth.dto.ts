@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsEmail, IsString, Length, MaxLength } from "class-validator";
+import { IsEmail, IsString, Length, Matches, MaxLength } from "class-validator";
 
 export function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
@@ -46,7 +46,15 @@ export class LoginDto extends EmailDto {
   password!: string;
 }
 
+export class VerificationCodeDto {
+  @ApiProperty({ writeOnly: true, pattern: "^[0-9]{8}$" })
+  @IsString()
+  @Matches(/^[0-9]{8}$/)
+  code!: string;
+}
+
 export class ProfileDto {
+  @ApiProperty() emailVerified!: boolean;
   @ApiProperty() id!: string;
   @ApiProperty({ format: "email" }) email!: string;
   @ApiProperty() name!: string;

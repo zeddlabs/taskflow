@@ -467,6 +467,45 @@ button:disabled {
   font-weight: 520;
   overflow-wrap: anywhere;
 }
+.email-verification {
+  border-top: 1px solid var(--color-line);
+  padding: 20px 0 12px;
+}
+.email-verification h3 {
+  font-size: 17px;
+  font-weight: 650;
+}
+.verification-hint,
+.verification-feedback {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+.verification-hint {
+  margin: 4px 0 16px;
+}
+.email-verification .field {
+  max-width: 18rem;
+  margin-bottom: 12px;
+}
+.email-verification input {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+.verification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+.verification-secondary {
+  min-height: 44px;
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.verification-feedback:not(:empty) {
+  margin-top: 12px;
+}
 .skip {
   position: fixed;
   top: 8px;

@@ -76,6 +76,15 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
   assert.equal(components.securitySchemes.cookie.name, "access_token");
   assert.equal(components.securitySchemes.refresh.name, "refresh_token");
   assert.equal(components.securitySchemes.logout.name, "logout_session");
+  for (const action of ["request", "consume"]) {
+    const operation = paths["/api/v1/auth/email-verification/" + action].post;
+    assert.deepEqual(operation.security, [{ cookie: [] }]);
+    assert.ok(
+      operation.parameters.some((p) => p.name === "X-CSRF-Token" && p.required),
+    );
+    for (const code of ["204", "401", "403", "429"])
+      assert.ok(operation.responses[code]);
+  }
   const bootstrap = paths["/api/v1/auth/refresh/csrf"].get;
   assert.ok(bootstrap.responses["204"].headers["X-CSRF-Token"]);
   for (const [path, code] of [
