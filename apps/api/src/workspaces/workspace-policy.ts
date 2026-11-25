@@ -7,6 +7,7 @@ const workspacePermissions = {
   archive: ["OWNER"],
   listMembers: ["OWNER", "ADMIN", "MEMBER"],
   manageMembers: ["OWNER", "ADMIN"],
+  manageInvitations: ["OWNER", "ADMIN"],
   transferOwnership: ["OWNER"],
 } satisfies Record<string, WorkspaceRole[]>;
 

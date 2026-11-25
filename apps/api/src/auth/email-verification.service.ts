@@ -2,6 +2,7 @@ import {
   ConflictException,
   HttpException,
   Injectable,
+  Inject,
   ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -16,7 +17,8 @@ export class EmailVerificationService {
   constructor(
     private readonly db: DatabaseService,
     private readonly config: AuthConfig,
-    private readonly mail: VerificationMailer,
+    @Inject(VerificationMailer)
+    private readonly mail: Pick<VerificationMailer, "send">,
   ) {}
 
   private hash(userId: string, email: string, code: string) {

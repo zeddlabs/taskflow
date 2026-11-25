@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { after, test } from "node:test";
 import { DatabaseService } from "../src/database.service";
+import { InvitationsService } from "../src/workspaces/invitations.service";
 import { EmailVerificationService } from "../src/auth/email-verification.service";
 import { WorkspacesService } from "../src/workspaces/workspaces.service";
 import type { Prisma } from "../src/generated/prisma/client";
@@ -182,6 +183,105 @@ test("failed mail delivery expires its code and preserves the resend cooldown", 
     (await db.user.findUniqueOrThrow({ where: { id: user.id } }))
       .emailVerifiedAt,
     null,
+  );
+});
+
+test("invitation delivery is recoverable and a failed audit rolls back membership, state and token rotation", async (t) => {
+  const owner = await db.user.findUniqueOrThrow({
+    where: { emailNormalized: "owner@example.invalid" },
+  });
+  const workspace = await service.create(
+    owner.id,
+    { name: "Invite rollback", slug: "invites-" + randomUUID() },
+    randomUUID(),
+  );
+  t.after(async () => {
+    await db.workspace.delete({ where: { id: workspace.id } });
+  });
+  const email = randomUUID() + "@example.invalid";
+  const user = await db.user.create({
+    data: {
+      name: "Recipient",
+      emailNormalized: email,
+      emailVerifiedAt: new Date(),
+      passwordHash: owner.passwordHash,
+    },
+  });
+  t.after(async () => {
+    await db.user.delete({ where: { id: user.id } });
+  });
+  let failDelivery = true,
+    mail = "";
+  const invitations = new InvitationsService(
+    db,
+    {
+      async send(_email, _subject, body) {
+        if (failDelivery) throw new Error("Relay unavailable");
+        mail = body;
+      },
+    },
+    config,
+  );
+  const wid = workspace.id,
+    dto = { email, role: "MEMBER" as const },
+    invalid = "r".repeat(101);
+  await assert.rejects(invitations.create(owner.id, wid, dto, invalid), {
+    code: "P2000",
+  });
+  assert.equal(
+    await db.workspaceInvitation.count({ where: { workspaceId: wid } }),
+    0,
+  );
+  await assert.rejects(invitations.create(owner.id, wid, dto, randomUUID()), {
+    status: 503,
+  });
+  const pending = await db.workspaceInvitation.findFirstOrThrow({
+    where: { workspaceId: wid },
+  });
+  const id = pending.id;
+  await assert.rejects(
+    db.workspaceInvitation.create({
+      data: {
+        workspaceId: wid,
+        emailNormalized: email,
+        tokenHash: createHash("sha256").update(randomBytes(32)).digest("hex"),
+        invitedById: owner.id,
+        expiresAt: pending.expiresAt,
+      },
+    }),
+    { code: "P2002" },
+  );
+  failDelivery = false;
+  await assert.rejects(invitations.resend(owner.id, wid, id, invalid), {
+    code: "P2000",
+  });
+  assert.equal(
+    (await db.workspaceInvitation.findUniqueOrThrow({ where: { id } }))
+      .tokenHash,
+    pending.tokenHash,
+  );
+  await invitations.resend(owner.id, wid, id, randomUUID());
+  const token = /Invitation token: ([A-Za-z0-9_-]{43})/.exec(mail)?.[1];
+  assert.ok(token);
+  await assert.rejects(invitations.revoke(owner.id, wid, id, invalid), {
+    code: "P2000",
+  });
+  await assert.rejects(invitations.accept(user.id, token, invalid), {
+    code: "P2000",
+  });
+  assert.equal(
+    await db.workspaceMember.count({
+      where: { workspaceId: wid, userId: user.id },
+    }),
+    0,
+  );
+  assert.equal(
+    (await db.workspaceInvitation.findUniqueOrThrow({ where: { id } })).status,
+    "PENDING",
+  );
+  assert.equal(
+    (await invitations.accept(user.id, token, randomUUID())).membership.role,
+    "MEMBER",
   );
 });
 

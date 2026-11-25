@@ -85,6 +85,21 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
     for (const code of ["204", "401", "403", "429"])
       assert.ok(operation.responses[code]);
   }
+  const invitations = paths["/api/v1/workspaces/{wid}/invitations"];
+  assert.ok(invitations.get.responses["200"]);
+  for (const [operation, success] of [
+    [invitations.post, "201"],
+    [paths["/api/v1/workspaces/{wid}/invitations/{iid}/resend"].post, "200"],
+    [paths["/api/v1/workspaces/{wid}/invitations/{iid}"].delete, "204"],
+    [paths["/api/v1/invitations/accept"].post, "200"],
+  ]) {
+    assert.deepEqual(operation.security, [{ cookie: [] }]);
+    assert.ok(
+      operation.parameters.some((p) => p.name === "X-CSRF-Token" && p.required),
+    );
+    assert.ok(operation.responses[success]);
+    assert.ok(operation.responses["409"].content["application/problem+json"]);
+  }
   const bootstrap = paths["/api/v1/auth/refresh/csrf"].get;
   assert.ok(bootstrap.responses["204"].headers["X-CSRF-Token"]);
   for (const [path, code] of [
