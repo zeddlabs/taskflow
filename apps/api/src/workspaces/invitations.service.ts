@@ -164,7 +164,7 @@ export class InvitationsService {
           workspace.name +
           " on TaskFlow. Verify your email in Account before accepting: " +
           this.config.origin +
-          "/app/account\n\nInvitation token: " +
+          "/app/account?join=1#join-workspace\n\nInvitation token: " +
           token +
           "\n\nExpires at " +
           invite.expiresAt.toISOString() +

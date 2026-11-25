@@ -130,8 +130,22 @@ export async function workspaceRequest(
   body?: object,
   signal?: AbortSignal,
 ) {
+  return sessionRequest(actorId, "/workspaces" + path, method, body, signal);
+}
+
+export function acceptInvitation(actorId: string, token: string) {
+  return sessionRequest(actorId, "/invitations/accept", "POST", { token });
+}
+
+async function sessionRequest(
+  actorId: string,
+  path: string,
+  method: string,
+  body?: object,
+  signal?: AbortSignal,
+) {
   const send = async (token?: string) => {
-    const response = await fetch("/api/v1/workspaces" + path, {
+    const response = await fetch("/api/v1" + path, {
       method,
       credentials: "same-origin",
       cache: "no-store",

@@ -4,6 +4,7 @@ import "./workspaces.css";
 
 import Link from "next/link";
 import { WorkspaceSwitch } from "./workspace-switch";
+import { WorkspaceMembers } from "./workspace-members";
 import { readDirectory } from "./workspace-directory";
 import { useWorkspaceNotice } from "./workspace-notice";
 
@@ -107,7 +108,7 @@ export function WorkspaceArea({
 }: {
   actorId: string;
   slug?: string;
-  view: "create" | "workspace" | "settings";
+  view: "create" | "workspace" | "settings" | "members";
 }) {
   if (view === "create")
     return (
@@ -122,6 +123,7 @@ export function WorkspaceArea({
       actorId={actorId}
       slug={slug!}
       settings={view === "settings"}
+      members={view === "members"}
     />
   );
 }
@@ -137,10 +139,12 @@ function WorkspaceRoute({
   actorId,
   slug,
   settings,
+  members,
 }: {
   actorId: string;
   slug: string;
   settings: boolean;
+  members: boolean;
 }) {
   const notice = useWorkspaceNotice(actorId);
   const directory = useDirectory(actorId);
@@ -197,6 +201,25 @@ function WorkspaceRoute({
       </>
     );
   const w = query.data;
+  const memberLink = w.myRole !== "GUEST" && (
+    <Link
+      className="ws-action"
+      href={workspaceUrl(w.slug) + "/settings/members"}
+    >
+      Members
+    </Link>
+  );
+  if (members)
+    return (
+      <div className="ws-view">
+        <Link className="ws-back" href={workspaceUrl(w.slug)}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          {w.name}
+        </Link>
+        <h1>Members</h1>
+        <WorkspaceMembers key={w.id} actorId={actorId} workspace={w} />
+      </div>
+    );
   return (
     <div className="ws-view">
       {settings ? (
@@ -215,6 +238,7 @@ function WorkspaceRoute({
       {settings && "timezone" in w ? (
         <>
           <h1>Workspace settings</h1>
+          {memberLink}
           <WorkspaceForm key={w.id} actorId={actorId} settings={w} />
         </>
       ) : (
@@ -223,15 +247,18 @@ function WorkspaceRoute({
           <div className="ws-summary">
             <div className="ws-heading">
               <h2>Workspace details</h2>
-              {(w.myRole === "OWNER" || w.myRole === "ADMIN") && (
-                <Link
-                  className="ws-action"
-                  href={workspaceUrl(w.slug) + "/settings"}
-                >
-                  <Settings2 size={16} aria-hidden="true" />
-                  Settings
-                </Link>
-              )}
+              <div className="ws-links">
+                {memberLink}
+                {(w.myRole === "OWNER" || w.myRole === "ADMIN") && (
+                  <Link
+                    className="ws-action"
+                    href={workspaceUrl(w.slug) + "/settings"}
+                  >
+                    <Settings2 size={16} aria-hidden="true" />
+                    Settings
+                  </Link>
+                )}
+              </div>
             </div>
             <dl className="details">
               <div>

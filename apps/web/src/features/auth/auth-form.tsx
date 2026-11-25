@@ -43,7 +43,13 @@ function observeSignInPage(onRestore: () => void) {
     window.removeEventListener("pageshow", onRestore);
   };
 }
-export function AuthForm({ create = false }: { create?: boolean }) {
+export function AuthForm({
+  create = false,
+  invitation = false,
+}: {
+  create?: boolean;
+  invitation?: boolean;
+}) {
   const [visible, setVisible] = useState(false);
   const sessionEnded = useSyncExternalStore(
     observeSignInPage,
@@ -71,7 +77,9 @@ export function AuthForm({ create = false }: { create?: boolean }) {
         created = true;
       }
       await login(email, password);
-      window.location.replace("/app");
+      window.location.replace(
+        invitation ? "/app/account?join=1#join-workspace" : "/app",
+      );
     } catch (error) {
       setError("root", {
         message: created
@@ -184,7 +192,12 @@ export function AuthForm({ create = false }: { create?: boolean }) {
           </form>
           <p className="auth-switch">
             {create ? "Already have an account?" : "New to TaskFlow?"}{" "}
-            <Link href={create ? "/login" : "/register"}>
+            <Link
+              href={
+                (create ? "/login" : "/register") +
+                (invitation ? "?join=1" : "")
+              }
+            >
               {create ? "Sign in" : "Create an account"}
             </Link>
           </p>

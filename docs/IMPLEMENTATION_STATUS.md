@@ -14,8 +14,8 @@
 | [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | [DONE](https://github.com/zeddlabs/taskflow/pull/51) |
 | [#41 Create and read visibility-scoped projects with default statuses](https://github.com/zeddlabs/taskflow/issues/41) | #37          | [DONE](https://github.com/zeddlabs/taskflow/pull/52) |
 | [#42 Manage project lifecycle and project memberships](https://github.com/zeddlabs/taskflow/issues/42)                 | #38, #41     | [DONE](https://github.com/zeddlabs/taskflow/pull/53) |
-| [#43 Build workspace onboarding, switcher and settings](https://github.com/zeddlabs/taskflow/issues/43)                | #37          | IN_PROGRESS                                          |
-| [#44 Build member, ownership and invitation flows](https://github.com/zeddlabs/taskflow/issues/44)                     | #40, #43     | TODO                                                 |
+| [#43 Build workspace onboarding, switcher and settings](https://github.com/zeddlabs/taskflow/issues/43)                | #37          | [DONE](https://github.com/zeddlabs/taskflow/pull/54) |
+| [#44 Build member, ownership and invitation flows](https://github.com/zeddlabs/taskflow/issues/44)                     | #40, #43     | IN_PROGRESS                                          |
 | [#45 Build project directory, settings and access management](https://github.com/zeddlabs/taskflow/issues/45)          | #42, #43     | TODO                                                 |
 
 Issue #35 provides two cookie-authenticated GET routes under `/api/v1/workspaces`. The collection accepts `limit` (1–100, default 25), `sort=id_asc` and an actor-bound cursor. Each summary contains id, name, slug and the caller's membership role. Lists exclude archived tenants. Unavailable details return 404. Both reads reuse the M0 tables. Membership and archive filters are evaluated in the database on every read.
@@ -41,6 +41,10 @@ Issue #41 adds project creation, a paginated workspace project directory, projec
 Issue #42 adds six project settings, archive and membership operations on the existing schema. Local validation passed Prettier, API lint, typecheck and production build. All six migrations and the seed ran on disposable PostgreSQL. One smoke/OpenAPI test, eight HTTP contracts, eleven database tests, thirty-three API integration tests and eleven Chromium regressions passed. Project management UI is tracked in #45.
 
 Issue #43 adds workspace onboarding from Overview, a tenant switcher, workspace settings and owner-confirmed archival. Verification passed web lint, typecheck, production build, the web smoke test, 33 API integration tests and 13 Chromium tests. The two-tab renewal test passed three additional runs. The Impeccable review led to an explicit keyboard switching action and unique workspace addresses. Review captures include [onboarding](review/issue-43/onboarding.png) and settings at [desktop](review/issue-43/settings-1360.png), [tablet](review/issue-43/settings-768.png) and [phone](review/issue-43/settings-320.png) widths.
+
+Issue #44 connects the Members page to membership, ownership and invitation operations. Managers can review pending invitations below the roster. Invited users return to Account after authentication, verify their email and paste the token there. The database schema and API contracts are unchanged.
+
+Local validation passed API and web lint, typecheck, production builds and smoke tests, eight HTTP contract tests, eleven PostgreSQL tests, thirty-three API integration tests and fourteen Chromium tests. The two-user browser test covers token rotation, role changes, ownership transfer, removal and stale access. Review the invitation form at [desktop](review/issue-44/members-1360.png), [tablet](review/issue-44/members-768.png) and [phone](review/issue-44/members-320.png) widths.
 
 ## Foundation and post-M0 history
 
