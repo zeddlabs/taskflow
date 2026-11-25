@@ -5,10 +5,12 @@ import { WorkspacesController } from "./workspaces.controller";
 import { WorkspacesService } from "./workspaces.service";
 
 import { WorkspaceMembersService } from "./workspace-members.service";
+import { InvitationsService } from "./invitations.service";
+import { InvitationsController } from "./invitations.controller";
 
 @Module({
   imports: [AuthModule, DatabaseModule],
-  controllers: [WorkspacesController],
-  providers: [WorkspacesService, WorkspaceMembersService],
+  controllers: [WorkspacesController, InvitationsController],
+  providers: [WorkspacesService, WorkspaceMembersService, InvitationsService],
 })
 export class WorkspacesModule {}

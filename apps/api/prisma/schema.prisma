@@ -29,6 +29,8 @@ model User {
   memberships       WorkspaceMember[]
   auditEvents       AuditLog[]                  @relation("AuditActor")
   emailVerification EmailVerificationChallenge?
+  invitationsSent   WorkspaceInvitation[]       @relation("InvitedBy")
+  invitationsTaken  WorkspaceInvitation[]       @relation("AcceptedBy")
 
   @@map("users")
 }
@@ -73,18 +75,48 @@ model RefreshToken {
 }
 
 model Workspace {
-  id                        String            @id @default(cuid())
-  name                      String            @db.VarChar(150)
-  slug                      String            @unique @db.VarChar(80)
-  timezone                  String            @default("UTC") @db.VarChar(64)
-  allowMemberCreateProjects Boolean           @default(false)
-  createdAt                 DateTime          @default(now())
-  updatedAt                 DateTime          @updatedAt
+  id                        String                @id @default(cuid())
+  name                      String                @db.VarChar(150)
+  slug                      String                @unique @db.VarChar(80)
+  timezone                  String                @default("UTC") @db.VarChar(64)
+  allowMemberCreateProjects Boolean               @default(false)
+  createdAt                 DateTime              @default(now())
+  updatedAt                 DateTime              @updatedAt
   archivedAt                DateTime?
   members                   WorkspaceMember[]
   auditLogs                 AuditLog[]
+  invitations               WorkspaceInvitation[]
 
   @@map("workspaces")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+model WorkspaceInvitation {
+  id              String           @id @default(cuid())
+  workspaceId     String
+  emailNormalized String           @db.VarChar(320)
+  role            WorkspaceRole    @default(MEMBER)
+  tokenHash       String           @unique @db.VarChar(64)
+  status          InvitationStatus @default(PENDING)
+  expiresAt       DateTime
+  invitedById     String
+  acceptedById    String?
+  acceptedAt      DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  workspace       Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  invitedBy       User             @relation("InvitedBy", fields: [invitedById], references: [id])
+  acceptedBy      User?            @relation("AcceptedBy", fields: [acceptedById], references: [id])
+
+  @@index([workspaceId, status, id])
+  @@index([expiresAt, status])
+  @@map("workspace_invitations")
 }
 
 model WorkspaceMember {

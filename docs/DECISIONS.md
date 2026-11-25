@@ -1,5 +1,13 @@
 # Implementation decisions
 
+## M1 workspace invitations
+
+Owner and admin can list active pending invitations, invite a normalized email address to a non-owner role, rotate a pending invitation through resend, or revoke it. Issuance generates 32 random bytes and sends the bearer token only by email. The database stores the SHA-256 digest. A partial unique index permits one pending invitation per workspace and address. The default lifetime is seven days (`INVITATION_TTL_HOURS`). Reads and mutations enforce the deadline immediately. A new invitation marks any elapsed pending predecessor EXPIRED before claiming its slot.
+
+Authenticated `POST /api/v1/invitations/accept` resolves the workspace from the digest and rechecks the invitation under the workspace lock. Acceptance requires the current verified email to match and uses a guarded state transition in the same transaction as membership and audit. If the user joined through another path, acceptance preserves the existing role. Reuse, rotation, expiration and revocation yield 409. A current token presented by the wrong or unverified account yields 403.
+
+SMTP runs after commit. A delivery error returns 503 and leaves a pending invitation in the administrative directory. Resend generates a fresh token. Audit records identify the workspace, invitation, actor, role and request. The member-facing browser flow is tracked in #44.
+
 ## M1 account email verification
 
 Issue #39 adds authenticated, CSRF-protected POST operations at `/api/v1/auth/email-verification/request` and `/consume`. The session determines the recipient. The API returns a verification flag in the safe profile. Invitation acceptance will use the stored verification timestamp in #40.

@@ -6,7 +6,7 @@ export function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
 }
 
-class EmailDto {
+export class EmailDto {
   @ApiProperty({ format: "email", maxLength: 320 })
   @Transform(({ value }) =>
     typeof value === "string" ? normalizeEmail(value) : value,

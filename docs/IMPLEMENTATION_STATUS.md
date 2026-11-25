@@ -10,8 +10,8 @@
 | [#36 Create workspaces with an owner and transactional audit](https://github.com/zeddlabs/taskflow/issues/36)          | #35          | [DONE](https://github.com/zeddlabs/taskflow/pull/47) |
 | [#37 Enforce workspace policies, settings and archival](https://github.com/zeddlabs/taskflow/issues/37)                | #36          | [DONE](https://github.com/zeddlabs/taskflow/pull/48) |
 | [#38 Manage workspace members and transfer ownership](https://github.com/zeddlabs/taskflow/issues/38)                  | #37          | [DONE](https://github.com/zeddlabs/taskflow/pull/49) |
-| [#39 Verify account email for invitation acceptance](https://github.com/zeddlabs/taskflow/issues/39)                   | #36          | IN_PROGRESS                                          |
-| [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | TODO                                                 |
+| [#39 Verify account email for invitation acceptance](https://github.com/zeddlabs/taskflow/issues/39)                   | #36          | [DONE](https://github.com/zeddlabs/taskflow/pull/50) |
+| [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | IN_PROGRESS                                          |
 | [#41 Create and read visibility-scoped projects with default statuses](https://github.com/zeddlabs/taskflow/issues/41) | #37          | TODO                                                 |
 | [#42 Manage project lifecycle and project memberships](https://github.com/zeddlabs/taskflow/issues/42)                 | #38, #41     | TODO                                                 |
 | [#43 Build workspace onboarding, switcher and settings](https://github.com/zeddlabs/taskflow/issues/43)                | #37          | TODO                                                 |
@@ -33,6 +33,8 @@ Issue #38 adds the member directory, role updates, removal and atomic ownership 
 Local validation for #38 passed API lint, typecheck, build, one smoke/OpenAPI test, eight HTTP contract tests, seven PostgreSQL tests, eighteen API integration tests and ten Chromium regression tests. Coverage includes concurrent ownership transfers, concurrent removal and transfer, rollback on audit failure, profile minimization and tenant-specific revocation. Prisma validated the schema and applied all three existing migrations to a clean test database.
 
 Issue #39 adds authenticated email verification by code in Account, with resend, a replaceable SMTP adapter and a per-account verification challenge. Four migrations applied on a clean database. Local API and web lint, typecheck and production builds passed, along with two smoke tests, eight HTTP contracts, eight PostgreSQL tests, twenty API integration tests and eleven Chromium tests. The production adapter also delivered a test message to a loopback SMTP capture server. [Desktop](review/issue-39/verify-1360.png), [tablet](review/issue-39/verify-768.png) and [mobile](review/issue-39/verify-320.png) captures show the final code-entry state.
+
+Issue #40 adds the invitation API, including pending invitation lists, token rotation, revocation and verified-email acceptance. The member-facing UI is tracked in #44. Local API lint, typecheck, build, one smoke/OpenAPI test, eight HTTP contract tests, nine PostgreSQL tests, twenty-five API integration tests and eleven Chromium regression tests passed. All five migrations and the seed ran on a clean PostgreSQL database.
 
 ## Foundation and post-M0 history
 
