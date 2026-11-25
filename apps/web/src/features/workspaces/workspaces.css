@@ -1,0 +1,200 @@
+.ws-directory,
+.ws-summary,
+.ws-form {
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: var(--color-panel);
+  padding: clamp(16px, 3vw, 30px);
+}
+.ws-directory {
+  margin-top: 24px;
+  scroll-margin-top: 16px;
+}
+.ws-heading,
+.ws-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+}
+.ws-heading {
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.ws-heading h2,
+.ws-form legend,
+.ws-archive h2 {
+  font-weight: 620;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-size: 21px;
+}
+.ws-directory p,
+.ws-archive p,
+.ws-list span {
+  color: var(--color-muted);
+}
+.ws-action,
+.ws-back,
+.ws-actions a,
+.ws-feedback a {
+  color: var(--selected-ink);
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ws-action svg,
+.ws-back svg,
+.ws-list svg {
+  flex-shrink: 0;
+}
+.ws-list {
+  list-style: none;
+}
+.ws-list a {
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--color-line);
+  overflow-wrap: anywhere;
+}
+.ws-list a:hover {
+  color: var(--selected-ink);
+  background: var(--color-canvas);
+}
+.ws-list span {
+  font-size: 14px;
+}
+.ws-list small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+.ws-switch-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ws-switch-controls select {
+  flex: 1;
+}
+.ws-switch-controls .button:disabled {
+  opacity: 0.6;
+}
+.ws-view,
+.ws-editor {
+  max-width: 46rem;
+  overflow-wrap: anywhere;
+}
+.ws-back {
+  margin-bottom: 12px;
+}
+.ws-form fieldset {
+  min-width: 0;
+}
+.ws-form legend {
+  margin-bottom: 24px;
+}
+.ws-form .field {
+  max-width: 33rem;
+}
+.ws-form input:not([type="checkbox"]),
+.ws-switch select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid var(--color-control-border);
+  border-radius: 9px;
+  background: var(--color-panel);
+  color: var(--color-ink);
+  padding: 10px 12px;
+}
+.ws-form input[aria-invalid="true"] {
+  border-color: currentColor;
+}
+.ws-address {
+  position: relative;
+}
+.ws-address span {
+  position: absolute;
+  inset-inline-start: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-muted);
+}
+.ws-address input:not([type="checkbox"]) {
+  padding-inline-start: 2.6em;
+}
+.ws-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ws-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+  flex: none;
+}
+.ws-actions {
+  margin-top: 20px;
+}
+.ws-editor button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.ws-message:not(:empty) {
+  padding-block: 12px;
+  color: var(--session);
+}
+.ws-archive {
+  margin-top: 32px;
+  padding-block: 20px;
+  border-top: 1px solid var(--color-line);
+}
+.ws-archive p {
+  margin: 8px 0;
+}
+.ws-switch {
+  display: grid;
+  gap: 6px;
+  max-width: 26rem;
+  margin: 24px 0 12px;
+}
+.ws-switch label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.ws-feedback {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+@media (max-width: 420px) {
+  .ws-list a {
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    padding-block: 9px;
+  }
+  .ws-list a > svg:first-child {
+    display: none;
+  }
+  .ws-list span {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .ws-list a > svg:last-child {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+}

@@ -13,8 +13,8 @@
 | [#39 Verify account email for invitation acceptance](https://github.com/zeddlabs/taskflow/issues/39)                   | #36          | [DONE](https://github.com/zeddlabs/taskflow/pull/50) |
 | [#40 Issue, resend, revoke and accept workspace invitations](https://github.com/zeddlabs/taskflow/issues/40)           | #38, #39     | [DONE](https://github.com/zeddlabs/taskflow/pull/51) |
 | [#41 Create and read visibility-scoped projects with default statuses](https://github.com/zeddlabs/taskflow/issues/41) | #37          | [DONE](https://github.com/zeddlabs/taskflow/pull/52) |
-| [#42 Manage project lifecycle and project memberships](https://github.com/zeddlabs/taskflow/issues/42)                 | #38, #41     | IN_PROGRESS                                          |
-| [#43 Build workspace onboarding, switcher and settings](https://github.com/zeddlabs/taskflow/issues/43)                | #37          | TODO                                                 |
+| [#42 Manage project lifecycle and project memberships](https://github.com/zeddlabs/taskflow/issues/42)                 | #38, #41     | [DONE](https://github.com/zeddlabs/taskflow/pull/53) |
+| [#43 Build workspace onboarding, switcher and settings](https://github.com/zeddlabs/taskflow/issues/43)                | #37          | IN_PROGRESS                                          |
 | [#44 Build member, ownership and invitation flows](https://github.com/zeddlabs/taskflow/issues/44)                     | #40, #43     | TODO                                                 |
 | [#45 Build project directory, settings and access management](https://github.com/zeddlabs/taskflow/issues/45)          | #42, #43     | TODO                                                 |
 
@@ -39,6 +39,8 @@ Issue #40 adds the invitation API, including pending invitation lists, token rot
 Issue #41 adds project creation, a paginated workspace project directory, project detail and ordered status reads. Local verification passed formatting, API lint, typecheck and production build. All six migrations and the seed ran on disposable PostgreSQL. One smoke/OpenAPI test, eight HTTP contract tests, ten database tests, twenty-nine API integration tests and eleven Chromium regressions passed. Project management screens are tracked in #45.
 
 Issue #42 adds six project settings, archive and membership operations on the existing schema. Local validation passed Prettier, API lint, typecheck and production build. All six migrations and the seed ran on disposable PostgreSQL. One smoke/OpenAPI test, eight HTTP contracts, eleven database tests, thirty-three API integration tests and eleven Chromium regressions passed. Project management UI is tracked in #45.
+
+Issue #43 adds workspace onboarding from Overview, a tenant switcher, workspace settings and owner-confirmed archival. Verification passed web lint, typecheck, production build, the web smoke test, 33 API integration tests and 13 Chromium tests. The two-tab renewal test passed three additional runs. The Impeccable review led to an explicit keyboard switching action and unique workspace addresses. Review captures include [onboarding](review/issue-43/onboarding.png) and settings at [desktop](review/issue-43/settings-1360.png), [tablet](review/issue-43/settings-768.png) and [phone](review/issue-43/settings-320.png) widths.
 
 ## Foundation and post-M0 history
 

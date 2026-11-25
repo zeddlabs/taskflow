@@ -9,6 +9,7 @@ import {
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   ArrowRight,
+  Building2,
   PanelLeft,
   UserRound,
   LogOut,
@@ -32,11 +33,38 @@ import {
   logout,
   type Profile,
 } from "../auth/session";
-type View = "overview" | "account";
-type ShellProps = { view: View; initialProfile?: Profile };
+import {
+  WorkspaceArea,
+  WorkspaceDirectory,
+} from "../workspaces/workspace-area";
+import type { WorkspaceSnapshot } from "../workspaces/workspace-directory";
+export type View = "overview" | "account" | "create" | "workspace" | "settings";
+type ShellProps = {
+  view: View;
+  initialProfile?: Profile;
+  slug?: string;
+  snapshot?: WorkspaceSnapshot;
+};
 
 export function ProtectedShell(props: ShellProps) {
-  const [client] = useState(() => new QueryClient());
+  const [client] = useState(() => {
+    const cache = new QueryClient();
+    const { initialProfile, snapshot, view } = props;
+    if (initialProfile && snapshot) {
+      const scope = ["workspaces", initialProfile.id];
+      cache.setQueryData([...scope, "directory"], snapshot.directory);
+      if (snapshot.active)
+        cache.setQueryData(
+          [
+            ...scope,
+            snapshot.active.id,
+            view === "settings" ? "settings" : "detail",
+          ],
+          snapshot.active,
+        );
+    }
+    return cache;
+  });
   return (
     <QueryClientProvider client={client}>
       <Shell {...props} />
@@ -75,6 +103,12 @@ function Sidebar({
               icon: Grid2X2,
             },
             {
+              href: "/app#workspaces",
+              label: "Workspaces",
+              key: "workspace",
+              icon: Building2,
+            },
+            {
               href: "/app/account",
               label: "Account",
               key: "account",
@@ -87,7 +121,13 @@ function Sidebar({
             key={key}
             href={href}
             onClick={onNavigate}
-            aria-current={view === key ? "page" : undefined}
+            aria-current={
+              view === key ||
+              (key === "workspace" &&
+                (view === "create" || view === "settings"))
+                ? "page"
+                : undefined
+            }
           >
             <Icon size={18} />
             {label}
@@ -104,14 +144,16 @@ function Sidebar({
     </>
   );
 }
-function Shell({ view, initialProfile }: ShellProps) {
+function Shell({ view, initialProfile, slug }: ShellProps) {
   const client = useQueryClient();
   const query = useQuery({
     queryKey: ["session", "me"],
     queryFn: loadProfile,
     initialData: initialProfile,
     retry: false,
-    refetchOnMount: "always",
+    // SSR has just checked this cookie. A redundant refresh during navigation
+    // can rotate a credential in a tab that is already being unloaded.
+    refetchOnMount: !initialProfile,
   });
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState("");
@@ -174,7 +216,13 @@ function Shell({ view, initialProfile }: ShellProps) {
       </main>
     );
   const profile = query.data;
-  const title = view === "overview" ? "Overview" : "Account";
+  const title = {
+    overview: "Overview",
+    account: "Account",
+    create: "Create workspace",
+    workspace: "Overview",
+    settings: "Settings",
+  }[view];
   const info = (
     <dl className="details">
       {(
@@ -237,7 +285,8 @@ function Shell({ view, initialProfile }: ShellProps) {
             </Dialog.Portal>
           </Dialog.Root>
           <span className="crumb">
-            Personal <ChevronRight size={13} /> <b>{title}</b>
+            {slug ? "Workspace" : "Personal"} <ChevronRight size={13} />{" "}
+            <b>{title}</b>
           </span>
           <button
             className="signout"
@@ -250,49 +299,66 @@ function Shell({ view, initialProfile }: ShellProps) {
           </button>
         </header>
         <main id="content" className="dashboard" tabIndex={-1}>
-          <h1>{title}</h1>
+          {(view === "overview" || view === "account") && <h1>{title}</h1>}
           {failure && (
             <p role="alert" className="notice">
               {failure}
             </p>
           )}
-          <section className="identity-strip" aria-labelledby="identity-name">
-            <Initials name={profile.name} />
-            <div className="identity-copy">
-              <h2 id="identity-name">{profile.name}</h2>
-              <p className="session-note">Signed in to TaskFlow</p>
-            </div>
-          </section>
-          <section className="profile-card" aria-labelledby="profile-title">
-            <div className="card-header">
-              <h2 id="profile-title">
-                {view === "overview"
-                  ? "Account at a glance"
-                  : "Profile details"}
-              </h2>
+          {view === "overview" || view === "account" ? (
+            <>
+              <section
+                className="identity-strip"
+                aria-labelledby="identity-name"
+              >
+                <Initials name={profile.name} />
+                <div className="identity-copy">
+                  <h2 id="identity-name">{profile.name}</h2>
+                  <p className="session-note">Signed in to TaskFlow</p>
+                </div>
+              </section>
               {view === "overview" && (
-                <Button asChild>
-                  <Link prefetch={false} href="/app/account">
-                    View account <ArrowRight size={16} aria-hidden="true" />
-                  </Link>
-                </Button>
+                <WorkspaceDirectory actorId={profile.id} />
               )}
-            </div>
-            {info}
-            {view === "account" && (
-              <EmailVerification
-                key={profile.id}
-                verified={profile.emailVerified}
-                onVerified={() =>
-                  client.setQueryData(["session", "me"], {
-                    ...profile,
-                    emailVerified: true,
-                  })
-                }
-                onSessionLost={() => void query.refetch()}
-              />
-            )}
-          </section>
+              <section className="profile-card" aria-labelledby="profile-title">
+                <div className="card-header">
+                  <h2 id="profile-title">
+                    {view === "overview"
+                      ? "Account at a glance"
+                      : "Profile details"}
+                  </h2>
+                  {view === "overview" && (
+                    <Button asChild>
+                      <Link prefetch={false} href="/app/account">
+                        View account <ArrowRight size={16} aria-hidden="true" />
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+                {info}
+                {view === "account" && (
+                  <EmailVerification
+                    key={profile.id}
+                    verified={profile.emailVerified}
+                    onVerified={() =>
+                      client.setQueryData(["session", "me"], {
+                        ...profile,
+                        emailVerified: true,
+                      })
+                    }
+                    onSessionLost={() => void query.refetch()}
+                  />
+                )}
+              </section>
+            </>
+          ) : (
+            <WorkspaceArea
+              key={[profile.id, view, slug].join("/")}
+              actorId={profile.id}
+              slug={slug}
+              view={view}
+            />
+          )}
         </main>
       </div>
     </div>

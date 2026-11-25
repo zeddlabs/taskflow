@@ -1,5 +1,11 @@
 # Implementation decisions
 
+## M1 workspace navigation
+
+Overview lists the signed-in user's active workspaces and links to `/onboarding/workspace`. The URL selects the current tenant at `/w/[workspaceSlug]`. The server resolves that slug from the caller's paginated directory, then requests authorized detail or settings with the same access cookie and uncached fetches. The browser can recover an expired access cookie through the shared session coordinator. Client query keys include the actor, workspace ID and resource. Switching workspaces starts a fresh document, and an unavailable selection leads back to Overview.
+
+Settings submit only edited fields. Archival requires an owner confirmation and returns to a refreshed directory. A tab-local, single-use message acknowledges a completed navigation. The existing workspace API enforces membership and administrative permissions on every request.
+
 ## M1 project management
 
 Project settings, archive and explicit membership changes resolve the tenant from a visible project, acquire the workspace lifecycle lock, then recheck the actor's current access. This serializes changes with workspace archival, ownership transfer and member removal. Each change and its audit record commit together. The existing composite foreign keys revoke project grants when a workspace membership ends.
