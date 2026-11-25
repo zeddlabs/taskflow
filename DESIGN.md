@@ -213,6 +213,8 @@ The layered TaskFlow mark sits in a 32px violet tile with 9px corners on public 
 - **Email verification.** Account places verification under the profile details, separated by a fine rule. Use one labeled input for the eight-digit code so users can paste or autofill it. The primary button advances verification. The secondary action opens code entry or requests another code. Successful verification replaces the form with its status.
 - **Focus.** A three-pixel solid outline with four pixels of offset follows keyboard focus, using the enclosing surface’s focus color in each theme.
 
+- **Workspaces.** Overview places the workspace directory below the personal identity strip. Each row pairs the workspace name with its address and the user's role. The native workspace selector requires an explicit Switch action. Settings group editable fields above a separate archive section. Confirming archive names the workspace and moves keyboard focus to Keep workspace.
+
 ## Do's and Don'ts
 
 - Do give password hints and errors space below their field.

@@ -122,6 +122,47 @@ export async function verifyEmail(code?: string) {
   });
 }
 
+// Tenant requests use the same refresh coordination as the personal shell.
+export async function workspaceRequest(
+  actorId: string,
+  path: string,
+  method = "GET",
+  body?: object,
+  signal?: AbortSignal,
+) {
+  const send = async (token?: string) => {
+    const response = await fetch("/api/v1/workspaces" + path, {
+      method,
+      credentials: "same-origin",
+      cache: "no-store",
+      signal,
+      headers: token
+        ? { "X-CSRF-Token": token, "Content-Type": "application/json" }
+        : undefined,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    if (!response.ok)
+      throw new ApiError(response.status, response.headers.get("Retry-After"));
+    return response;
+  };
+  const checkedRequest = () =>
+    navigator.locks.request(
+      "taskflow-session-write",
+      { mode: method === "GET" ? "shared" : "exclusive", signal },
+      async () => {
+        if ((await currentProfile()).id !== actorId) throw new ApiError(401);
+        return send(method === "GET" ? undefined : await proof());
+      },
+    );
+  try {
+    return await checkedRequest();
+  } catch (error) {
+    if (!unauthorized(error)) throw error;
+  }
+  if ((await loadProfile()).id !== actorId) throw new ApiError(401);
+  return checkedRequest();
+}
+
 export function logout() {
   return withSessionLock(async () => {
     // A reload loses the in-memory proof. Login and refresh cookies remain HttpOnly.
