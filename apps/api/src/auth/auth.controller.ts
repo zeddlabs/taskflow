@@ -19,7 +19,16 @@ import {
 } from "@nestjs/swagger";
 import { parse } from "cookie";
 import type { Request, Response } from "express";
-import { requestIdResponseHeaders } from "../http/openapi";
+import { problemResponse, requestIdResponseHeaders } from "../http/openapi";
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiTooManyRequestsResponse,
+  ApiUnauthorizedResponse,
+  ApiServiceUnavailableResponse,
+} from "@nestjs/swagger";
+import { EmailVerificationService } from "./email-verification.service";
 import {
   accessCookie,
   accessSeconds,
@@ -31,7 +40,12 @@ import {
   logoutCookie,
   csrfHeader,
 } from "./auth.config";
-import { LoginDto, ProfileDto, RegisterDto } from "./auth.dto";
+import {
+  LoginDto,
+  ProfileDto,
+  RegisterDto,
+  VerificationCodeDto,
+} from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { AuthWriteGuard } from "./auth-write.guard";
 import { CsrfMode } from "./session-csrf.guard";
@@ -50,6 +64,7 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly config: AuthConfig,
+    private readonly verification: EmailVerificationService,
   ) {}
 
   @Post("register")
@@ -162,6 +177,54 @@ export class AuthController {
     res.clearCookie(accessCookie, this.cookieOptions("/"));
     res.clearCookie(refreshCookie, this.cookieOptions(refreshPath));
     res.clearCookie(logoutCookie, this.cookieOptions(logoutPath));
+  }
+
+  @Post("email-verification/request")
+  @HttpCode(204)
+  @Header("Cache-Control", "no-store")
+  @ApiCookieAuth()
+  @ApiHeader({ name: csrfHeader, required: true })
+  @ApiNoContentResponse({
+    headers: requestIdResponseHeaders,
+    description: "Mail accepted for delivery or address already verified.",
+  })
+  @ApiUnauthorizedResponse(problemResponse("Sign in to request a code."))
+  @ApiForbiddenResponse(problemResponse("Invalid origin or CSRF proof."))
+  @ApiTooManyRequestsResponse(
+    problemResponse("Allow one minute between requests."),
+  )
+  @ApiServiceUnavailableResponse(problemResponse("Mail delivery unavailable."))
+  async requestVerification(@Req() req: Request) {
+    const session = await this.auth.activeSession(
+      parse(req.headers.cookie ?? "")[accessCookie],
+    );
+    await this.verification.request(session.user.id);
+  }
+
+  @Post("email-verification/consume")
+  @HttpCode(204)
+  @Header("Cache-Control", "no-store")
+  @ApiCookieAuth()
+  @ApiHeader({ name: csrfHeader, required: true })
+  @ApiNoContentResponse({
+    headers: requestIdResponseHeaders,
+    description: "Email address verified.",
+  })
+  @ApiUnauthorizedResponse(problemResponse("Sign in to verify your email."))
+  @ApiForbiddenResponse(problemResponse("Invalid origin or CSRF proof."))
+  @ApiBadRequestResponse(problemResponse("Enter an eight-digit code."))
+  @ApiConflictResponse(problemResponse("Invalid, expired or used code."))
+  @ApiTooManyRequestsResponse(
+    problemResponse("Attempt limit reached. Request a new code."),
+  )
+  async consumeVerification(
+    @Req() req: Request,
+    @Body() dto: VerificationCodeDto,
+  ) {
+    const session = await this.auth.activeSession(
+      parse(req.headers.cookie ?? "")[accessCookie],
+    );
+    await this.verification.consume(session.user.id, dto.code);
   }
 
   @Get("me")

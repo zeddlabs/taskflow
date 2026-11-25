@@ -16,20 +16,33 @@ enum WorkspaceRole {
 }
 
 model User {
-  id              String            @id @default(cuid())
-  emailNormalized String            @unique @db.VarChar(320)
-  name            String            @db.VarChar(150)
-  passwordHash    String            @db.VarChar(255)
-  emailVerifiedAt DateTime?
-  timezone        String            @default("UTC") @db.VarChar(64)
-  avatarUrl       String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  sessions        AuthSession[]
-  memberships     WorkspaceMember[]
-  auditEvents     AuditLog[]        @relation("AuditActor")
+  id                String                      @id @default(cuid())
+  emailNormalized   String                      @unique @db.VarChar(320)
+  name              String                      @db.VarChar(150)
+  passwordHash      String                      @db.VarChar(255)
+  emailVerifiedAt   DateTime?
+  timezone          String                      @default("UTC") @db.VarChar(64)
+  avatarUrl         String?
+  createdAt         DateTime                    @default(now())
+  updatedAt         DateTime                    @updatedAt
+  sessions          AuthSession[]
+  memberships       WorkspaceMember[]
+  auditEvents       AuditLog[]                  @relation("AuditActor")
+  emailVerification EmailVerificationChallenge?
 
   @@map("users")
+}
+
+model EmailVerificationChallenge {
+  userId          String   @id
+  emailNormalized String   @db.VarChar(320)
+  tokenHash       String   @db.Char(64)
+  issuedAt        DateTime @default(now())
+  expiresAt       DateTime
+  attempts        Int      @default(0)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_challenges")
 }
 
 model AuthSession {

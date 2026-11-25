@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
+import { EmailVerificationService } from "./email-verification.service";
+import { VerificationMailer } from "./verification-mailer";
 import { SessionCsrfGuard } from "./session-csrf.guard";
 import { DatabaseModule } from "../database.module";
 import { AuthConfig } from "./auth.config";
@@ -15,6 +17,8 @@ import { AuthWriteGuard } from "./auth-write.guard";
     AuthConfig,
     AuthService,
     AuthWriteGuard,
+    VerificationMailer,
+    EmailVerificationService,
     { provide: APP_GUARD, useClass: SessionCsrfGuard },
   ],
 })

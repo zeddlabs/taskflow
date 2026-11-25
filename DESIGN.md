@@ -210,6 +210,7 @@ The layered TaskFlow mark sits in a 32px violet tile with 9px corners on public 
 - **Feedback.** Identify invalid inputs with a border and a written error. Put request-level errors above the submit button. After session expiry, focus the email input and explain why another sign-in is needed. A failed protected profile request offers retry and a link to sign in.
 - **Navigation.** Mark the active Overview or Account link with `aria-current="page"`. The mobile menu and sign-out controls have at least 44px touch targets. The drawer handles Escape and restores focus. The skip link leads directly to the main workspace region.
 - **Profile.** Pair the account name with the signed-in message above a definition list containing full name, email address and time zone. Overview places View account beside the section title. Long values can wrap onto additional lines.
+- **Email verification.** Account places verification under the profile details, separated by a fine rule. Use one labeled input for the eight-digit code so users can paste or autofill it. The primary button advances verification. The secondary action opens code entry or requests another code. Successful verification replaces the form with its status.
 - **Focus.** A three-pixel solid outline with four pixels of offset follows keyboard focus, using the enclosing surface’s focus color in each theme.
 
 ## Do's and Don'ts

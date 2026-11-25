@@ -5,7 +5,9 @@ import {
   type Page,
   type TestInfo,
 } from "@playwright/test";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+import { readFile, unlink } from "node:fs/promises";
+import { join } from "node:path";
 
 async function screenshot(page: Page, info: TestInfo, name: string) {
   await page.evaluate(() => document.fonts.ready.then(() => true));
@@ -24,6 +26,87 @@ async function createAccount(page: Page, name = "Avery Lane") {
   await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
   return { email, password };
 }
+test("verify an account email with recovery, keyboard entry and responsive layouts", async ({
+  page,
+}, info) => {
+  const { email } = await createAccount(page, "Morgan Ellis");
+  await page.goto("/app/account");
+  const section = page.getByRole("region", { name: "Verify your email" });
+  await section.getByRole("button", { name: "Send verification code" }).click();
+  const input = section.getByLabel("Verification code");
+  await expect(input).toBeFocused();
+  await expect(input).toHaveAccessibleDescription(
+    /eight-digit code.*15 minutes/,
+  );
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme });
+    await expectControlContrast(
+      input,
+      page.locator(".profile-card"),
+      "borderTopColor",
+    );
+    await expectControlContrast(
+      input,
+      page.locator(".profile-card"),
+      "outlineColor",
+    );
+  }
+  await page.emulateMedia({ colorScheme: "light" });
+  const file = join(
+    process.env.TASKFLOW_TEST_MAILBOX!,
+    createHash("sha256").update(email).digest("hex"),
+  );
+  const code = await readFile(file, "utf8");
+  await unlink(file);
+  for (const width of [1360, 768, 320]) {
+    await page.setViewportSize({ width, height: width === 320 ? 760 : 900 });
+    await expect(
+      section.getByRole("button", { name: "Verify email" }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+    await screenshot(page, info, "verify-" + width);
+  }
+  await input.press("Tab");
+  await expect(
+    section.getByRole("button", { name: "Verify email" }),
+  ).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(input).toBeFocused();
+  await expect(section.getByRole("alert")).toContainText("eight digits");
+  await expect(input).toHaveAttribute("aria-invalid", "true");
+  await section.getByRole("button", { name: "Resend code" }).click();
+  await expect(section.getByRole("alert")).toContainText("one minute");
+  const sendRoute = "**/auth/email-verification/request";
+  await page.route(sendRoute, (route) => route.fulfill({ status: 503 }));
+  await section.getByRole("button", { name: "Resend code" }).click();
+  await expect(section.getByRole("alert")).toContainText("send the email");
+  await input.fill("0");
+  await expect(section.getByRole("status")).toBeEmpty();
+  await page.unroute(sendRoute);
+  const confirmRoute = "**/auth/email-verification/consume";
+  await page.route(confirmRoute, (route) => route.fulfill({ status: 503 }));
+  await input.fill(code);
+  await input.press("Enter");
+  await expect(section.getByRole("alert")).toContainText("verify your code");
+  await expect(input).toHaveValue(code);
+  await page.unroute(confirmRoute);
+  await page.reload();
+  await section.getByRole("button", { name: "I have a code" }).click();
+  await input.fill(code);
+  await input.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: "Email verified" }),
+  ).toBeFocused();
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Email verified" }),
+  ).toBeVisible();
+});
+
 test("anonymous routes redirect and form errors are accessible", async ({
   page,
 }, info) => {

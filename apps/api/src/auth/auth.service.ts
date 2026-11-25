@@ -31,6 +31,7 @@ const profileSelect = {
   id: true,
   name: true,
   emailNormalized: true,
+  emailVerifiedAt: true,
   timezone: true,
   avatarUrl: true,
 } as const;
@@ -41,6 +42,7 @@ function profile(
     id: user.id,
     name: user.name,
     email: user.emailNormalized,
+    emailVerified: user.emailVerifiedAt !== null,
     timezone: user.timezone,
     avatarUrl: user.avatarUrl,
   };
