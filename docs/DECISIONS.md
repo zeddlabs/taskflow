@@ -1,5 +1,11 @@
 # Implementation decisions
 
+## M1 project creation and visibility
+
+Issue #41 uses one read policy for the project directory, detail and statuses. The workspace must be active. Its owner can read all projects. Admins and members can read workspace-visible projects. Every other grant requires explicit project membership. Composite foreign keys tie that grant to both the project and a current membership in the same workspace. Removing a workspace member removes their project grants. Rejoining requires new grants.
+
+The default directory excludes archived projects and signs its continuation for the caller and workspace. Authorized direct reads preserve access to archived project history. Creation follows the existing workspace write lock, checks the member-creation setting and commits the project, four ordered statuses, creator's manager membership and audit event together. The initial task number is 1. Project keys use 2–12 uppercase letters or digits and remain reserved in their workspace after archival.
+
 ## M1 workspace invitations
 
 Owner and admin can list active pending invitations, invite a normalized email address to a non-owner role, rotate a pending invitation through resend, or revoke it. Issuance generates 32 random bytes and sends the bearer token only by email. The database stores the SHA-256 digest. A partial unique index permits one pending invitation per workspace and address. The default lifetime is seven days (`INVITATION_TTL_HOURS`). Reads and mutations enforce the deadline immediately. A new invitation marks any elapsed pending predecessor EXPIRED before claiming its slot.

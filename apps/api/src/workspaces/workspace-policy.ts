@@ -4,6 +4,7 @@ import type { WorkspaceRole } from "../generated/prisma/enums";
 
 const workspacePermissions = {
   settings: ["OWNER", "ADMIN"],
+  createProject: ["OWNER", "ADMIN", "MEMBER"],
   archive: ["OWNER"],
   listMembers: ["OWNER", "ADMIN", "MEMBER"],
   manageMembers: ["OWNER", "ADMIN"],

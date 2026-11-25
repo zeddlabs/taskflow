@@ -86,6 +86,18 @@ test("the built API exposes process liveness under /api/v1", async (t) => {
       assert.ok(operation.responses[code]);
   }
   const invitations = paths["/api/v1/workspaces/{wid}/invitations"];
+  const projects = paths["/api/v1/workspaces/{wid}/projects"];
+  for (const operation of [
+    projects.get,
+    paths["/api/v1/projects/{pid}"].get,
+    paths["/api/v1/projects/{pid}/statuses"].get,
+  ]) {
+    assert.deepEqual(operation.security, [{ cookie: [] }]);
+    assert.ok(operation.responses["200"]);
+    assert.ok(operation.responses["404"].content["application/problem+json"]);
+  }
+  assert.ok(projects.post.responses["201"].headers.Location);
+  assert.ok(projects.post.responses["409"].content["application/problem+json"]);
   assert.ok(invitations.get.responses["200"]);
   for (const [operation, success] of [
     [invitations.post, "201"],

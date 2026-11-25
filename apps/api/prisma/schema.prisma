@@ -86,6 +86,7 @@ model Workspace {
   members                   WorkspaceMember[]
   auditLogs                 AuditLog[]
   invitations               WorkspaceInvitation[]
+  projects                  Project[]
 
   @@map("workspaces")
 }
@@ -128,10 +129,85 @@ model WorkspaceMember {
   workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  projectMemberships ProjectMember[]
+
   @@unique([workspaceId, userId])
   @@index([userId])
   @@index([workspaceId, role])
   @@map("workspace_members")
+}
+
+enum ProjectVisibility {
+  WORKSPACE
+  PRIVATE
+}
+
+enum ProjectRole {
+  MANAGER
+  CONTRIBUTOR
+  VIEWER
+}
+
+enum TaskStatusCategory {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELED
+}
+
+model Project {
+  id             String            @id @default(cuid())
+  workspaceId    String
+  key            String            @db.VarChar(12)
+  name           String            @db.VarChar(150)
+  description    String?           @db.Text
+  visibility     ProjectVisibility @default(WORKSPACE)
+  nextTaskNumber Int               @default(1)
+  startDate      DateTime?
+  dueDate        DateTime?
+  archivedAt     DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  workspace      Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members        ProjectMember[]
+  statuses       ProjectStatus[]
+
+  @@unique([workspaceId, id])
+  @@unique([workspaceId, key])
+  @@index([workspaceId, archivedAt, id])
+  @@map("projects")
+}
+
+model ProjectMember {
+  id          String          @id @default(cuid())
+  workspaceId String
+  projectId   String
+  userId      String
+  role        ProjectRole     @default(CONTRIBUTOR)
+  createdAt   DateTime        @default(now())
+  project     Project         @relation(fields: [workspaceId, projectId], references: [workspaceId, id], onDelete: Cascade)
+  member      WorkspaceMember @relation(fields: [workspaceId, userId], references: [workspaceId, userId], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([workspaceId, userId])
+  @@map("project_members")
+}
+
+model ProjectStatus {
+  id        String             @id @default(cuid())
+  projectId String
+  name      String             @db.VarChar(80)
+  category  TaskStatusCategory
+  sortOrder Int
+  color     String?            @db.VarChar(20)
+  createdAt DateTime           @default(now())
+  project   Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, id])
+  @@unique([projectId, name])
+  @@unique([projectId, sortOrder])
+  @@map("project_statuses")
 }
 
 model AuditLog {

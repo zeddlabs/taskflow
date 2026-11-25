@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { after, test } from "node:test";
 import { DatabaseService } from "../src/database.service";
+import { ProjectsService } from "../src/projects/projects.service";
 import { InvitationsService } from "../src/workspaces/invitations.service";
 import { EmailVerificationService } from "../src/auth/email-verification.service";
 import { WorkspacesService } from "../src/workspaces/workspaces.service";
@@ -20,6 +21,28 @@ const config = {
   secure: true,
 };
 const service = new WorkspacesService(db, config);
+
+test("failed project audit rolls back the project, statuses and manager membership", async () => {
+  const workspace = await db.workspace.findUniqueOrThrow({
+    where: { slug: "acme-studio" },
+    include: { members: { where: { role: "OWNER" } } },
+  });
+  const key = randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase();
+  const projects = new ProjectsService(db, config);
+  await assert.rejects(
+    projects.create(
+      workspace.members[0].userId,
+      workspace.id,
+      { name: "Rollback", key },
+      "r".repeat(101),
+    ),
+    { code: "P2000" },
+  );
+  assert.equal(
+    await db.project.count({ where: { workspaceId: workspace.id, key } }),
+    0,
+  );
+});
 
 test("a rejected audit insert rolls back workspace and owner membership", async () => {
   const user = await db.user.findUniqueOrThrow({
